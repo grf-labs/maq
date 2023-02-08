@@ -1,0 +1,21 @@
+Package: maq
+Title: Evaluate Costly Treatment Arms with Multi-Action QINI Curves.
+Version: 0.1
+Authors@R: c(
+    person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
+    person("Han", "Wu", role = "aut"),
+    person("Stefan", "Wager", role = "aut"),
+    person("Susan", "Athey", role = "aut")
+    )
+Description: Optimal treatment allocation under uncertain costs.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+LinkingTo:
+    Rcpp
+Imports:
+    Matrix,
+    Rcpp
+Suggests:
+    testthat (>= 3.0.0)
