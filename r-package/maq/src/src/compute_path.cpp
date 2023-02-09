@@ -52,12 +52,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
   std::vector<std::vector<double>> spend_gain(2);
   std::vector<std::vector<size_t>> i_k_path(2);
 
-  // std::vector<bool> active(data.num_rows); // TODO perf test these against hash
-  // std::vector<size_t> active_arm(data.num_rows);
-  // std::vector<size_t> active_assignments(data.num_rows, 0);
-
-  // std::vector<size_t> active_arm(data.num_rows, data.num_cols); // can get from active_assignments! set R.
-
   std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one.
   // std::unordered_map<size_t, size_t> active_set; // slower
 
@@ -79,10 +73,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
     // TODO exact ties
 
     // assigned before?
-    // if (active[top.sample]) {
     if (active_set[top.sample] > 0) {
-      // spend -= data.get_cost(top.sample, active_arm[top.sample]);
-      // gain -= data.get_reward(top.sample, active_arm[top.sample]);
       size_t active = active_set[top.sample] - 1;
       size_t active_arm = R[top.sample][active];
       spend -= data.get_cost(top.sample, active_arm);
@@ -100,17 +91,12 @@ solution_path compute_path(const std::vector<size_t>& samples,
     if (spend + cost <= budget || equal_doubles(spend + cost, budget, 1e-16)) {
       spend += cost;
       gain += reward;
-      // spend_gain[0].push_back(spend / data.weight_sum); // store normalized spend/gain, TODO bs weight?
-      // spend_gain[1].push_back(gain / data.weight_sum);
       spend_gain[0].push_back(spend);
       spend_gain[1].push_back(gain);
       if (!bootstrap) {
         i_k_path[0].push_back(top.sample);
         i_k_path[1].push_back(top.arm);
       }
-      // active[top.sample] = true;
-      // active_arm[top.sample] = top.arm;
-      // active_assignments[top.sample]++;
       active_set[top.sample]++;
     } else {
       // TODO split decision
@@ -118,7 +104,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
 
     // upgrade available?
-    // size_t next_entry = active_assignments[top.sample];
     size_t next_entry = active_set[top.sample];
     if (R[top.sample].size() > next_entry) {
       size_t upgrade = R[top.sample][next_entry];
