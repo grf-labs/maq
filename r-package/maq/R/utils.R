@@ -5,7 +5,7 @@ lp_solver = function(reward, cost, budget) {
     stop("package `lpSolve` required.")
   }
   K = ncol(reward)
-  x.coeffs = c(t(reward))
+  x.coeffs = c(t(reward)) / NROW(reward)
   A.mat = matrix(0, nrow(reward), length(x.coeffs))
   start = 1
   for (row in 1:nrow(A.mat)) {
@@ -13,7 +13,7 @@ lp_solver = function(reward, cost, budget) {
     A.mat[row, start:end] = 1
     start = end + 1
   }
-  c.coeff = c(t(cost))
+  c.coeff = c(t(cost)) / NROW(cost)
   f.con = rbind(A.mat, c.coeff)
   f.dir = rep("<=", nrow(f.con))
   f.rhs = c(rep(1, nrow(A.mat)), budget)

@@ -51,8 +51,7 @@ test_that("pi matrix is consistent with gain path", {
   for (ix in seq_along(mqini[["_path"]]$spend)) {
     spend <- mqini[["_path"]]$spend[ix]
     pi.mat <- predict(mqini, spend = spend)
-    # pi.gain <- c(pi.gain, sum(reward * pi.mat) / n)
-    pi.gain <- c(pi.gain, sum(reward * pi.mat))
+    pi.gain <- c(pi.gain, sum(reward * pi.mat) / n)
   }
   expect_equal(pi.gain, gain, tolerance = 1e-12)
 })
