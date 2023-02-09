@@ -82,6 +82,7 @@ maq <- function(reward,
   ix.order <- matrix(order(col(t(cost)), t(cost)), ncol = ncol(cost), byrow = TRUE) -
     ncol(cost) * (row(cost) - 1) - 1 # -1: C++ index
 
+  # TODO /n at the end istead avoid 2O(n*k)?
   ret <- solver_rcpp(as.matrix(reward) / NROW(reward), as.matrix(cost) / NROW(cost), ix.order, sample.weights, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
