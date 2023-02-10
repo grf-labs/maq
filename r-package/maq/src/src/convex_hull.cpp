@@ -67,16 +67,23 @@ std::vector<std::vector<size_t>> convex_hull(const Data& data) {
   for (size_t sample = 0; sample < data.num_rows; sample++) {
     std::vector<size_t>& Ri = R[sample];
 
-    // Get sort order by increasing cost.
+    // Get sort order by increasing cost
     std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
     // std::sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
     std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
       return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
     });
-    // TODO push first NON-negative point on stack
-    size_t first = ordered_arms[0];
+    // Push first positive reward point onto stack
+    size_t start = 0;
+    while (start < data.num_cols && data.get_reward(sample, ordered_arms[start]) <= 0) {
+      start++;
+    }
+    if (start == data.num_cols) {
+      continue;
+    }
+    size_t first = ordered_arms[start];
     Ri.push_back(first);
-    for (size_t l = 1; l < data.num_cols; l++) {
+    for (size_t l = start; l < data.num_cols; l++) {
       size_t point_l = ordered_arms[l];
       while (is_dominated(Ri, point_l, sample, data)) {
         Ri.pop_back(); // remove point_k

@@ -150,4 +150,20 @@ test_that("convex hull works as expected", {
     numeric(0)
   )
 
+  # the trivial 1-dim case
+  expect_equal(
+    convex_hull(reward = t(c(13)), cost = t(c(1))),
+    list(1)
+  )
+
+  expect_equal(
+    convex_hull(reward = t(c(-13)), cost = t(c(1))),
+    list(numeric(0))
+  )
+
+  expect_equal(
+    convex_hull(reward = t(c(0)), cost = t(c(1))),
+    list(numeric(0))
+  )
+
 })
