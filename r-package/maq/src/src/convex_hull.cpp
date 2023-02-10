@@ -83,7 +83,7 @@ std::vector<std::vector<size_t>> convex_hull(const Data& data) {
     }
     size_t first = ordered_arms[start];
     Ri.push_back(first);
-    for (size_t l = start; l < data.num_cols; l++) {
+    for (size_t l = start + 1; l < data.num_cols; l++) {
       size_t point_l = ordered_arms[l];
       while (is_dominated(Ri, point_l, sample, data)) {
         Ri.pop_back(); // remove point_k
