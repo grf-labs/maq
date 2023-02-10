@@ -112,40 +112,24 @@ test_that("convex hull works as expected", {
 
   # stable wrt cost sort order
   expect_equal(
-    convex_hull(reward = rbind(c(-13, -13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 2, 1))),
-    convex_hull(reward = rbind(c(-13, -13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(1, 2, 3)))
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(-13, -13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 2, 1))),
-    convex_hull(reward = rbind(c(-13, -13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(1, 3, 2)))
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(-13, 13, 14)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 2, 1))),
-    convex_hull(reward = rbind(c(-13, 13, 14)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 1, 2)))
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(-13, 13, 14)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 1, 1))),
-    convex_hull(reward = rbind(c(-13, 13, 14)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(1, 2, 3)))
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(13, 13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(1, 2, 3))),
-    list(1)
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(13, 13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(2, 3, 1))),
+    convex_hull(reward = rbind(c(-13, 13, 13)), cost = rbind(c(1, 1, 1))),
     list(2)
   )
   expect_equal(
-    convex_hull(reward = rbind(c(13, 13, 13)), cost = rbind(c(1, 1, 1)), ix.order = rbind(c(3, 2, 1))),
+    convex_hull(reward = rbind(c(13, -13, 13)), cost = rbind(c(1, 1, 1))),
+    list(1)
+  )
+  expect_equal(
+    convex_hull(reward = rbind(c(13, 13, 13)), cost = rbind(c(1, 1, 1))),
+    list(1)
+  )
+  expect_equal(
+    convex_hull(reward = rbind(c(-13, 13, 14)), cost = rbind(c(1, 1, 1))),
     list(3)
   )
   expect_equal(
-    convex_hull(reward = rbind(c(13, 13, 13, 14, 14)), cost = rbind(c(1, 1, 1, 2, 2)), ix.order = rbind(c(1, 2, 3, 4, 5))),
+    convex_hull(reward = rbind(c(13, 13, 13, 14, 14)), cost = rbind(c(1, 1, 1, 2, 2))),
     list(c(1, 4))
-  )
-  expect_equal(
-    convex_hull(reward = rbind(c(13, 13, 13, 14, 14)), cost = rbind(c(1, 1, 1, 2, 2)), ix.order = rbind(c(3, 2, 1, 5, 4))),
-    list(c(3, 5))
   )
 
   # basic invariances

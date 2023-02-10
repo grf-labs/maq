@@ -73,17 +73,8 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  # create a matrix of sort indices ordered by increasing cost
-  # the following is just a faster way of sorting K items n times, like
-  # `ix.order.slow <- t(apply(cost, 1, order))`
-  # by instead doing a grouped sort of size n * K.
-  # ix.order <- matrix(order(col(t(cost)), t(cost), -1 * t(reward)), ncol = ncol(cost), byrow = TRUE) -
-    # ncol(cost) * (row(cost) - 1)
-  ix.order <- matrix(order(col(t(cost)), t(cost)), ncol = ncol(cost), byrow = TRUE) -
-    ncol(cost) * (row(cost) - 1) - 1 # -1: C++ index
-
-  # TODO /n at the end istead avoid 2O(n*k)?
-  ret <- solver_rcpp(as.matrix(reward) / NROW(reward), as.matrix(cost) / NROW(cost), ix.order, sample.weights, clusters,
+  # TODO /n at the end istead avoid 2 *O(n*k)?
+  ret <- solver_rcpp(as.matrix(reward) / NROW(reward), as.matrix(cost) / NROW(cost), sample.weights, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
 # browser()

@@ -25,7 +25,6 @@ class Data {
 public:
   Data(const double* data_reward,
        const double* data_cost,
-       const int* data_order,
        const double* data_weight,
        size_t num_rows,
        size_t num_cols) :
@@ -33,7 +32,6 @@ public:
       num_cols(num_cols),
       data_reward(data_reward),
       data_cost(data_cost),
-      data_order(data_order),
       data_weight(data_weight) {
     if (data_weight == nullptr) {
       this->has_weight = false;
@@ -57,13 +55,6 @@ public:
     return data_cost[col * num_rows + row];
   }
 
-  // Return the sample index of points in order of increasing cost.
-  // data_order should be a num_rows * num_cols array of the row-wise
-  // sort order of data_cost (0-indexed).
-  size_t get_order(size_t row, size_t col) const {
-    return data_order[col * num_rows + row];
-  }
-
   double get_weight(size_t row) const {
     if (!has_weight) {
       return 1.0;
@@ -79,7 +70,6 @@ public:
 private:
   const double* data_reward;
   const double* data_cost;
-  const int* data_order;
   const double* data_weight;
   bool has_weight;
 };

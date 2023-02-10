@@ -15,6 +15,7 @@
   along with maq. If not, see <http://www.gnu.org/licenses/>.
  #-------------------------------------------------------------------------------*/
 
+#include <numeric> // iota
 #include <vector>
 #include "convex_hull.h"
 
@@ -61,12 +62,22 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
 
 std::vector<std::vector<size_t>> convex_hull(const Data& data) {
   std::vector<std::vector<size_t>> R(data.num_rows);
+  std::vector<size_t> ordered_arms(data.num_cols);
+
   for (size_t sample = 0; sample < data.num_rows; sample++) {
     std::vector<size_t>& Ri = R[sample];
-    size_t first = data.get_order(sample, 0);
+
+    // Get sort order by increasing cost.
+    std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
+    // std::sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
+    std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
+      return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
+    });
+    // TODO push first NON-negative point on stack
+    size_t first = ordered_arms[0];
     Ri.push_back(first);
     for (size_t l = 1; l < data.num_cols; l++) {
-      size_t point_l = data.get_order(sample, l);
+      size_t point_l = ordered_arms[l];
       while (is_dominated(Ri, point_l, sample, data)) {
         Ri.pop_back(); // remove point_k
       }

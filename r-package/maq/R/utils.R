@@ -24,12 +24,8 @@ lp_solver = function(reward, cost, budget) {
        alloc.mat = matrix(lp.res$solution, nrow = nrow(reward), byrow = TRUE))
 }
 
-convex_hull = function(reward, cost, ix.order = NULL) {
-  if (is.null(ix.order)) {
-    ix.order = matrix(order(col(t(cost)), t(cost)), ncol = ncol(cost), byrow = TRUE) -
-      ncol(cost) * (row(cost) - 1)
-  }
-  ret = convex_hull_rcpp(reward, cost, ix.order - 1)
+convex_hull = function(reward, cost) {
+  ret = convex_hull_rcpp(reward, cost)
 
   lapply(ret[[1]], function(x) x + 1)
 }

@@ -25,7 +25,6 @@ using namespace maq;
 // [[Rcpp::export]]
 Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        const Rcpp::NumericMatrix& cost,
-                       const Rcpp::IntegerMatrix& order,
                        const Rcpp::NumericVector& sample_weights,
                        const std::vector<size_t>& clusters,
                        uint samples_per_cluster,
@@ -39,7 +38,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   if (sample_weights.size() > 0) {
     weights_ptr = sample_weights.begin();
   }
-  Data data(reward.begin(), cost.begin(), order.begin(), weights_ptr, num_rows, num_cols);
+  Data data(reward.begin(), cost.begin(), weights_ptr, num_rows, num_cols);
 
   MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
   MAQ maq(data, options);
@@ -68,11 +67,10 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
 // this function is only wrapped for testing purposes.
 // [[Rcpp::export]]
 Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
-                            const Rcpp::NumericMatrix& cost,
-                            const Rcpp::IntegerMatrix& order) {
+                            const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), cost.begin(), order.begin(), nullptr, num_rows, num_cols);
+  Data data(reward.begin(), cost.begin(), nullptr, num_rows, num_cols);
 
   return Rcpp::List::create(convex_hull(data));
 }
