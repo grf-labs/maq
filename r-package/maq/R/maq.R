@@ -42,7 +42,7 @@ maq <- function(reward,
   }
   # todo add wieights > 0 and say drop instead of giving wt =0...
 
-  if (is.null(clusters) || length(clusters) == 0) {
+  if (is.null(clusters)) {
     clusters <- vector(mode = "numeric", length = 0)
     samples.per.cluster <- 0
   } else {
