@@ -63,12 +63,12 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
 std::vector<std::vector<size_t>> convex_hull(const Data& data) {
   std::vector<std::vector<size_t>> R(data.num_rows);
   std::vector<size_t> ordered_arms(data.num_cols);
+  std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
 
   for (size_t sample = 0; sample < data.num_rows; sample++) {
     std::vector<size_t>& Ri = R[sample];
 
     // Get sort order by increasing cost
-    std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
     // std::sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
     std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
       return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
