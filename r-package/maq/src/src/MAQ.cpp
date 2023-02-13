@@ -109,6 +109,9 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start, size_t num_r
 }
 
 void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp) {
+  if (gain_interp.size() < 1) {
+    return;
+  }
   std::vector<double>& std_err = path_hat.first[2];
   size_t grid_len = path_hat.first[0].size();
 
