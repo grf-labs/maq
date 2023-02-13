@@ -118,7 +118,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
 
   for (size_t i = 0; i < grid_len; i++) {
     // Use Welford's algorithm to get numerically stable variance estimates in one pass.
-    double Mprev = -1;
+    double Mprev;
     double M;
     double Sprev = -1;
     double S;
@@ -132,7 +132,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
         continue;
       }
       n++;
-      if (Mprev == -1) {
+      if (Sprev == -1) {
         Mprev = val;
         Sprev = 0;
         continue;
