@@ -45,56 +45,18 @@ solution_path MAQ::fit() {
 
   this->R = convex_hull(data);
   auto path_hat = compute_path(samples, R, data, options.budget, false);
-  auto paths_hat = fit_paths();
+  auto gain_interp = fit_paths(path_hat);
 
-  // return path_hat;
+  size_t grid_len = path_hat.first[0].size();
 
-  // interpolation bootstrapped gain on \hat path's spend grid.
-  const std::vector<double>& grid = path_hat.first[0];
-  size_t grid_len = grid.size();
-  std::vector<std::vector<double>> gain_interp(paths_hat.size());
-
-  for (size_t b = 0; b < paths_hat.size(); b++) {
-    const std::vector<double>& grid_b = paths_hat[b].first[0];
-    const std::vector<double>& gain_b = paths_hat[b].first[1];
-    if (grid_b.size() < 1) {
-      continue;
-    }
-    std::vector<double>& interp = gain_interp[b];
-    interp.resize(grid_len);
-    size_t left = 0;
-    size_t right = grid_b.size() < 2 ? 0 : 1;
-
-    for (size_t i = 0; i < grid_len; i++) {
-      double val = grid[i];
-      // out of left range?
-      if (val < grid_b[left]) {
-        interp[i] = -1;
-        continue;
-      }
-      // update active interval?
-      while (right + 2 <= grid_b.size() && grid_b[left + 1] <= val) {
-        left++;
-        right++;
-      }
-      // out of right range?
-      if (val >= grid_b[right]) {
-        interp[i] = gain_b[right];
-        continue;
-      }
-      double y = gain_b[left] + (gain_b[right] - gain_b[left]) *
-                  (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
-      interp[i] = y;
-    }
-  }
-  // return path_hat;
   // std.errors
   std::vector<double>& std_err = path_hat.first[2];
   std_err.resize(grid_len);
   for (size_t i = 0; i < grid_len; i++) {
     size_t n = 0;
     double mu = 0;
-    for (size_t b = 0; b < paths_hat.size(); b++) {
+    // for (size_t b = 0; b < paths_hat.size(); b++) {
+    for (size_t b = 0; b < options.num_bootstrap; b++) {
       if (gain_interp[b].size() < 1) {
         continue;
       }
@@ -112,7 +74,8 @@ solution_path MAQ::fit() {
       continue;
     }
     double var = 0;
-    for (size_t b = 0; b < paths_hat.size(); b++) {
+    // for (size_t b = 0; b < paths_hat.size(); b++) {
+    for (size_t b = 0; b < options.num_bootstrap; b++) {
       if (gain_interp[b].size() < 1) {
         continue;
       }
@@ -130,14 +93,14 @@ solution_path MAQ::fit() {
   return path_hat;
 }
 
-std::vector<solution_path> MAQ::fit_paths() {
+std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat) {
   std::vector<uint> thread_ranges;
   split_sequence(thread_ranges, 0, static_cast<uint>(options.num_bootstrap - 1), options.num_threads);
 
-  std::vector<std::future<std::vector<solution_path>>> futures;
+  std::vector<std::future<std::vector<std::vector<double>>>> futures;
   futures.reserve(thread_ranges.size());
 
-  std::vector<solution_path> predictions;
+  std::vector<std::vector<double>> predictions;
   predictions.reserve(options.num_bootstrap);
 
   for (uint i = 0; i < thread_ranges.size() - 1; ++i) {
@@ -148,11 +111,12 @@ std::vector<solution_path> MAQ::fit_paths() {
                                  &MAQ::fit_paths_batch,
                                  this,
                                  start_index,
-                                 num_replicates_batch));
+                                 num_replicates_batch,
+                                 std::ref(path_hat)));
   }
 
   for (auto& future : futures) {
-    std::vector<solution_path> thread_predictions = future.get();
+    auto thread_predictions = future.get();
     predictions.insert(predictions.end(),
                        std::make_move_iterator(thread_predictions.begin()),
                        std::make_move_iterator(thread_predictions.end()));
@@ -161,11 +125,11 @@ std::vector<solution_path> MAQ::fit_paths() {
   return predictions;
 }
 
-std::vector<solution_path> MAQ::fit_paths_batch(size_t start, size_t num_replicates) {
+std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start, size_t num_replicates, const solution_path& path_hat) {
   std::mt19937_64 random_number_generator(options.random_seed + start);
   nonstd::uniform_int_distribution<uint> udist;
 
-  std::vector<solution_path> predictions;
+  std::vector<std::vector<double>> predictions;
   predictions.reserve(num_replicates);
 
   for (size_t b = 0; b < num_replicates; b++) {
@@ -179,10 +143,50 @@ std::vector<solution_path> MAQ::fit_paths_batch(size_t start, size_t num_replica
     // sampler.sample_from_clusters(samples, samples);
 
     auto path_b = compute_path(samples, R, data, options.budget, true);
-    predictions.push_back(std::move(path_b));
+    auto gain_b = interpolate_path(path_hat, path_b);
+    predictions.push_back(std::move(gain_b));
   }
 
   return predictions;
+}
+
+std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {
+  // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
+  const std::vector<double>& grid = path_hat.first[0];
+  std::vector<double> interp;
+
+  const std::vector<double>& grid_b = path_hat_b.first[0];
+  const std::vector<double>& gain_b = path_hat_b.first[1];
+  if (grid_b.size() < 1) {
+    return interp;
+  }
+  interp.resize(grid.size());
+
+  // initialize the interpolation interval
+  size_t left = 0;
+  size_t right = grid_b.size() < 2 ? 0 : 1;
+  for (size_t i = 0; i < grid.size(); i++) {
+    double val = grid[i];
+    // out of left range?
+    if (val < grid_b[left]) {
+      interp[i] = -1;
+      continue;
+    }
+    // update active interval?
+    while (right + 2 <= grid_b.size() && grid_b[left + 1] <= val) {
+      left++;
+      right++;
+    }
+    // out of right range?
+    if (val >= grid_b[right]) {
+      interp[i] = gain_b[right];
+      continue;
+    }
+    interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
+                  (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
+  }
+
+  return interp;
 }
 
 void MAQ::split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts) {
