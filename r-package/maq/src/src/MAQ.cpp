@@ -112,13 +112,17 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
   if (gain_interp.size() < 1) {
     return;
   }
-  std::vector<double>& std_err = path_hat.first[2];
   size_t grid_len = path_hat.first[0].size();
-
+  std::vector<double>& std_err = path_hat.first[2];
   std_err.resize(grid_len);
+
   for (size_t i = 0; i < grid_len; i++) {
+    // Use Welford's algorithm to get numerically stable variance estimates in one pass.
+    double Mprev = -1;
+    double M;
+    double Sprev = -1;
+    double S;
     size_t n = 0;
-    double mu = 0;
     for (size_t b = 0; b < gain_interp.size(); b++) {
       if (gain_interp[b].size() < 1) {
         continue;
@@ -127,29 +131,23 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
       if (val == -1) {
         continue;
       }
-      mu += val;
       n++;
+      if (Mprev == -1) {
+        Mprev = val;
+        Sprev = 0;
+        continue;
+      }
+      M = Mprev + (val - Mprev) / n;
+      S = Sprev + (val - Mprev) * (val - M);
+
+      Mprev = M;
+      Sprev = S;
     }
     if (n >= 2) {
-      mu /= n;
+      std_err[i] = sqrt(S / (n - 1));
     } else {
       std_err[i] = -1;
-      continue;
     }
-    double var = 0;
-    for (size_t b = 0; b < gain_interp.size(); b++) {
-      if (gain_interp[b].size() < 1) {
-        continue;
-      }
-      double val = gain_interp[b][i];
-      if (val == -1) {
-        continue;
-      }
-      var += (val - mu) * (val - mu);
-      // var += (val - mu) * (val - mu) / (n - 1);
-    }
-    var /= (n - 1);
-    std_err[i] = sqrt(var);
   }
 }
 
