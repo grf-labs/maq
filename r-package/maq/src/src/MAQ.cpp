@@ -36,10 +36,7 @@ MAQ::MAQ(const Data& data,
   this->sampling_options = grf::SamplingOptions(options.samples_per_cluster, options.clusters);
 }
 
-std::vector<solution_path> MAQ::fit() {
-  std::vector<solution_path> predictions;
-  predictions.reserve(options.num_bootstrap + 1);
-
+solution_path MAQ::fit() {
   std::vector<size_t> samples;
   samples.reserve(data.num_rows);
   for (size_t sample = 0; sample < data.num_rows; sample++) {
@@ -48,15 +45,9 @@ std::vector<solution_path> MAQ::fit() {
 
   this->R = convex_hull(data);
   auto path_hat = compute_path(samples, R, data, options.budget, false);
-  // predictions.push_back(std::move(path_hat));
-  predictions.push_back(path_hat);
-
   auto paths_hat = fit_paths();
-  // for (auto& elem : paths_hat) {
-  for (auto elem : paths_hat) {
-    // predictions.push_back(std::move(elem));
-    predictions.push_back(elem);
-  }
+
+  // return path_hat;
 
   // interpolation bootstrapped gain on \hat path's spend grid.
   const std::vector<double>& grid = path_hat.first[0];
@@ -76,37 +67,30 @@ std::vector<solution_path> MAQ::fit() {
 
     for (size_t i = 0; i < grid_len; i++) {
       double val = grid[i];
-      //  std::cout << "val: "<< val<<" , ";
       // out of left range?
       if (val < grid_b[left]) {
         interp[i] = -1;
         continue;
       }
       // update active interval?
-      // while (right + 1 <= grid_b.size() && grid_b[left + 1] <= val) {
       while (right + 2 <= grid_b.size() && grid_b[left + 1] <= val) {
         left++;
         right++;
       }
       // out of right range?
       if (val >= grid_b[right]) {
-      // if (val >= grid_b[right - 1]) {
-        // std::cout << gain_b[right] <<" , ";
-        // std::cout << right <<" , ";
         interp[i] = gain_b[right];
         continue;
       }
       double y = gain_b[left] + (gain_b[right] - gain_b[left]) *
                   (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
       interp[i] = y;
-      // std::cout << y<<" , ";
     }
   }
+  // return path_hat;
   // std.errors
-  // std::vector<double>& std_err = path_hat.first[2];
-  std::vector<double>& std_err = predictions[0].first[2];
+  std::vector<double>& std_err = path_hat.first[2];
   std_err.resize(grid_len);
-  // std::cout << grid_len<<" , ";
   for (size_t i = 0; i < grid_len; i++) {
     size_t n = 0;
     double mu = 0;
@@ -115,7 +99,6 @@ std::vector<solution_path> MAQ::fit() {
         continue;
       }
       double val = gain_interp[b][i];
-      // std::cout << val <<" , ";
       if (val == -1) {
         continue;
       }
@@ -128,7 +111,6 @@ std::vector<solution_path> MAQ::fit() {
       std_err[i] = -1;
       continue;
     }
-
     double var = 0;
     for (size_t b = 0; b < paths_hat.size(); b++) {
       if (gain_interp[b].size() < 1) {
@@ -145,7 +127,7 @@ std::vector<solution_path> MAQ::fit() {
     std_err[i] = sqrt(var);
   }
 
-  return predictions;
+  return path_hat;
 }
 
 std::vector<solution_path> MAQ::fit_paths() {

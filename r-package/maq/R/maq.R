@@ -77,36 +77,9 @@ maq <- function(reward,
   ret <- solver_rcpp(as.matrix(reward) / NROW(reward), as.matrix(cost) / NROW(cost), sample.weights, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
-# browser()
-# print(system.time({
-  if (length(ret[["t0"]]$spend) > 5) { # TODO
-    t.grid <- lapply(seq_len(R), function(i) {
-      approx(ret[["t"]]$spend[[i]],
-             ret[["t"]]$gain[[i]],
-             ret[["t0"]]$spend,
-             rule = 1:2, #should really be gain[min]... on left?
-             ties = "ordered")$y
-    })
-  } else {
-    t.grid <- list()
-  }
-  if (length(t.grid) > 0) {
-    t.mat <- matrix(unlist(t.grid), R, length(t.grid[[1]]), byrow = TRUE)
-    if (requireNamespace("matrixStats", quietly = TRUE)) {
-      std.err <- matrixStats::colSds(t.mat, na.rm = TRUE) # TODO eps
-    } else {
-      std.err <- apply(t.mat, 2, function(x) sd(x, na.rm = TRUE))
-    }
-  } else {
-    std.err <- 0
-  }
-# }))
-
   output <- list()
   class(output) <- "maq"
   output[["_path"]] <- ret[["t0"]]
-  output[["_path"]][["std.err2"]] <- std.err
-  output[["_path.bs"]] <- ret[["t"]]
   output[["seed"]] <- seed
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
   output[["budget"]] <- budget

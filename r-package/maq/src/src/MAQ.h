@@ -33,7 +33,7 @@ class MAQ {
   public:
   MAQ(const Data& data, const MAQOptions& options);
 
-  std::vector<solution_path> fit();
+  solution_path fit();
 
   private:
   std::vector<solution_path> fit_paths();

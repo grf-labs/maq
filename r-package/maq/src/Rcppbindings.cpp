@@ -45,24 +45,13 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   auto ret = maq.fit();
 
   Rcpp::List t0;
-  t0.push_back(ret[0].first[0], "spend");
-  t0.push_back(ret[0].first[1], "gain");
-  t0.push_back(ret[0].first[2], "std.err");
-  t0.push_back(ret[0].second[0], "ipath");
-  t0.push_back(ret[0].second[1], "kpath");
+  t0.push_back(ret.first[0], "spend");
+  t0.push_back(ret.first[1], "gain");
+  t0.push_back(ret.first[2], "std.err");
+  t0.push_back(ret.second[0], "ipath");
+  t0.push_back(ret.second[1], "kpath");
 
-  Rcpp::List t;
-  Rcpp::List t_spend;
-  Rcpp::List t_gain;
-  for (size_t b = 1; b < ret.size(); b++) {
-    t_spend.push_back(ret[b].first[0]);
-    t_gain.push_back(ret[b].first[1]);
-  }
-  t.push_back(t_spend, "spend");
-  t.push_back(t_gain, "gain");
-
-  return Rcpp::List::create(Rcpp::Named("t0") = t0,
-                            Rcpp::Named("t") = t);
+  return Rcpp::List::create(Rcpp::Named("t0") = t0);
 }
 
 // this function is only wrapped for testing purposes.
