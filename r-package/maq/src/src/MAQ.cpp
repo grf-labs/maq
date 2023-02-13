@@ -43,52 +43,10 @@ solution_path MAQ::fit() {
     samples.push_back(sample);
   }
 
-  this->R = convex_hull(data);
+  this->R = convex_hull(data); // no
   auto path_hat = compute_path(samples, R, data, options.budget, false);
   auto gain_interp = fit_paths(path_hat);
-
-  size_t grid_len = path_hat.first[0].size();
-
-  // std.errors
-  std::vector<double>& std_err = path_hat.first[2];
-  std_err.resize(grid_len);
-  for (size_t i = 0; i < grid_len; i++) {
-    size_t n = 0;
-    double mu = 0;
-    // for (size_t b = 0; b < paths_hat.size(); b++) {
-    for (size_t b = 0; b < options.num_bootstrap; b++) {
-      if (gain_interp[b].size() < 1) {
-        continue;
-      }
-      double val = gain_interp[b][i];
-      if (val == -1) {
-        continue;
-      }
-      mu += val;
-      n++;
-    }
-    if (n >= 2) {
-      mu /= n;
-    } else {
-      std_err[i] = -1;
-      continue;
-    }
-    double var = 0;
-    // for (size_t b = 0; b < paths_hat.size(); b++) {
-    for (size_t b = 0; b < options.num_bootstrap; b++) {
-      if (gain_interp[b].size() < 1) {
-        continue;
-      }
-      double val = gain_interp[b][i];
-      if (val == -1) {
-        continue;
-      }
-      var += (val - mu) * (val - mu);
-      // var += (val - mu) * (val - mu) / (n - 1);
-    }
-    var /= (n - 1);
-    std_err[i] = sqrt(var);
-  }
+  compute_std_err(path_hat, gain_interp);
 
   return path_hat;
 }
@@ -148,6 +106,48 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start, size_t num_r
   }
 
   return predictions;
+}
+
+void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp) {
+  std::vector<double>& std_err = path_hat.first[2];
+  size_t grid_len = path_hat.first[0].size();
+
+  std_err.resize(grid_len);
+  for (size_t i = 0; i < grid_len; i++) {
+    size_t n = 0;
+    double mu = 0;
+    for (size_t b = 0; b < gain_interp.size(); b++) {
+      if (gain_interp[b].size() < 1) {
+        continue;
+      }
+      double val = gain_interp[b][i];
+      if (val == -1) {
+        continue;
+      }
+      mu += val;
+      n++;
+    }
+    if (n >= 2) {
+      mu /= n;
+    } else {
+      std_err[i] = -1;
+      continue;
+    }
+    double var = 0;
+    for (size_t b = 0; b < gain_interp.size(); b++) {
+      if (gain_interp[b].size() < 1) {
+        continue;
+      }
+      double val = gain_interp[b][i];
+      if (val == -1) {
+        continue;
+      }
+      var += (val - mu) * (val - mu);
+      // var += (val - mu) * (val - mu) / (n - 1);
+    }
+    var /= (n - 1);
+    std_err[i] = sqrt(var);
+  }
 }
 
 std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {

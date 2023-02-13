@@ -40,6 +40,8 @@ class MAQ {
 
   std::vector<std::vector<double>> fit_paths_batch(size_t start_index, size_t num_replicates, const solution_path& path_hat);
 
+  void compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp);
+
   std::vector<double> interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b);
 
   void split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts);
