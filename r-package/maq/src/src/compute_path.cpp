@@ -49,7 +49,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
                            const Data& data,
                            double budget,
                            bool bootstrap) {
-  std::vector<std::vector<double>> spend_gain(2);
+  std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
   std::vector<std::vector<size_t>> i_k_path(2);
 
   std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one.

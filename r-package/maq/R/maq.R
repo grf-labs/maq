@@ -84,7 +84,7 @@ maq <- function(reward,
       approx(ret[["t"]]$spend[[i]],
              ret[["t"]]$gain[[i]],
              ret[["t0"]]$spend,
-             rule = 2, #should really be gain[min]... on left?
+             rule = 1:2, #should really be gain[min]... on left?
              ties = "ordered")$y
     })
   } else {
@@ -93,9 +93,9 @@ maq <- function(reward,
   if (length(t.grid) > 0) {
     t.mat <- matrix(unlist(t.grid), R, length(t.grid[[1]]), byrow = TRUE)
     if (requireNamespace("matrixStats", quietly = TRUE)) {
-      std.err <- matrixStats::colSds(t.mat) # TODO eps
+      std.err <- matrixStats::colSds(t.mat, na.rm = TRUE) # TODO eps
     } else {
-      std.err <- apply(t.mat, 2, sd)
+      std.err <- apply(t.mat, 2, function(x) sd(x, na.rm = TRUE))
     }
   } else {
     std.err <- 0
@@ -105,7 +105,7 @@ maq <- function(reward,
   output <- list()
   class(output) <- "maq"
   output[["_path"]] <- ret[["t0"]]
-  output[["_path"]][["std.err"]] <- std.err
+  output[["_path"]][["std.err2"]] <- std.err
   output[["_path.bs"]] <- ret[["t"]]
   output[["seed"]] <- seed
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
