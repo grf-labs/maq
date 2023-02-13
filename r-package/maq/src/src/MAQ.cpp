@@ -149,6 +149,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
       std_err[i] = -1;
     }
   }
+
 }
 
 std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {
