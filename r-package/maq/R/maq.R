@@ -105,11 +105,34 @@ maq <- function(reward,
 #' @export
 predict.maq <- function(object,
                         spend,
+                        type = c("gain", "pi.matrix"),
                         ...) {
+  type <- match.arg(type)
   ## nearest path index
-  path.idx <- findInterval(spend, object[["_path"]]$spend)
+  spend.grid <- object[["_path"]]$spend
+  path.idx <- findInterval(spend, spend.grid)
+
+  if (type == "gain") {
+    gain.path <- object[["_path"]]$gain
+    se.path <- object[["_path"]]$std.err
+    if (path.idx == 0) {
+      estimate <- NA
+      std.err <- NA
+    }
+    if (path.idx == length(spend.grid)) {
+      estimate <- spend.grid[path.idx]
+      std.err <- se.path[path.idx]
+    } else {
+      interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx ])
+      estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+      std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
+    }
+
+    return (c(estimate = estimate, std.err = std.err))
+  }
+
   if (path.idx == 0) {
-    path.idx <- 1
+    path.idx <- 1 # TODO
   }
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
