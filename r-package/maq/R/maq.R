@@ -118,8 +118,7 @@ predict.maq <- function(object,
     if (path.idx == 0) {
       estimate <- NA
       std.err <- NA
-    }
-    if (path.idx == length(spend.grid)) {
+    } else if (path.idx == length(spend.grid)) {
       estimate <- spend.grid[path.idx]
       std.err <- se.path[path.idx]
     } else {
