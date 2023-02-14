@@ -151,7 +151,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
     if (n >= 2) {
       std_err[i] = sqrt(S / (n - 1));
     } else {
-      std_err[i] = -1;
+      std_err[i] = 0; // define these to be zero.
     }
   }
 
