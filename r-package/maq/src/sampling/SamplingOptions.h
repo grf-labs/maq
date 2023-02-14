@@ -18,6 +18,7 @@
 #ifndef GRF_SAMPLINGOPTIONS_H
 #define GRF_SAMPLINGOPTIONS_H
 
+#include <cstddef>
 #include <vector>
 
 namespace grf {
