@@ -15,6 +15,7 @@
   along with maq. If not, see <http://www.gnu.org/licenses/>.
  #-------------------------------------------------------------------------------*/
 
+#include <cmath>
 #include <queue>
 #include <vector>
 
