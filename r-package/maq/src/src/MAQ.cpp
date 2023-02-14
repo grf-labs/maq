@@ -25,7 +25,7 @@
 #include "sampling/SamplingOptions.h"
 #include "sampling/RandomSampler.h"
 
-#include<iostream>
+// #include<iostream>
 
 namespace maq {
 
@@ -43,15 +43,16 @@ solution_path MAQ::fit() {
     samples.push_back(sample);
   }
 
-  this->R = convex_hull(data); // no
+  auto R = convex_hull(data);
   auto path_hat = compute_path(samples, R, data, options.budget, false);
-  auto gain_interp = fit_paths(path_hat);
+  auto gain_interp = fit_paths(path_hat, R);
   compute_std_err(path_hat, gain_interp);
 
   return path_hat;
 }
 
-std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat) {
+std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat,
+                                                const std::vector<std::vector<size_t>>& R) {
   std::vector<uint> thread_ranges;
   split_sequence(thread_ranges, 0, static_cast<uint>(options.num_bootstrap - 1), options.num_threads);
 
@@ -70,7 +71,8 @@ std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat) {
                                  this,
                                  start_index,
                                  num_replicates_batch,
-                                 std::ref(path_hat)));
+                                 std::ref(path_hat),
+                                 std::ref(R)));
   }
 
   for (auto& future : futures) {
@@ -83,7 +85,10 @@ std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat) {
   return predictions;
 }
 
-std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start, size_t num_replicates, const solution_path& path_hat) {
+std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
+                                                      size_t num_replicates,
+                                                      const solution_path& path_hat,
+                                                      const std::vector<std::vector<size_t>>& R) {
   std::mt19937_64 random_number_generator(options.random_seed + start);
   nonstd::uniform_int_distribution<uint> udist;
 

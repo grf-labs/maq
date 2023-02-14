@@ -36,9 +36,10 @@ class MAQ {
   solution_path fit();
 
   private:
-  std::vector<std::vector<double>> fit_paths(const solution_path& path_hat);
+  std::vector<std::vector<double>> fit_paths(const solution_path& path_hat, const std::vector<std::vector<size_t>>& R);
 
-  std::vector<std::vector<double>> fit_paths_batch(size_t start_index, size_t num_replicates, const solution_path& path_hat);
+  std::vector<std::vector<double>> fit_paths_batch(size_t start_index, size_t num_replicates, const solution_path& path_hat,
+                                                   const std::vector<std::vector<size_t>>& R);
 
   void compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp);
 
@@ -49,7 +50,6 @@ class MAQ {
   Data data;
   MAQOptions options;
   grf::SamplingOptions sampling_options;
-  std::vector<std::vector<size_t>> R;
 };
 
 } // namespace maq
