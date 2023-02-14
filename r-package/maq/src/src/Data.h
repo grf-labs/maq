@@ -18,6 +18,8 @@
 #ifndef MAQ_DATA_H
 #define MAQ_DATA_H
 
+#include <cstddef>
+
 namespace maq {
 
 // Data wrapper for column major storage
