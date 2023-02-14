@@ -79,7 +79,7 @@ maq <- function(reward,
 
   output <- list()
   class(output) <- "maq"
-  output[["_path"]] <- ret[["t0"]]
+  output[["_path"]] <- ret
   output[["seed"]] <- seed
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
   output[["budget"]] <- budget

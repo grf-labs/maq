@@ -44,14 +44,14 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   MAQ maq(data, options);
   auto ret = maq.fit();
 
-  Rcpp::List t0;
-  t0.push_back(ret.first[0], "spend");
-  t0.push_back(ret.first[1], "gain");
-  t0.push_back(ret.first[2], "std.err");
-  t0.push_back(ret.second[0], "ipath");
-  t0.push_back(ret.second[1], "kpath");
+  Rcpp::List res;
+  res.push_back(ret.first[0], "spend");
+  res.push_back(ret.first[1], "gain");
+  res.push_back(ret.first[2], "std.err");
+  res.push_back(ret.second[0], "ipath");
+  res.push_back(ret.second[1], "kpath");
 
-  return Rcpp::List::create(Rcpp::Named("t0") = t0);
+  return res;
 }
 
 // this function is only wrapped for testing purposes.
