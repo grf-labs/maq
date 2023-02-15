@@ -119,7 +119,7 @@ predict.maq <- function(object,
       estimate <- 0
       std.err <- 0
     } else if (path.idx == length(spend.grid)) {
-      estimate <- spend.grid[path.idx]
+      estimate <- gain.path[path.idx]
       std.err <- se.path[path.idx]
     } else {
       interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
