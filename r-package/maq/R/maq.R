@@ -116,8 +116,8 @@ predict.maq <- function(object,
     gain.path <- object[["_path"]]$gain
     se.path <- object[["_path"]]$std.err
     if (path.idx == 0) {
-      estimate <- NA
-      std.err <- NA
+      estimate <- 0
+      std.err <- 0
     } else if (path.idx == length(spend.grid)) {
       estimate <- spend.grid[path.idx]
       std.err <- se.path[path.idx]
@@ -131,7 +131,7 @@ predict.maq <- function(object,
   }
 
   if (path.idx == 0) {
-    path.idx <- 1 # TODO
+    return (sparseMatrix(i = NULL, j = NULL, dims = object[["dim"]]))
   }
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
