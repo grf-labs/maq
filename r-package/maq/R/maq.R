@@ -131,13 +131,13 @@ predict.maq <- function(object,
   }
 
   if (path.idx == 0) {
-    return (sparseMatrix(i = NULL, j = NULL, dims = object[["dim"]]))
+    return (sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
   }
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
   ix <- !duplicated(ipath, fromLast = TRUE)
 
-  Matrix::sparseMatrix(ipath[ix], kpath[ix], dims = object[["dim"]])
+  Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
 }
 
 #' Get estimates of
