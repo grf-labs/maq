@@ -18,7 +18,6 @@
 #include <Rcpp.h>
 
 #include "MAQ.h"
-#include "convex_hull.h"
 
 using namespace maq;
 
@@ -54,6 +53,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   return res;
 }
 
+#include "convex_hull.h"
 // this function is only wrapped for testing purposes.
 // [[Rcpp::export]]
 Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
