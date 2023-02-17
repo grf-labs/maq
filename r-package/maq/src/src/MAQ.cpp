@@ -146,7 +146,7 @@ std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const s
       continue;
     }
     gain_b_interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
-                  (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
+                        (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
   }
 
   return gain_b_interp;
