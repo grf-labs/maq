@@ -127,7 +127,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
     double M;
     double Sprev = -1;
     double S;
-    size_t n = 0;
+    double n = 0;
     for (size_t b = 0; b < gain_interp.size(); b++) {
       if (gain_interp[b].size() < 1) {
         continue;
