@@ -152,11 +152,11 @@ std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const s
   return gain_b_interp;
 }
 
-void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp) {
+void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_bs) {
   size_t grid_len = path_hat.first[0].size();
   std::vector<double>& std_err = path_hat.first[2];
   std_err.resize(grid_len);
-  if (gain_interp.size() < 2) {
+  if (gain_bs.size() < 2) {
     return;
   }
 
@@ -167,11 +167,11 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
     double Sprev = -1;
     double S;
     double n = 0;
-    for (size_t b = 0; b < gain_interp.size(); b++) {
-      if (gain_interp[b].size() < 1) {
+    for (size_t b = 0; b < gain_bs.size(); b++) {
+      if (gain_bs[b].size() < 1) {
         continue;
       }
-      double val = gain_interp[b][i];
+      double val = gain_bs[b][i];
       if (val == -1) {
         continue;
       }
