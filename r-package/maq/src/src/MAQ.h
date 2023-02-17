@@ -49,7 +49,7 @@ class MAQ {
                                        const solution_path& path_hat_b);
 
   void compute_std_err(solution_path& path_hat,
-                       const std::vector<std::vector<double>>& gain_interp);
+                       const std::vector<std::vector<double>>& gain_bs);
 
   void split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts);
 
