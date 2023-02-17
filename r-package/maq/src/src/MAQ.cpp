@@ -113,6 +113,45 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
   return predictions;
 }
 
+std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {
+  // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
+  const std::vector<double>& grid = path_hat.first[0];
+  std::vector<double> interp;
+
+  const std::vector<double>& grid_b = path_hat_b.first[0];
+  const std::vector<double>& gain_b = path_hat_b.first[1];
+  if (grid_b.size() < 1) {
+    return interp;
+  }
+  interp.resize(grid.size());
+
+  // initialize the interpolation interval
+  size_t left = 0;
+  size_t right = grid_b.size() < 2 ? 0 : 1;
+  for (size_t i = 0; i < grid.size(); i++) {
+    double val = grid[i];
+    // out of left range?
+    if (val < grid_b[left]) {
+      interp[i] = -1;
+      continue;
+    }
+    // update active interval?
+    while (right + 2 <= grid_b.size() && grid_b[left + 1] <= val) {
+      left++;
+      right++;
+    }
+    // out of right range?
+    if (val >= grid_b[right]) {
+      interp[i] = gain_b[right];
+      continue;
+    }
+    interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
+                  (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
+  }
+
+  return interp;
+}
+
 void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp) {
   size_t grid_len = path_hat.first[0].size();
   std::vector<double>& std_err = path_hat.first[2];
@@ -156,45 +195,6 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
     }
   }
 
-}
-
-std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {
-  // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
-  const std::vector<double>& grid = path_hat.first[0];
-  std::vector<double> interp;
-
-  const std::vector<double>& grid_b = path_hat_b.first[0];
-  const std::vector<double>& gain_b = path_hat_b.first[1];
-  if (grid_b.size() < 1) {
-    return interp;
-  }
-  interp.resize(grid.size());
-
-  // initialize the interpolation interval
-  size_t left = 0;
-  size_t right = grid_b.size() < 2 ? 0 : 1;
-  for (size_t i = 0; i < grid.size(); i++) {
-    double val = grid[i];
-    // out of left range?
-    if (val < grid_b[left]) {
-      interp[i] = -1;
-      continue;
-    }
-    // update active interval?
-    while (right + 2 <= grid_b.size() && grid_b[left + 1] <= val) {
-      left++;
-      right++;
-    }
-    // out of right range?
-    if (val >= grid_b[right]) {
-      interp[i] = gain_b[right];
-      continue;
-    }
-    interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
-                  (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
-  }
-
-  return interp;
 }
 
 void MAQ::split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts) {
