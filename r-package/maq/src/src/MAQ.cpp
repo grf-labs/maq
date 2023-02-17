@@ -45,8 +45,8 @@ solution_path MAQ::fit() {
 
   auto R = convex_hull(data);
   auto path_hat = compute_path(samples, R, data, options.budget, false);
-  auto gain_interp = fit_paths(path_hat, R);
-  compute_std_err(path_hat, gain_interp);
+  auto gain_bs = fit_paths(path_hat, R);
+  compute_std_err(path_hat, gain_bs);
 
   return path_hat;
 }
@@ -116,14 +116,14 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
 std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b) {
   // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
   const std::vector<double>& grid = path_hat.first[0];
-  std::vector<double> interp;
+  std::vector<double> gain_b_interp;
 
   const std::vector<double>& grid_b = path_hat_b.first[0];
   const std::vector<double>& gain_b = path_hat_b.first[1];
   if (grid_b.size() < 1) {
-    return interp;
+    return gain_b_interp;
   }
-  interp.resize(grid.size());
+  gain_b_interp.resize(grid.size());
 
   // initialize the interpolation interval
   size_t left = 0;
@@ -132,7 +132,7 @@ std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const s
     double val = grid[i];
     // out of left range?
     if (val < grid_b[left]) {
-      interp[i] = -1;
+      gain_b_interp[i] = -1;
       continue;
     }
     // update active interval?
@@ -142,14 +142,14 @@ std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const s
     }
     // out of right range?
     if (val >= grid_b[right]) {
-      interp[i] = gain_b[right];
+      gain_b_interp[i] = gain_b[right];
       continue;
     }
-    interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
+    gain_b_interp[i] = gain_b[left] + (gain_b[right] - gain_b[left]) *
                   (val - grid_b[left]) / (grid_b[right] - grid_b[left]);
   }
 
-  return interp;
+  return gain_b_interp;
 }
 
 void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp) {
