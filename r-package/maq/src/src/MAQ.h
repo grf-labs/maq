@@ -31,19 +31,25 @@ typedef unsigned int uint;
 
 class MAQ {
   public:
-  MAQ(const Data& data, const MAQOptions& options);
+  MAQ(const Data& data,
+      const MAQOptions& options);
 
   solution_path fit();
 
   private:
-  std::vector<std::vector<double>> fit_paths(const solution_path& path_hat, const std::vector<std::vector<size_t>>& R);
+  std::vector<std::vector<double>> fit_paths(const solution_path& path_hat,
+                                             const std::vector<std::vector<size_t>>& R);
 
-  std::vector<std::vector<double>> fit_paths_batch(size_t start_index, size_t num_replicates, const solution_path& path_hat,
+  std::vector<std::vector<double>> fit_paths_batch(size_t start_index,
+                                                   size_t num_replicates,
+                                                   const solution_path& path_hat,
                                                    const std::vector<std::vector<size_t>>& R);
 
-  void compute_std_err(solution_path& path_hat, const std::vector<std::vector<double>>& gain_interp);
+  std::vector<double> interpolate_path(const solution_path& path_hat,
+                                       const solution_path& path_hat_b);
 
-  std::vector<double> interpolate_path(const solution_path& path_hat, const solution_path& path_hat_b);
+  void compute_std_err(solution_path& path_hat,
+                       const std::vector<std::vector<double>>& gain_interp);
 
   void split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts);
 
