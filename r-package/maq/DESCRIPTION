@@ -4,8 +4,8 @@ Version: 0.1
 Authors@R: c(
     person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
     person("Han", "Wu", role = "aut"),
-    person("Stefan", "Wager", role = "aut"),
-    person("Susan", "Athey", role = "aut")
+    person("Susan", "Athey", role = "aut"),
+    person("Stefan", "Wager", role = "aut")
     )
 Description: Optimal treatment allocation under uncertain costs.
 License: GPL (>= 3)

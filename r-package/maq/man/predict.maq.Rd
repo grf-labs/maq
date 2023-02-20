@@ -4,7 +4,7 @@
 \alias{predict.maq}
 \title{Predict with a}
 \usage{
-\method{predict}{maq}(object, spend, ...)
+\method{predict}{maq}(object, spend, type = c("gain", "pi.matrix"), ...)
 }
 \arguments{
 \item{object}{The trained}
