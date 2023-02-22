@@ -37,10 +37,10 @@ maq <- function(reward,
   }
   if (is.null(sample.weights)) {
     sample.weights <- vector(mode = "numeric", length = 0)
-  } else if (length(sample.weights) != NROW(reward) || anyNA(sample.weights)) {
-    stop("sample.weights have incorrect length.")
+  } else if (length(sample.weights) != NROW(reward) || anyNA(sample.weights)
+               || any(sample.weights <= 0)) {
+    stop("sample.weights should have length=nrow(reward) and be non-missing and positive.")
   }
-  # todo add wieights > 0 and say drop instead of giving wt =0...
 
   if (is.null(clusters)) {
     clusters <- vector(mode = "numeric", length = 0)
