@@ -20,7 +20,7 @@
 maq <- function(reward,
                 cost,
                 budget,
-                R = 150,
+                R = 200,
                 sample.weights = NULL,
                 clusters = NULL,
                 num.threads = NULL,

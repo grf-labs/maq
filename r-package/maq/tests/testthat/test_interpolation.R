@@ -5,7 +5,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.205903885702216, 0.369486466680391)
@@ -17,7 +17,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.201908391751599, 0.333300896032722, 0.346248404255605,
@@ -30,7 +30,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     numeric(0)
@@ -42,7 +42,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.00117248354749005, 0.00202304720722708, 0.00343620045538749,
@@ -350,7 +350,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.000486294744158211, 0.00146001382527718, 0.00256055551048552,
