@@ -151,7 +151,7 @@ predict.maq <- function(object,
     stop("maq path is not fit beyond given spend level.")
   }
   spend.grid <- object[["_path"]]$spend
-  path.idx <- findInterval(spend, spend.grid)  # nearest path index
+  path.idx <- findInterval(spend, spend.grid) # nearest path index
 
   if (path.idx == 0) {
     return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
