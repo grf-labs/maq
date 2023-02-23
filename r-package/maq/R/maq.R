@@ -114,7 +114,7 @@ average_gain <- function(object,
     stop("maq path is not fit beyond given spend level.")
   }
   spend.grid <- object[["_path"]]$spend
-  path.idx <- findInterval(spend, spend.grid) # nearest path index
+  path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
 
   gain.path <- object[["_path"]]$gain
   se.path <- object[["_path"]]$std.err
@@ -157,16 +157,31 @@ predict.maq <- function(object,
     stop("maq path is not fit beyond given spend level.")
   }
   spend.grid <- object[["_path"]]$spend
-  path.idx <- findInterval(spend, spend.grid) # nearest path index
-
+  path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
   if (path.idx == 0) {
     return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
   }
+
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
   ix <- !duplicated(ipath, fromLast = TRUE)
+  pi.mat <- Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
+  if (path.idx == length(spend.grid)) {
+    return (pi.mat)
+  }
+  # fractional adjustment?
+  spend.diff <- spend - spend.grid[path.idx]
+  next.unit <- object[["_path"]]$ipath[path.idx + 1] + 1
+  next.arm <- object[["_path"]]$kpath[path.idx + 1] + 1
+  prev.arm <- Matrix::which(pi.mat[next.unit, ] == 1) # already assigned?
 
-  Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
+  fraction <- spend.diff / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+  pi.mat[next.unit, next.arm] <- fraction
+  if (length(prev.arm) > 0) {
+    pi.mat[next.unit, prev.arm] <- 1 - fraction
+  }
+
+  pi.mat
 }
 
 #' Get
