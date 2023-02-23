@@ -52,7 +52,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
   std::vector<std::vector<size_t>> i_k_path(3); // 3rd entry: complete path?
-  std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one.
+  std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one (faster than hash table)
 
   // Initialize PQ with initial enrollment
   std::priority_queue<QueueElement> pqueue;
@@ -86,20 +86,16 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
     double cost = weight * data.get_cost(top.sample, top.arm);
     double reward = weight * data.get_reward(top.sample, top.arm);
-    if (spend + cost <= budget || equal_doubles(spend + cost, budget, 1e-16)) {
-      spend += cost;
-      gain += reward;
-      spend_gain[0].push_back(spend);
-      spend_gain[1].push_back(gain);
-      if (!bootstrap) {
-        i_k_path[0].push_back(top.sample);
-        i_k_path[1].push_back(top.arm);
-      }
-      active_set[top.sample]++;
-    } else {
-      // TODO split decision
-      break;
+    double current_spend = spend + cost;
+    spend += cost;
+    gain += reward;
+    spend_gain[0].push_back(spend);
+    spend_gain[1].push_back(gain);
+    if (!bootstrap) {
+      i_k_path[0].push_back(top.sample);
+      i_k_path[1].push_back(top.arm);
     }
+    active_set[top.sample]++;
 
     // upgrade available?
     size_t next_entry = active_set[top.sample];
@@ -110,6 +106,16 @@ solution_path compute_path(const std::vector<size_t>& samples,
       double priority = (reward_upgrade - reward) / (cost_upgrade - cost);
       pqueue.emplace(top.sample, upgrade, priority);
     }
+
+    // have we reached maximum spend? if so stop at nearest integer solution (rounded up)
+    if (current_spend >= budget || equal_doubles(current_spend, budget, 1e-16)) {
+      break;
+    }
+
+  }
+
+  if (!bootstrap) {
+    i_k_path[2].push_back(pqueue.size() > 0 ? 1 : 0);
   }
 
   return std::make_pair(spend_gain, i_k_path);
