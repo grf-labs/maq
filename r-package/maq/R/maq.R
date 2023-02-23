@@ -26,7 +26,7 @@ maq <- function(reward,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
-        || anyNA(reward) || anyNA(cost) || NCOL(reward) < 2) {
+        || anyNA(reward) || anyNA(cost)) {
     stop("reward and cost should be matrices of equal size with no missing values.")
   }
   if (any(cost <= 0)) {
