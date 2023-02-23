@@ -6,6 +6,7 @@
 #' @param R todo
 #' @param sample.weights todo
 #' @param clusters todo
+#' @param tie.breaker todo
 #' @param num.threads todo
 #' @param seed todo
 #'
@@ -23,6 +24,7 @@ maq <- function(reward,
                 R = 200,
                 sample.weights = NULL,
                 clusters = NULL,
+                tie.breaker = NULL,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
@@ -64,6 +66,11 @@ maq <- function(reward,
     }
     samples.per.cluster <- max(cluster.size.counts)
   }
+  if (is.null(tie.breaker)) {
+    tie.breaker <- sample.int(NROW(reward))
+  } else if (length(tie.breaker) != NROW(reward)) {
+    stop("tie.breaker should have length=nrow(reward).")
+  }
   if (is.null(num.threads)) {
     num.threads <- 0
   } else if (num.threads < 0) {
@@ -73,7 +80,7 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  ret <- solver_rcpp(as.matrix(reward), as.matrix(cost), sample.weights, clusters,
+  ret <- solver_rcpp(as.matrix(reward), as.matrix(cost), sample.weights, tie.breaker, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
   output <- list()

@@ -25,20 +25,18 @@
 namespace maq {
 
 struct QueueElement {
-  QueueElement(size_t sample, size_t arm, double priority) :
-    sample(sample), arm(arm), priority(priority) {}
+  QueueElement(size_t sample, size_t arm, int tie_breaker, double priority) :
+    sample(sample), arm(arm), tie_breaker(tie_breaker), priority(priority) {}
 
   size_t sample;
   size_t arm;
+  int tie_breaker;
   double priority;
 };
 
-// break ties by sample
-// TODO actually break tie by cost THEN sample?!
-// EXACT ties??
 bool operator <(const QueueElement& lhs, const QueueElement& rhs) {
   return lhs.priority < rhs.priority
-    || (lhs.priority == rhs.priority && lhs.sample > rhs.sample);
+    || (lhs.priority == rhs.priority && lhs.tie_breaker > rhs.tie_breaker);
 }
 
 bool equal_doubles(double first, double second, double epsilon) {
@@ -52,15 +50,16 @@ solution_path compute_path(const std::vector<size_t>& samples,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
   std::vector<std::vector<size_t>> i_k_path(3); // 3rd entry: complete path?
-  std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one (faster than hash table)
+  std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one (vec faster than hash table)
 
   // Initialize PQ with initial enrollment
   std::priority_queue<QueueElement> pqueue;
   for (auto sample : samples) {
     if (!R[sample].empty()) {
       size_t arm = R[sample][0];
+      int tie_breaker = data.get_tie_breaker(sample);
       double priority = data.get_reward(sample, arm) / data.get_cost(sample, arm);
-      pqueue.emplace(sample, arm, priority);
+      pqueue.emplace(sample, arm, tie_breaker, priority);
     }
   }
 
@@ -104,7 +103,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
       double cost_upgrade = data.get_cost(top.sample, upgrade);
       double reward_upgrade = data.get_reward(top.sample, upgrade);
       double priority = (reward_upgrade - reward) / (cost_upgrade - cost);
-      pqueue.emplace(top.sample, upgrade, priority);
+      pqueue.emplace(top.sample, upgrade, top.tie_breaker, priority);
     }
 
     // have we reached maximum spend? if so stop at nearest integer solution (rounded up)

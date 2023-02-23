@@ -30,13 +30,15 @@ public:
   Data(const double* data_reward,
        const double* data_cost,
        const double* data_weight,
+       const int* data_tie_breaker,
        size_t num_rows,
        size_t num_cols) :
       num_rows(num_rows),
       num_cols(num_cols),
       data_reward(data_reward),
       data_cost(data_cost),
-      data_weight(data_weight) {
+      data_weight(data_weight),
+      data_tie_breaker(data_tie_breaker) {
     if (data_weight == nullptr) {
       this->has_weight = false;
     } else {
@@ -65,6 +67,10 @@ public:
     }
   }
 
+  int get_tie_breaker(size_t row) const {
+    return data_tie_breaker[row];
+  }
+
   size_t num_rows;
   size_t num_cols;
 
@@ -72,6 +78,7 @@ private:
   const double* data_reward;
   const double* data_cost;
   const double* data_weight;
+  const int* data_tie_breaker;
   bool has_weight;
   double weight_sum;
 };
