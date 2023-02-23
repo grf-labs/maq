@@ -38,9 +38,9 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
     weights_ptr = sample_weights.begin();
   }
   Data data(reward.begin(), cost.begin(), weights_ptr, num_rows, num_cols);
-
   MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
   MAQ maq(data, options);
+
   auto ret = maq.fit();
 
   Rcpp::List res;
@@ -54,8 +54,8 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   return res;
 }
 
-#include "convex_hull.h"
 // this function is only wrapped for testing purposes.
+#include "convex_hull.h"
 // [[Rcpp::export]]
 Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
