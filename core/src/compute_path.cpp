@@ -111,7 +111,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
     if (current_spend >= budget || equal_doubles(current_spend, budget, 1e-16)) {
       break;
     }
-
   }
 
   if (!bootstrap) {
