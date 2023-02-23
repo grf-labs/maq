@@ -37,6 +37,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   if (sample_weights.size() > 0) {
     weights_ptr = sample_weights.begin();
   }
+
   Data data(reward.begin(), cost.begin(), weights_ptr, num_rows, num_cols);
   MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
   MAQ maq(data, options);
