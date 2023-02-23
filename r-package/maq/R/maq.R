@@ -73,8 +73,7 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  # TODO /n at the end istead avoid 2 *O(n*k)?
-  ret <- solver_rcpp(as.matrix(reward) / NROW(reward), as.matrix(cost) / NROW(cost), sample.weights, clusters,
+  ret <- solver_rcpp(as.matrix(reward), as.matrix(cost), sample.weights, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
   output <- list()

@@ -23,6 +23,8 @@
 namespace maq {
 
 // Data wrapper for column major storage
+// Rewards can be any real number
+// Costs should be > 0
 class Data {
 public:
   Data(const double* data_reward,
@@ -40,21 +42,19 @@ public:
     } else {
       this->has_weight = true;
     }
-    // double weight_sum = 0;
-    // for (size_t i = 0; i < num_rows; i++) {
-    //   weight_sum += get_weight(i);
-    // }
-    // this->weight_sum = weight_sum;
+    double weight_sum = 0;
+    for (size_t i = 0; i < num_rows; i++) {
+      weight_sum += get_weight(i);
+    }
+    this->weight_sum = weight_sum;
   }
 
-  // Rewards can be any real number
   double get_reward(size_t row, size_t col) const {
-    return data_reward[col * num_rows + row];
+    return data_reward[col * num_rows + row] / weight_sum;
   }
 
-  // Costs should be > 0
   double get_cost(size_t row, size_t col) const {
-    return data_cost[col * num_rows + row];
+    return data_cost[col * num_rows + row] / weight_sum;;
   }
 
   double get_weight(size_t row) const {
@@ -67,13 +67,13 @@ public:
 
   size_t num_rows;
   size_t num_cols;
-  // double weight_sum;
 
 private:
   const double* data_reward;
   const double* data_cost;
   const double* data_weight;
   bool has_weight;
+  double weight_sum;
 };
 
 } // namespace maq
