@@ -93,46 +93,6 @@ maq <- function(reward,
   output
 }
 
-#' Get estimate of gain given a spend level.
-#'
-#' Gets estimates of
-#'
-#' @param object A maq object.
-#' @param spend The spend level.
-#'
-#' @return An estimate of average gain along with standard errors.
-#'
-#' @examples
-#' \donttest{
-#' # Train a
-#' }
-#'
-#' @export
-average_gain <- function(object,
-                         spend) {
-  if (!object[["_path"]]$complete.path && spend > object$budget) {
-    stop("maq path is not fit beyond given spend level.")
-  }
-  spend.grid <- object[["_path"]]$spend
-  path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
-
-  gain.path <- object[["_path"]]$gain
-  se.path <- object[["_path"]]$std.err
-  if (path.idx == 0) {
-    estimate <- 0
-    std.err <- 0
-  } else if (path.idx == length(spend.grid)) {
-    estimate <- gain.path[path.idx]
-    std.err <- se.path[path.idx]
-  } else {
-    interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
-    estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
-    std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
-  }
-
-  c(estimate = estimate, std.err = std.err)
-}
-
 #' Predict optimal treatment allocation.
 #'
 #' Gets optimal alloction matrix for a given spend level.
@@ -184,28 +144,44 @@ predict.maq <- function(object,
   pi.mat
 }
 
-#' Get
+#' Get estimate of gain given a spend level.
 #'
 #' Gets estimates of
 #'
 #' @param object A maq object.
-#' @param ... Additional arguments (currently ignored).
+#' @param spend The spend level.
 #'
-#' @return A thing
+#' @return An estimate of average gain along with standard errors.
 #'
 #' @examples
 #' \donttest{
 #' # Train a
 #' }
 #'
-#' @method summary maq
 #' @export
-summary.maq <- function(object,
-                        ...) {
+average_gain <- function(object,
+                         spend) {
+  if (!object[["_path"]]$complete.path && spend > object$budget) {
+    stop("maq path is not fit beyond given spend level.")
+  }
+  spend.grid <- object[["_path"]]$spend
+  path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
 
-  data.frame(spend = object[["_path"]]$spend,
-             gain = object[["_path"]]$gain,
-             std.err = object[["_path"]]$std.err)
+  gain.path <- object[["_path"]]$gain
+  se.path <- object[["_path"]]$std.err
+  if (path.idx == 0) {
+    estimate <- 0
+    std.err <- 0
+  } else if (path.idx == length(spend.grid)) {
+    estimate <- gain.path[path.idx]
+    std.err <- se.path[path.idx]
+  } else {
+    interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+    estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+    std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
+  }
+
+  c(estimate = estimate, std.err = std.err)
 }
 
 #' Print a maq object

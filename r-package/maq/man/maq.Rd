@@ -11,6 +11,7 @@ maq(
   R = 200,
   sample.weights = NULL,
   clusters = NULL,
+  tie.breaker = NULL,
   num.threads = NULL,
   seed = runif(1, 0, .Machine$integer.max)
 )
@@ -27,6 +28,8 @@ maq(
 \item{sample.weights}{todo}
 
 \item{clusters}{todo}
+
+\item{tie.breaker}{todo}
 
 \item{num.threads}{todo}
 
