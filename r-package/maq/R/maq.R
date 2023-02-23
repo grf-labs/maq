@@ -104,6 +104,9 @@ maq <- function(reward,
 #' @export
 average_gain <- function(object,
                          spend) {
+  if (!object[["_path"]]$complete.path && spend > object$budget) {
+    stop("maq path is not fit beyond given spend level.")
+  }
   spend.grid <- object[["_path"]]$spend
   path.idx <- findInterval(spend, spend.grid) # nearest path index
 
@@ -144,6 +147,9 @@ average_gain <- function(object,
 predict.maq <- function(object,
                         spend,
                         ...) {
+  if (!object[["_path"]]$complete.path && spend > object$budget) {
+    stop("maq path is not fit beyond given spend level.")
+  }
   spend.grid <- object[["_path"]]$spend
   path.idx <- findInterval(spend, spend.grid)  # nearest path index
 
