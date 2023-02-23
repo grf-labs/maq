@@ -71,7 +71,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
   while (pqueue.size() > 0 && spend < budget) {
     auto top = pqueue.top();
     pqueue.pop();
-    // TODO exact ties
 
     // assigned before?
     if (active_set[top.sample] > 0) {
@@ -115,7 +114,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
   }
 
-  // return std::make_pair(std::move(spend_gain), std::move(i_k_path));
   return std::make_pair(spend_gain, i_k_path);
 }
 
