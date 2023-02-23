@@ -87,14 +87,52 @@ maq <- function(reward,
   output
 }
 
-#' Predict with a
+#' Get estimate of gain given a spend level.
 #'
-#' Gets optimal alloc matrix for a given spend level.
+#' Gets estimates of
 #'
-#' @param object The trained
+#' @param object A maq object.
+#' @param spend The spend level.
+#'
+#' @return An estimate of average gain along with standard errors.
+#'
+#' @examples
+#' \donttest{
+#' # Train a
+#' }
+#'
+#' @export
+average_gain <- function(object,
+                         spend) {
+  spend.grid <- object[["_path"]]$spend
+  path.idx <- findInterval(spend, spend.grid) # nearest path index
+
+  gain.path <- object[["_path"]]$gain
+  se.path <- object[["_path"]]$std.err
+  if (path.idx == 0) {
+    estimate <- 0
+    std.err <- 0
+  } else if (path.idx == length(spend.grid)) {
+    estimate <- gain.path[path.idx]
+    std.err <- se.path[path.idx]
+  } else {
+    interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+    estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+    std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
+  }
+
+  c(estimate = estimate, std.err = std.err)
+}
+
+#' Predict optimal treatment allocation.
+#'
+#' Gets optimal alloction matrix for a given spend level.
+#'
+#' @param object A maq object.
+#' @param spend The spend level.
 #' @param ... Additional arguments (currently ignored).
 #'
-#' @return Vector of
+#' @return A sparse matrix.
 #'
 #' @examples
 #' \donttest{
@@ -105,33 +143,12 @@ maq <- function(reward,
 #' @export
 predict.maq <- function(object,
                         spend,
-                        type = c("gain", "pi.matrix"),
                         ...) {
-  type <- match.arg(type)
-  ## nearest path index
   spend.grid <- object[["_path"]]$spend
-  path.idx <- findInterval(spend, spend.grid)
-
-  if (type == "gain") {
-    gain.path <- object[["_path"]]$gain
-    se.path <- object[["_path"]]$std.err
-    if (path.idx == 0) {
-      estimate <- 0
-      std.err <- 0
-    } else if (path.idx == length(spend.grid)) {
-      estimate <- gain.path[path.idx]
-      std.err <- se.path[path.idx]
-    } else {
-      interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
-      estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
-      std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
-    }
-
-    return (c(estimate = estimate, std.err = std.err))
-  }
+  path.idx <- findInterval(spend, spend.grid)  # nearest path index
 
   if (path.idx == 0) {
-    return (sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
+    return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
   }
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
@@ -140,11 +157,11 @@ predict.maq <- function(object,
   Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
 }
 
-#' Get estimates of
+#' Get
 #'
-#' Gets es
+#' Gets estimates of
 #'
-#' @param object The traine
+#' @param object A maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A thing
@@ -154,23 +171,22 @@ predict.maq <- function(object,
 #' # Train a
 #' }
 #'
-#' @method coef maq
+#' @method summary maq
 #' @export
-coef.maq <- function(object,
-                     blabl,
-                     ...) {
-  ##
-  cbind(spend = object[["_path"]]$spend, gain = object[["_path"]]$gain)
+summary.maq <- function(object,
+                        ...) {
+
+  data.frame(spend = object[["_path"]]$spend,
+             gain = object[["_path"]]$gain,
+             std.err = object[["_path"]]$std.err)
 }
 
 #' Print a maq object
-#' @param x The
+#' @param x The maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @method print maq
 #' @export
 print.maq <- function(x, ...) {
-  cat("hey")
+  cat("MAQ object fit on", x$dim[1], "units and", x$dim[2], "arms with max budget", x$budget)
 }
-
-# summary

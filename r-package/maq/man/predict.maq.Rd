@@ -2,20 +2,22 @@
 % Please edit documentation in R/maq.R
 \name{predict.maq}
 \alias{predict.maq}
-\title{Predict with a}
+\title{Predict optimal treatment allocation.}
 \usage{
-\method{predict}{maq}(object, spend, type = c("gain", "pi.matrix"), ...)
+\method{predict}{maq}(object, spend, ...)
 }
 \arguments{
-\item{object}{The trained}
+\item{object}{A maq object.}
+
+\item{spend}{The spend level.}
 
 \item{...}{Additional arguments (currently ignored).}
 }
 \value{
-Vector of
+A sparse matrix.
 }
 \description{
-Gets optimal alloc matrix for a given spend level.
+Gets optimal alloction matrix for a given spend level.
 }
 \examples{
 \donttest{
