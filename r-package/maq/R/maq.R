@@ -190,7 +190,9 @@ average_gain <- function(object,
 #'
 #' @method print maq
 #' @export
-print.maq <- function(x, ...) {
+print.maq <- function(x,
+                      ...) {
+
   cat("MAQ object fit on", x$dim[1], "units and", x$dim[2], "arms with max budget", x$budget)
 }
 
