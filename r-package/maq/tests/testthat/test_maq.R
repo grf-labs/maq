@@ -14,6 +14,27 @@ test_that("maq works as expected", {
   Matrix::which(predict(mq, 10) > 0)
 })
 
+test_that("clustering works as expected", {
+  budget <- 1000
+  n <- 100
+  K <- 3
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+
+  rewardc <- rbind(reward, reward, reward, reward, reward)
+  costc <- rbind(cost, cost, cost, cost, cost)
+  clust <- rep(1:n, 5)
+
+  mq <- maq(reward, cost, budget)
+  mq.clust <- maq(rewardc, costc, budget, clusters = clust)
+
+  spends <- c(0.1, 0.25, 0.3, 0.35, 0.4, 0.5)
+  est <- lapply(spends, function(s) average_gain(mq, s))
+  est.clust <- lapply(spends, function(s) average_gain(mq.clust, s))
+
+  expect_equal(est, est.clust, tolerance = 0.075)
+})
+
 test_that("std errors works as expected", {
   # Get exact coverage of points on the curve
   budget <- 100
