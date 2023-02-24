@@ -15,7 +15,8 @@ RoxygenNote: 7.2.1
 LinkingTo:
     Rcpp
 Imports:
-    Matrix,
     Rcpp
+Depends:
+    Matrix
 Suggests:
     testthat (>= 3.0.0)
