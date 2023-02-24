@@ -105,4 +105,3 @@ test_that("arbitrary points off gain path is same as LP", {
   expect_equal(gain.mq, gain.lp, tolerance = 1e-12)
   expect_equal(gain.mq.alt, gain.lp, tolerance = 1e-12)
 })
-

@@ -207,6 +207,9 @@ plot.maq <- function(x,
   spend.grid <- x[["_path"]]$spend
   gain.grid <- x[["_path"]]$gain
   std.err.grid <- x[["_path"]]$std.err
+  if (length(spend.grid) < 1) {
+    return(invisible(x))
+  }
 
   plot.grid <- seq(1, length(spend.grid), by = max(floor(length(spend.grid) / 1000), 1))
   spend <- spend.grid[plot.grid]

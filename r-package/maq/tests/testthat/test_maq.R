@@ -1,4 +1,20 @@
-test_that("std errors work as expected", {
+test_that("maq works as expected", {
+  budget <- 1000
+  n <- 500
+  K <- 3
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+
+  mq <- maq(-abs(reward), cost, budget, R = 150)
+  plot(mq)
+  expect_true(all(predict(mq, 10) == 0))
+  expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
+
+  mq <- maq(reward[, 1], cost[, 1], budget, R = 150)
+  Matrix::which(predict(mq, 10) > 0)
+})
+
+test_that("std errors works as expected", {
   # Get exact coverage of points on the curve
   budget <- 100
   ntrue <- 100000
