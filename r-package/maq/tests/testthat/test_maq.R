@@ -12,6 +12,40 @@ test_that("maq works as expected", {
 
   mq <- maq(reward[, 1], cost[, 1], budget, R = 150)
   Matrix::which(predict(mq, 10) > 0)
+
+  # scale invariances
+  mq <- maq(reward, cost, budget, seed = 42)
+  mq.scale <- maq(reward * 1000, cost * 1000, budget, seed = 42)
+
+  expect_equal(mq[["_path"]]$spend, mq.scale[["_path"]]$spend / 1000, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$gain, mq.scale[["_path"]]$gain / 1000, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$std.err, mq.scale[["_path"]]$std.err / 1000, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$ipath, mq.scale[["_path"]]$ipath)
+  expect_equal(mq[["_path"]]$kpath, mq.scale[["_path"]]$kpath)
+})
+
+test_that("sample weighting works as expected", {
+  budget <- 1000
+  n <- 200
+  K <- 3
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+
+  # giving weight 2 ~same sample as duplicating
+  dupe <- sample(1:n, 100)
+  reward.dupe <- rbind(reward, reward[dupe, ])
+  cost.dupe <- rbind(cost, cost[dupe, ])
+  wts <- rep(1, n)
+  wts[dupe] <- 2
+
+  mq <- maq(reward, cost, budget, sample.weights = wts)
+  mq.dupe <- maq(reward.dupe, cost.dupe, budget)
+
+  spends <- c(0.1, 0.25, 0.3, 0.35, 0.4, 0.5)
+  est <- lapply(spends, function(s) average_gain(mq, s)[[1]])
+  est.dupe <- lapply(spends, function(s) average_gain(mq.dupe, s)[[1]])
+
+  expect_equal(est, est.dupe, tolerance = 0.05)
 })
 
 test_that("clustering works as expected", {
