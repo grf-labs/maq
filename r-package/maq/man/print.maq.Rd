@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{print.maq}
 \alias{print.maq}
-\title{Print a maq object}
+\title{Print a maq object.}
 \usage{
 \method{print}{maq}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{Additional arguments (currently ignored).}
 }
 \description{
-Print a maq object
+Print a maq object.
 }

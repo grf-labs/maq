@@ -184,7 +184,7 @@ average_gain <- function(object,
   c(estimate = estimate, std.err = std.err)
 }
 
-#' Print a maq object
+#' Print a maq object.
 #' @param x The maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
