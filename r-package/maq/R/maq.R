@@ -193,3 +193,27 @@ average_gain <- function(object,
 print.maq <- function(x, ...) {
   cat("MAQ object fit on", x$dim[1], "units and", x$dim[2], "arms with max budget", x$budget)
 }
+
+#' Plot the gain/spend curve.
+#' @param x The output of maq.
+#' @param ... Additional arguments passed to plot.
+#'
+#' @method plot maq
+#' @export
+plot.maq <- function(x,
+                     ...) {
+  spend.grid <- x[["_path"]]$spend
+  gain.grid <- x[["_path"]]$gain
+  std.err.grid <- x[["_path"]]$std.err
+
+  plot.grid <- seq(1, length(spend.grid), by = max(floor(length(spend.grid) / 1000), 1))
+  spend <- spend.grid[plot.grid]
+  gain <- gain.grid[plot.grid]
+  std.err <- std.err.grid[plot.grid]
+  lb <- gain - 1.96 * std.err
+  ub <- gain + 1.96 * std.err
+
+  plot(spend, gain, type = "l", ylim = c(min(lb), max(ub)), ...)
+  lines(spend, lb, lty = 2)
+  lines(spend, ub, lty = 2)
+}
