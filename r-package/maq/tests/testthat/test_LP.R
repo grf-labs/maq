@@ -1,4 +1,28 @@
-# TODO: paste lp_solver func in here
+# Solves the linear knapsack-type problem with a generic
+# LP solver for a given budget.
+lp_solver = function(reward, cost, budget) {
+  if (!requireNamespace("lpSolve", quietly = TRUE)) {
+    stop("package `lpSolve` required.")
+  }
+  K = ncol(reward)
+  x.coeffs = c(t(reward)) / NROW(reward)
+  A.mat = matrix(0, nrow(reward), length(x.coeffs))
+  start = 1
+  for (row in 1:nrow(A.mat)) {
+    end = start + K -1
+    A.mat[row, start:end] = 1
+    start = end + 1
+  }
+  c.coeff = c(t(cost)) / NROW(cost)
+  f.con = rbind(A.mat, c.coeff)
+  f.dir = rep("<=", nrow(f.con))
+  f.rhs = c(rep(1, nrow(A.mat)), budget)
+  lp.res = lpSolve::lp("max", x.coeffs, f.con, f.dir, f.rhs)
+
+  list(gain = sum(x.coeffs * lp.res$solution),
+       spend = sum(c.coeff * lp.res$solution),
+       alloc.mat = matrix(lp.res$solution, nrow = nrow(reward), byrow = TRUE))
+}
 
 test_that("gain solution path is same as LP solution (small problem)", {
   budget <- 1e6

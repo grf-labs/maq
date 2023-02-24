@@ -1,4 +1,8 @@
-# TODO paste cvx hull function here
+convex_hull = function(reward, cost) {
+  ret = convex_hull_rcpp(reward, cost, sample.int(NROW(reward)))
+
+  lapply(ret[[1]], function(x) x + 1)
+}
 
 test_that("convex hull works as expected", {
   # simple test cases
