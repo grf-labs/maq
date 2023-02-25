@@ -21,3 +21,4 @@ Depends:
 Suggests:
     testthat (>= 3.0.0)
 SystemRequirements: GNU make
+URL: https://github.com/grf-labs/maq
