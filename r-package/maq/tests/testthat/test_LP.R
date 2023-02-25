@@ -3,7 +3,7 @@ lp_solver = function(reward, cost, budget) {
   if (!requireNamespace("lpSolve", quietly = TRUE)) {
     stop("package `lpSolve` required.")
   }
-  library(lpSolve)
+  attachNamespace("lpSolve")
 
   K = ncol(reward)
   x.coeffs = c(t(reward)) / NROW(reward)
