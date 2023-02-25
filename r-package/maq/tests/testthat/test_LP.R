@@ -1,5 +1,5 @@
 # Solves the linear knapsack-type problem with a generic LP solver for a given spend.
-install.packages("lpSolve")
+install.packages("lpSolve", repos = "http://cran.us.r-project.org")
 attachNamespace("lpSolve")
 lp_solver = function(reward, cost, budget) {
   K = ncol(reward)
