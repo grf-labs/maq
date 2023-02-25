@@ -35,7 +35,7 @@ jobs:
       ./run.sh bootstrap
       ./run.sh install_deps
       ./run.sh install_r lpSolve
-      sudo Rscript -e "library('lpSolve')"
+      sudo Rscript -e "attachNamespace('lpSolve')"
     workingDirectory: r-package/maq
     displayName: Setup R
   - script: ./run.sh run_tests
