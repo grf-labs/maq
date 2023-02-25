@@ -5,6 +5,7 @@ tryCatch(
   },
   error = function(e) {
     install.packages("lpSolve", repos = "http://cran.us.r-project.org")
+    attachNamespace("lpSolve")
   }
 )
 lp_solver = function(reward, cost, budget) {
