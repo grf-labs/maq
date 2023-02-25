@@ -153,6 +153,12 @@ test_that("convex hull works as expected", {
     unlist(convex_hull(-abs(reward), cost)),
     numeric(0)
   )
+  # invariant to scale of each row
+  wts <- 10 * runif(n)
+  expect_equal(
+    convex_hull(reward, cost),
+    convex_hull(sweep(reward, 1, STATS = wts, FUN = "*"), sweep(cost, 1, STATS = wts, FUN = "*"))
+  )
 
   # the trivial 1-dim case
   expect_equal(
