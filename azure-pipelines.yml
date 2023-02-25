@@ -1,6 +1,6 @@
 trigger:
 - master
-
+# wp
 - job: R_package
   strategy:
     matrix:
