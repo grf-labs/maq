@@ -1,8 +1,14 @@
 # Solves the linear knapsack-type problem with a generic LP solver for a given spend.
-lp_solver = function(reward, cost, budget) {
-  if (!requireNamespace("lpSolve", quietly = TRUE)) {
-    stop("package `lpSolve` required.")
+tryCatch(
+  {
+    attachNamespace("lpSolve")
+  },
+  error = function(e) {
+    install.packages("lpSolve", repos = "http://cran.us.r-project.org")
+    attachNamespace("lpSolve")
   }
+)
+lp_solver = function(reward, cost, budget) {
   K = ncol(reward)
   x.coeffs = c(t(reward)) / NROW(reward)
   A.mat = matrix(0, nrow(reward), length(x.coeffs))
@@ -16,7 +22,7 @@ lp_solver = function(reward, cost, budget) {
   f.con = rbind(A.mat, c.coeff)
   f.dir = rep("<=", nrow(f.con))
   f.rhs = c(rep(1, nrow(A.mat)), budget)
-  lp.res = lpSolve::lp("max", x.coeffs, f.con, f.dir, f.rhs)
+  lp.res = lp("max", x.coeffs, f.con, f.dir, f.rhs)
 
   list(gain = sum(x.coeffs * lp.res$solution),
        spend = sum(c.coeff * lp.res$solution),

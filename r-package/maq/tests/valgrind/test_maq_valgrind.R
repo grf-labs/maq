@@ -3,8 +3,8 @@
 # R -d "valgrind --tool=memcheck --leak-check=full" --vanilla  < test_maq_valgrind.R
 library(maq)
 budget <- 1000
-n <- 500
-K <- 3
+n <- 1500
+K <- 10
 reward <- matrix(0.1 + rnorm(n * K), n, K)
 cost <- 0.05 + matrix(runif(n * K), n, K)
 wts <- runif(n)

@@ -211,6 +211,6 @@ plot.maq <- function(x,
   ub <- gain + 1.96 * std.err
 
   plot(spend, gain, type = "l", ylim = c(min(lb), max(ub)), ...)
-  lines(spend, lb, lty = 2)
-  lines(spend, ub, lty = 2)
+  graphics::lines(spend, lb, lty = 2)
+  graphics::lines(spend, ub, lty = 2)
 }
