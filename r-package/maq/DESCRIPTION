@@ -20,3 +20,4 @@ Depends:
     Matrix
 Suggests:
     testthat (>= 3.0.0)
+SystemRequirements: GNU make
