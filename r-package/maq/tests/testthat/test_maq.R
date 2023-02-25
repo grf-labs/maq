@@ -1,7 +1,7 @@
 test_that("maq works as expected", {
   budget <- 1000
   n <- 500
-  K <- 3
+  K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
@@ -35,7 +35,7 @@ test_that("maq works as expected", {
 test_that("sample weighting works as expected", {
   budget <- 1000
   n <- 200
-  K <- 3
+  K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
@@ -63,7 +63,7 @@ test_that("sample weighting works as expected", {
 test_that("clustering works as expected", {
   budget <- 1000
   n <- 100
-  K <- 3
+  K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
