@@ -1,7 +1,6 @@
 # Solves the linear knapsack-type problem with a generic LP solver for a given spend.
-# attachNamespace("lpSolve")
+attachNamespace("lpSolve")
 lp_solver = function(reward, cost, budget) {
-  library(lpSolve)
   K = ncol(reward)
   x.coeffs = c(t(reward)) / NROW(reward)
   A.mat = matrix(0, nrow(reward), length(x.coeffs))
