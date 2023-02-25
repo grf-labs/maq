@@ -33,12 +33,15 @@ maq <- function(reward,
         || anyNA(reward) || anyNA(cost)) {
     stop("reward and cost should be matrices of equal size with no missing values.")
   }
+
   if (any(cost <= 0)) {
     stop("Costs should be > 0.")
   }
+
   if (R < 0) {
     stop("The number of bootstrap replicates R should be a non-negative integer.")
   }
+
   if (is.null(sample.weights)) {
     sample.weights <- vector(mode = "numeric", length = 0)
   } else if (length(sample.weights) != NROW(reward) || anyNA(sample.weights)
@@ -70,16 +73,19 @@ maq <- function(reward,
     }
     samples.per.cluster <- max(cluster.size.counts)
   }
+
   if (is.null(tie.breaker)) {
     tie.breaker <- vector(mode = "integer", length = 0)
   } else if (length(tie.breaker) != NROW(reward)) {
     stop("tie.breaker should have length=nrow(reward).")
   }
+
   if (is.null(num.threads)) {
     num.threads <- 0
   } else if (num.threads < 0) {
     stop("num.threads should be a non-negative integer.")
   }
+
   if (!is.numeric(seed) || seed < 0) {
     stop("seed should be a non-negative integer.")
   }
