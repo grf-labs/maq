@@ -1,5 +1,5 @@
 Package: maq
-Title: Evaluate Costly Treatment Arms with Multi-Action QINI Curves.
+Title: Evaluate Costly Treatment Arms with Multi-Action QINI Curves
 Version: 0.1
 Authors@R: c(
     person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
