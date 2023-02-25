@@ -1,5 +1,5 @@
 convex_hull = function(reward, cost) {
-  ret = convex_hull_rcpp(reward, cost, sample.int(NROW(reward)))
+  ret = convex_hull_rcpp(reward, cost)
 
   lapply(ret[[1]], function(x) x + 1)
 }

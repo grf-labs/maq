@@ -6,7 +6,9 @@
 #' @param R todo
 #' @param sample.weights todo
 #' @param clusters todo
-#' @param tie.breaker todo
+#' @param tie.breaker An optional permutation of the the integers 1 to nrow(rewards) used to
+#'  break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
+#'  the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.
 #' @param num.threads todo
 #' @param seed todo
 #'
@@ -69,7 +71,7 @@ maq <- function(reward,
     samples.per.cluster <- max(cluster.size.counts)
   }
   if (is.null(tie.breaker)) {
-    tie.breaker <- sample.int(NROW(reward))
+    tie.breaker <- vector(mode = "integer", length = 0)
   } else if (length(tie.breaker) != NROW(reward)) {
     stop("tie.breaker should have length=nrow(reward).")
   }

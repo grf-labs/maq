@@ -38,8 +38,12 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   if (sample_weights.size() > 0) {
     weights_ptr = sample_weights.begin();
   }
+  const int* tie_breaker_ptr = nullptr;
+  if (tie_breaker.size() > 0) {
+    tie_breaker_ptr = tie_breaker.begin();
+  }
 
-  Data data(reward.begin(), cost.begin(), weights_ptr, tie_breaker.begin(), num_rows, num_cols);
+  Data data(reward.begin(), cost.begin(), weights_ptr, tie_breaker_ptr, num_rows, num_cols);
   MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
   MAQ maq(data, options);
 
@@ -60,11 +64,10 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
 #include "convex_hull.h"
 // [[Rcpp::export]]
 Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
-                            const Rcpp::NumericMatrix& cost,
-                            const Rcpp::IntegerVector& tie_breaker) {
+                            const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), cost.begin(), nullptr, tie_breaker.begin(), num_rows, num_cols);
+  Data data(reward.begin(), cost.begin(), nullptr, nullptr, num_rows, num_cols);
 
   return Rcpp::List::create(convex_hull(data));
 }

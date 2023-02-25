@@ -39,11 +39,8 @@ public:
       data_cost(data_cost),
       data_weight(data_weight),
       data_tie_breaker(data_tie_breaker) {
-    if (data_weight == nullptr) {
-      this->has_weight = false;
-    } else {
-      this->has_weight = true;
-    }
+    this->has_weight = data_weight == nullptr ? false : true;
+    this->has_tie_breaker = data_tie_breaker == nullptr ? false : true;
   }
 
   double get_reward(size_t row, size_t col) const {
@@ -55,7 +52,11 @@ public:
   }
 
   int get_tie_breaker(size_t row) const {
-    return data_tie_breaker[row];
+    if (!has_tie_breaker) {
+      return row;
+    } else {
+      return data_tie_breaker[row];
+    }
   }
 
   size_t num_rows;
@@ -75,6 +76,7 @@ private:
   const double* data_weight;
   const int* data_tie_breaker;
   bool has_weight;
+  bool has_tie_breaker;
 };
 
 } // namespace maq

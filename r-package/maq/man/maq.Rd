@@ -29,7 +29,9 @@ maq(
 
 \item{clusters}{todo}
 
-\item{tie.breaker}{todo}
+\item{tie.breaker}{An optional permutation of the the integers 1 to nrow(rewards) used to
+break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
+the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.}
 
 \item{num.threads}{todo}
 

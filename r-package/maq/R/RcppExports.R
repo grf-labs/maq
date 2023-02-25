@@ -5,7 +5,7 @@ solver_rcpp <- function(reward, cost, sample_weights, tie_breaker, clusters, sam
     .Call(`_maq_solver_rcpp`, reward, cost, sample_weights, tie_breaker, clusters, samples_per_cluster, budget, num_bootstrap, num_threads, seed)
 }
 
-convex_hull_rcpp <- function(reward, cost, tie_breaker) {
-    .Call(`_maq_convex_hull_rcpp`, reward, cost, tie_breaker)
+convex_hull_rcpp <- function(reward, cost) {
+    .Call(`_maq_convex_hull_rcpp`, reward, cost)
 }
 

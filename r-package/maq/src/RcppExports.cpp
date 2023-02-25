@@ -31,22 +31,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // convex_hull_rcpp
-Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& cost, const Rcpp::IntegerVector& tie_breaker);
-RcppExport SEXP _maq_convex_hull_rcpp(SEXP rewardSEXP, SEXP costSEXP, SEXP tie_breakerSEXP) {
+Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& cost);
+RcppExport SEXP _maq_convex_hull_rcpp(SEXP rewardSEXP, SEXP costSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type reward(rewardSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type cost(costSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tie_breaker(tie_breakerSEXP);
-    rcpp_result_gen = Rcpp::wrap(convex_hull_rcpp(reward, cost, tie_breaker));
+    rcpp_result_gen = Rcpp::wrap(convex_hull_rcpp(reward, cost));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_maq_solver_rcpp", (DL_FUNC) &_maq_solver_rcpp, 10},
-    {"_maq_convex_hull_rcpp", (DL_FUNC) &_maq_convex_hull_rcpp, 3},
+    {"_maq_convex_hull_rcpp", (DL_FUNC) &_maq_convex_hull_rcpp, 2},
     {NULL, NULL, 0}
 };
 
