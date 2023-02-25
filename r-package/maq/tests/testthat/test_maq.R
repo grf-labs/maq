@@ -31,21 +31,25 @@ test_that("sample weighting works as expected", {
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
-  # giving weight 2 ~same sample as duplicating
+  # giving weight 2 exactly same sample as duplicating
   dupe <- sample(1:n, 100)
   reward.dupe <- rbind(reward, reward[dupe, ])
   cost.dupe <- rbind(cost, cost[dupe, ])
   wts <- rep(1, n)
   wts[dupe] <- 2
 
-  mq <- maq(reward, cost, budget, sample.weights = wts)
+  mq <- maq(reward, cost, budget, sample.weights = wts, seed = 42)
   mq.dupe <- maq(reward.dupe, cost.dupe, budget)
 
   spends <- c(0.1, 0.25, 0.3, 0.35, 0.4, 0.5)
   est <- lapply(spends, function(s) average_gain(mq, s)[[1]])
   est.dupe <- lapply(spends, function(s) average_gain(mq.dupe, s)[[1]])
 
-  expect_equal(est, est.dupe, tolerance = 0.05)
+  expect_equal(est, est.dupe, tolerance = 1e-12)
+
+  # weight scaling invariance
+  mq.scale <- maq(reward, cost, budget, sample.weights = wts * runif(1), seed = 42)
+  expect_equal(mq[["_path"]], mq.scale[["_path"]], tolerance = 1e-12)
 })
 
 test_that("clustering works as expected", {

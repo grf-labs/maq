@@ -42,6 +42,8 @@ maq <- function(reward,
   } else if (length(sample.weights) != NROW(reward) || anyNA(sample.weights)
                || any(sample.weights <= 0)) {
     stop("sample.weights should have length=nrow(reward) and be non-missing and positive.")
+  } else {
+    sample.weights <- sample.weights / sum(sample.weights)
   }
 
   if (is.null(clusters)) {

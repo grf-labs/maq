@@ -44,27 +44,14 @@ public:
     } else {
       this->has_weight = true;
     }
-    double weight_sum = 0;
-    for (size_t i = 0; i < num_rows; i++) {
-      weight_sum += get_weight(i);
-    }
-    this->weight_sum = weight_sum;
   }
 
   double get_reward(size_t row, size_t col) const {
-    return data_reward[col * num_rows + row] / weight_sum;
+    return data_reward[col * num_rows + row] * get_weight(row);
   }
 
   double get_cost(size_t row, size_t col) const {
-    return data_cost[col * num_rows + row] / weight_sum;;
-  }
-
-  double get_weight(size_t row) const {
-    if (!has_weight) {
-      return 1.0;
-    } else {
-      return data_weight[row];
-    }
+    return data_cost[col * num_rows + row] * get_weight(row);
   }
 
   int get_tie_breaker(size_t row) const {
@@ -75,12 +62,19 @@ public:
   size_t num_cols;
 
 private:
+  double get_weight(size_t row) const {
+    if (!has_weight) {
+      return 1.0 / num_rows;
+    } else {
+      return data_weight[row];
+    }
+  }
+
   const double* data_reward;
   const double* data_cost;
   const double* data_weight;
   const int* data_tie_breaker;
   bool has_weight;
-  double weight_sum;
 };
 
 } // namespace maq
