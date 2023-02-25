@@ -1,0 +1,51 @@
+trigger:
+- master
+
+- job: R_package
+  strategy:
+    matrix:
+      ubuntu:
+        imageName: "ubuntu-latest"
+      macos:
+        imageName: "macOS-latest"
+  pool:
+    vmImage: $(imageName)
+  variables:
+  - name: R_LIBS_USER
+    value: '$(Agent.BuildDirectory)/R/library'
+  - name: CRAN
+    value: 'https://cloud.r-project.org'
+  - name: _R_CHECK_FORCE_SUGGESTS_
+    value: false
+  - name: _R_CHECK_DONTTEST_EXAMPLES_
+    value: true
+  - name: USE_BSPM
+    value: true
+  - name: WARNINGS_ARE_ERRORS
+    value: true
+  steps:
+  - script: |
+      sudo apt-get update -qq
+      sudo apt-get install -qq valgrind
+    displayName: Setup valgrind
+    condition: eq(variables['Agent.OS'], 'Linux')
+  - script: |
+      curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
+      ./run.sh bootstrap
+      ./run.sh install_deps
+    workingDirectory: r-package/maq
+    displayName: Setup R
+  - script: ./run.sh run_tests
+    workingDirectory: r-package/maq
+    displayName: Test R package
+  - script: ./run.sh dump_logs_by_extension "fail"
+    condition: failed()
+    workingDirectory: r-package/maq
+    displayName: Print R failures
+  - script: |
+      # Use R check's installation instead of reinstalling the package.
+      sudo sed -i.old '1s;^;.libPaths(c(file.path(getwd(), "maq.Rcheck"), .libPaths()));' tests/valgrind/test_maq_valgrind.R
+      R -d "valgrind --tool=memcheck --leak-check=full --error-exitcode=1" --vanilla < tests/valgrind/test_maq_valgrind.R
+    workingDirectory: r-package/maq
+    displayName: Valgrind check
+    condition: eq(variables['Agent.OS'], 'Linux')
