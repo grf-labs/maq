@@ -25,8 +25,6 @@
 #include "sampling/SamplingOptions.h"
 #include "sampling/RandomSampler.h"
 
-// #include<iostream>
-
 namespace maq {
 
 MAQ::MAQ(const Data& data,
@@ -89,21 +87,20 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
                                                       size_t num_replicates,
                                                       const solution_path& path_hat,
                                                       const std::vector<std::vector<size_t>>& R) {
-  std::mt19937_64 random_number_generator(options.random_seed + start);
+  std::mt19937_64 random_number_generator;
   nonstd::uniform_int_distribution<uint> udist;
 
   std::vector<std::vector<double>> predictions;
   predictions.reserve(num_replicates);
 
   for (size_t b = 0; b < num_replicates; b++) {
+    random_number_generator.seed(options.random_seed + start + b);
     uint bs_seed = udist(random_number_generator);
     grf::RandomSampler sampler(bs_seed, sampling_options);
     std::vector<size_t> clusters;
     std::vector<size_t> samples;
     sampler.sample_clusters(data.num_rows, 0.5, clusters);
     sampler.sample_from_clusters(clusters, samples);
-    // sampler.sample_clusters(data.num_rows, 0.5, samples);
-    // sampler.sample_from_clusters(samples, samples);
 
     auto path_b = compute_path(samples, R, data, options.budget, true);
     auto gain_b = interpolate_path(path_hat, path_b);
