@@ -22,6 +22,14 @@ test_that("maq works as expected", {
   expect_equal(mq[["_path"]]$std.err, mq.scale[["_path"]]$std.err / 1000, tolerance = 1e-12)
   expect_equal(mq[["_path"]]$ipath, mq.scale[["_path"]]$ipath)
   expect_equal(mq[["_path"]]$kpath, mq.scale[["_path"]]$kpath)
+
+  # cost scale does not matter
+  mq.scalecost <- maq(reward, cost * 1000, budget, seed = 42)
+  expect_equal(mq[["_path"]]$spend, mq.scalecost[["_path"]]$spend / 1000, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$gain, mq.scalecost[["_path"]]$gain, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$std.err, mq.scalecost[["_path"]]$std.err, tolerance = 1e-12)
+  expect_equal(mq[["_path"]]$ipath, mq.scalecost[["_path"]]$ipath)
+  expect_equal(mq[["_path"]]$kpath, mq.scalecost[["_path"]]$kpath)
 })
 
 test_that("sample weighting works as expected", {
