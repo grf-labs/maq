@@ -34,7 +34,7 @@ jobs:
       curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
       ./run.sh bootstrap
       ./run.sh install_deps
-      sudo Rscript -e "install.packages(c('lpSolve'), type = 'binary-source')"
+      ./run.sh install_r_binary lpSolve
     workingDirectory: r-package/maq
     displayName: Setup R
   - script: ./run.sh run_tests
