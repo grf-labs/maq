@@ -19,9 +19,3 @@ A sparse matrix.
 \description{
 Gets optimal alloction matrix for a given spend level.
 }
-\examples{
-\donttest{
-# Train a
-}
-
-}

@@ -106,12 +106,6 @@ maq <- function(reward,
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A sparse matrix.
-#'
-#' @examples
-#' \donttest{
-#' # Train a
-#' }
-#'
 #' @method predict maq
 #' @export
 predict.maq <- function(object,
@@ -156,12 +150,6 @@ predict.maq <- function(object,
 #' @param spend The spend level.
 #'
 #' @return An estimate of average gain along with standard errors.
-#'
-#' @examples
-#' \donttest{
-#' # Train a
-#' }
-#'
 #' @export
 average_gain <- function(object,
                          spend) {

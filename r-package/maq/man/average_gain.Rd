@@ -17,9 +17,3 @@ An estimate of average gain along with standard errors.
 \description{
 Gets estimates of
 }
-\examples{
-\donttest{
-# Train a
-}
-
-}
