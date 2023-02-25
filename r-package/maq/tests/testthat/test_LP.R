@@ -1,8 +1,9 @@
 # Solves the linear knapsack-type problem with a generic LP solver for a given spend.
 lp_solver = function(reward, cost, budget) {
-  if (!requireNamespace("lpSolve", quietly = TRUE)) {
-    stop("package `lpSolve` required.")
-  }
+  # if (!requireNamespace("lpSolve", quietly = TRUE)) {
+  # if (!requireNamespace("lpSolve", quietly = TRUE)) {
+    # stop("package `lpSolve` required.")
+  # }
   attachNamespace("lpSolve")
 
   K = ncol(reward)
