@@ -34,11 +34,10 @@ jobs:
       curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
       ./run.sh bootstrap
       ./run.sh install_deps
+      ./run.sh install_r lpSolve
     workingDirectory: r-package/maq
     displayName: Setup R
-  - script: |
-      ./run.sh install_r lpSolve
-      ./run.sh run_tests
+  - script: ./run.sh run_tests
     workingDirectory: r-package/maq
     displayName: Test R package
   - script: ./run.sh dump_logs_by_extension "fail"
