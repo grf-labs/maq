@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{maq}
 \alias{maq}
-\title{Title}
+\title{Fit a Multi-Action QINI.}
 \usage{
 maq(
   reward,
@@ -17,35 +17,53 @@ maq(
 )
 }
 \arguments{
-\item{reward}{todo}
+\item{reward}{A matrix of reward estimates.}
 
-\item{cost}{todo}
+\item{cost}{A matrix of cost estimates.}
 
-\item{budget}{todo}
+\item{budget}{The maximum spend/unit to fit the MAQ path on.}
 
-\item{R}{todo}
+\item{R}{Number of bootstrap replicates for SEs. Default is 200.}
 
-\item{sample.weights}{todo}
+\item{sample.weights}{Weights given to an observation in estimation.
+If NULL, each observation is given the same weight. Default is NULL.}
 
-\item{clusters}{todo}
+\item{clusters}{Vector of integers or factors specifying which cluster each observation corresponds to.
+Default is NULL (ignored).}
 
 \item{tie.breaker}{An optional permutation of the the integers 1 to nrow(rewards) used to
 break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
 the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.}
 
-\item{num.threads}{todo}
+\item{num.threads}{Number of threads used in bootstrap replicates. By default, the number of threads
+is set to the maximum hardware concurrency.}
 
-\item{seed}{todo}
+\item{seed}{The seed of the C++ random number generator.}
 }
 \value{
-todo
+A fit maq object.
 }
 \description{
-Title
+Fit a Multi-Action QINI.
 }
 \examples{
 \donttest{
-# Train a
+# Fit a MAQ up to the maximum spend per unit.
+n <- 5000
+K <- 5
+reward <- matrix(0.1 + rnorm(n * K), n, K)
+cost <- 0.05 + matrix(runif(n * K), n, K)
+mq <- maq(reward, cost, mean(cost))
+
+# Plot the MAQ curve.
+plot(mq)
+
+# Get an estimate of optimal reward along with standard errors.
+average_gain(mq, spend = 0.1)
+
+# Get the optimal treatment allocation matrix at a given spend.
+pi.mat <- predict(mq, spend = 0.1)
+
 }
 
 }

@@ -15,5 +15,5 @@ average_gain(object, spend)
 An estimate of average gain along with standard errors.
 }
 \description{
-Gets estimates of
+Get estimate of gain given a spend level.
 }

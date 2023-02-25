@@ -17,5 +17,5 @@
 A sparse matrix.
 }
 \description{
-Gets optimal alloction matrix for a given spend level.
+Predict optimal treatment allocation.
 }

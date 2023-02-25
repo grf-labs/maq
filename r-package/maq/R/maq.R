@@ -1,22 +1,41 @@
-#' Title
+#' Fit a Multi-Action QINI.
 #'
-#' @param reward todo
-#' @param cost todo
-#' @param budget todo
-#' @param R todo
-#' @param sample.weights todo
-#' @param clusters todo
+#'
+#' @param reward A matrix of reward estimates.
+#' @param cost A matrix of cost estimates.
+#' @param budget The maximum spend/unit to fit the MAQ path on.
+#' @param R Number of bootstrap replicates for SEs. Default is 200.
+#' @param sample.weights Weights given to an observation in estimation.
+#'  If NULL, each observation is given the same weight. Default is NULL.
+#' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to.
+#'  Default is NULL (ignored).
 #' @param tie.breaker An optional permutation of the the integers 1 to nrow(rewards) used to
 #'  break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
 #'  the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.
-#' @param num.threads todo
-#' @param seed todo
+#' @param num.threads Number of threads used in bootstrap replicates. By default, the number of threads
+#'  is set to the maximum hardware concurrency.
+#' @param seed The seed of the C++ random number generator.
 #'
-#' @return todo
+#' @return A fit maq object.
 #'
 #' @examples
 #' \donttest{
-#' # Train a
+#' # Fit a MAQ up to the maximum spend per unit.
+#' n <- 5000
+#' K <- 5
+#' reward <- matrix(0.1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' mq <- maq(reward, cost, mean(cost))
+#'
+#' # Plot the MAQ curve.
+#' plot(mq)
+#'
+#' # Get an estimate of optimal reward along with standard errors.
+#' average_gain(mq, spend = 0.1)
+#'
+#' # Get the optimal treatment allocation matrix at a given spend.
+#' pi.mat <- predict(mq, spend = 0.1)
+#'
 #' }
 #'
 #' @export
@@ -105,7 +124,6 @@ maq <- function(reward,
 
 #' Predict optimal treatment allocation.
 #'
-#' Gets optimal alloction matrix for a given spend level.
 #'
 #' @param object A maq object.
 #' @param spend The spend level.
@@ -150,7 +168,6 @@ predict.maq <- function(object,
 
 #' Get estimate of gain given a spend level.
 #'
-#' Gets estimates of
 #'
 #' @param object A maq object.
 #' @param spend The spend level.
