@@ -16,3 +16,7 @@ def test_bindings():
     ret2 = solver_cpp(reward, cost, budget, n_bootstrap, 0, 0)
 
     nt.assert_equal(ret, ret2)
+
+    mq = MAQ(n_bootstrap=n_bootstrap, n_threads=0, seed=0)
+    mq.fit(reward, cost, budget)
+    nt.assert_equal(ret, mq._path)
