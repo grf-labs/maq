@@ -6,7 +6,6 @@ from setuptools import setup, find_packages
 from distutils.core import Extension
 from Cython.Build import cythonize
 
-# TODO win
 if 'darwin' in sys.platform:
   COMPILE_ARGS = ['-std=c++11', '-stdlib=libc++', '-Wall', '-O2', '-pthread']
   LINK_ARGS = ['-stdlib=libc++']
