@@ -1,20 +1,17 @@
+import cython
+import numpy as np
+cimport numpy as np
+
 from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
 from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
-import cython
-import numpy as np
 
-cimport numpy as np
-
-
-cpdef solver_cpp(
-    np.ndarray[double, ndim=2, mode="fortran"] reward,
-    np.ndarray[double, ndim=2, mode="fortran"] cost,
-    double budget,
-    size_t num_bootstrap,
-    unsigned int num_threads,
-    unsigned int seed
-):
+cpdef solver_cpp(np.ndarray[double, ndim=2, mode="fortran"] reward,
+                 np.ndarray[double, ndim=2, mode="fortran"] cost,
+                 double budget,
+                 size_t num_bootstrap,
+                 unsigned int num_threads,
+                 unsigned int seed):
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
 
