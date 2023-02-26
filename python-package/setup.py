@@ -6,15 +6,17 @@ from setuptools import setup, find_packages
 from distutils.core import Extension
 from Cython.Build import cythonize
 
-# TODO win
 if 'darwin' in sys.platform:
-    COMPILE_ARGS = ['-std=c++11', '-stdlib=libc++', '-Wall', '-O2', '-pthread']
-    LINK_ARGS = ['-stdlib=libc++']
+  COMPILE_ARGS = ['-std=c++11', '-stdlib=libc++', '-Wall', '-O2', '-pthread']
+  LINK_ARGS = ['-stdlib=libc++']
 elif 'linux' in sys.platform:
-    COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2', '-pthread']
-    LINK_ARGS = ['-lstdc++', '-pthread']
+  COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2', '-pthread']
+  LINK_ARGS = ['-lstdc++', '-pthread']
+elif 'win32' in sys.platform:
+  COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2']
+  LINK_ARGS = ['-lstdc++']
 else:
-    raise ImportError('Specify compile options for OS here')
+  raise ImportError('Unsupported OS.')
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 INCLUDE_DIRS = [os.path.join(setup_dir, '..', 'core', 'src')]

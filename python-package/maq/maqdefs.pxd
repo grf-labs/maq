@@ -30,14 +30,14 @@ cdef extern from '../../core/src/MAQ.h' namespace 'maq':
 cdef extern from '../../core/src/MAQ.cpp' namespace 'maq':
   pass
 
+cdef extern from '../../core/src/convex_hull.cpp' namespace 'maq':
+  pass
+
+cdef extern from '../../core/src/compute_path.cpp' namespace 'maq':
+  pass
+
 cdef extern from '../../core/third_party/sampling/RandomSampler.cpp' namespace 'grf':
   pass
 
 cdef extern from '../../core/third_party/sampling/SamplingOptions.cpp' namespace 'grf':
-  pass
-
-cdef extern from '../../core/src/convex_hull.cpp' namespace 'grf':
-  pass
-
-cdef extern from '../../core/src/compute_path.cpp' namespace 'grf':
   pass
