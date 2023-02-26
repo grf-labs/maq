@@ -8,8 +8,8 @@ class MAQ:
     abc etc
     """
 
-    def __init__(self, num_bootstrap=200, seed=42):
-        self.num_bootstrap = num_bootstrap
+    def __init__(self, n_bootstrap=200, seed=42):
+        self.n_bootstrap = n_bootstrap
         self.seed = seed
 
     def fit(reward, cost, budget):

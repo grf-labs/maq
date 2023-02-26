@@ -5,15 +5,14 @@ import numpy.testing as nt
 from maq import MAQ
 from maq.ext import solver_cpp
 
+def test_bindings():
+    budget = 100
+    n = 1000
+    K = 10
+    reward = 1 + np.random.randn(n, K)
+    cost = 0.05 + np.random.rand(n, K)
+    n_bootstrap = 5
+    ret = solver_cpp(reward, cost, budget, n_bootstrap, 0, 0)
+    ret2 = solver_cpp(reward, cost, budget, n_bootstrap, 0, 0)
 
-def test_tmp():
-    r = np.random.rand(10, 3)
-    c = np.random.rand(10, 3)
-    solver_cpp(
-        r,
-        c,
-        10,
-        4,
-        2,
-        1
-    )
+    nt.assert_equal(ret, ret2)

@@ -11,7 +11,7 @@ from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] cost,
                  double budget,
-                 size_t num_bootstrap,
+                 size_t n_bootstrap,
                  unsigned int num_threads,
                  unsigned int seed):
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
@@ -28,7 +28,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     data_ptr = new Data(&reward[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols, col_major)
 
     cdef MAQOptions* opt_ptr
-    opt_ptr = new MAQOptions(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed)
+    opt_ptr = new MAQOptions(budget, n_bootstrap, clusters, samples_per_cluster, num_threads, seed)
 
     cdef MAQ* maq_ptr
     maq_ptr = new MAQ(deref(data_ptr), deref(opt_ptr))
