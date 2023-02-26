@@ -68,4 +68,5 @@ jobs:
   - script: |
       pip install numpy cython pytest .
       pytest
+    workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
