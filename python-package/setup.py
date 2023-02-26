@@ -15,7 +15,7 @@ elif 'linux' in sys.platform:
 elif 'win32' in sys.platform:
   COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2']
   LINK_ARGS = ['-lstdc++']
-else
+else:
   raise ImportError('Unsupported OS.')
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
