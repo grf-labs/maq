@@ -66,7 +66,11 @@ jobs:
     vmImage: $(imageName)
   steps:
   - script: |
-      pip install numpy cython pytest .
+      pip install numpy cython pytest
+    workingDirectory: 'python-package'
+    displayName: 'Setup Python'
+  - script: |
+      pip install .
       pytest
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
