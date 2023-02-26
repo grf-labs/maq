@@ -10,8 +10,8 @@ def test_tmp():
     r = np.random.rand(10, 3)
     c = np.random.rand(10, 3)
     solver_cpp(
-        np.asfortranarray(r),
-        np.asfortranarray(c),
+        r,
+        c,
         10,
         4,
         2,

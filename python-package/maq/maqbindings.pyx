@@ -2,12 +2,14 @@ import cython
 import numpy as np
 cimport numpy as np
 
-from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
+from libcpp cimport bool
 from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
-cpdef solver_cpp(np.ndarray[double, ndim=2, mode="fortran"] reward,
-                 np.ndarray[double, ndim=2, mode="fortran"] cost,
+from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
+
+cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
+                 np.ndarray[double, ndim=2, mode="c"] cost,
                  double budget,
                  size_t num_bootstrap,
                  unsigned int num_threads,
@@ -16,18 +18,19 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="fortran"] reward,
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
 
     # Ignore these options for now (TODO)
-    cdef double * weights_ptr = NULL
-    cdef int * tie_breaker_ptr = NULL
+    cdef double* weights_ptr = NULL
+    cdef int* tie_breaker_ptr = NULL
     cdef vector[size_t] clusters
     cdef unsigned int samples_per_cluster = 0
 
-    cdef Data * data_ptr
-    data_ptr = new Data( & reward[0, 0], & cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols)
+    cdef bool col_major = False
+    cdef Data* data_ptr
+    data_ptr = new Data(&reward[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols, col_major)
 
-    cdef MAQOptions * opt_ptr
+    cdef MAQOptions* opt_ptr
     opt_ptr = new MAQOptions(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed)
 
-    cdef MAQ * maq_ptr
+    cdef MAQ* maq_ptr
     maq_ptr = new MAQ(deref(data_ptr), deref(opt_ptr))
     cdef solution_path ret = deref(maq_ptr).fit()
 
