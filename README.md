@@ -4,7 +4,7 @@
 
 A C++ solver for the Multi-Action QINI (maq).
 
-Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K - 1$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of costs, i.e. the $k$-th element is the cost of assigning user $i$ arm $k$. `maq` finds the optimal cost-constrained treatment allocation $\pi_b(X_i) \in [0, 1]^{K-1}$ for any budget constraint $b$.
+Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K - 1$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive costs, i.e. the $k$-th element is the cost of assigning user $i$ arm $k$. `maq` finds the optimal cost-constrained treatment allocation $\pi_b(X_i) \in [0, 1]^{K-1}$ for any budget constraint $b$.
 
 In particular, `maq` efficiently computes the path of solutions to the following stochastic LP:
 
