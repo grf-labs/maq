@@ -146,7 +146,7 @@ class MAQ:
         Returns
         -------
         estimate, std_error : tuple
-            Estimate of gain along with standard error,
+            Estimate of gain along with standard error.
         """
 
         assert np.isscalar(spend), "spend should be a scalar."
