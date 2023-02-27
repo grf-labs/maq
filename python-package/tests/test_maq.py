@@ -34,4 +34,5 @@ def test_MAQ():
 
     nt.assert_equal(mq.average_gain(0), (0, 0))
     nt.assert_equal(mq.average_gain(100), (mq._path["gain"][-1], mq._path["std_err"][-1]))
+    nt.assert_equal(mq.average_gain(mq._path["spend"][0]), (mq._path["gain"][0], mq._path["std_err"][0]))
     nt.assert_equal(mq.average_gain(mq._path["spend"][3]), (mq._path["gain"][3], mq._path["std_err"][3]))

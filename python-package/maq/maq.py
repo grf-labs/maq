@@ -32,6 +32,7 @@ class MAQ:
             self.n_bootstrap, self.n_threads, self.seed)
 
         self._is_fit = True
+        self._dim = reward.shape
         return self
 
     def predict(self, spend):
@@ -40,7 +41,16 @@ class MAQ:
         if not self._path["complete_path"]:
             assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
-        pass
+        spend_grid = self._path["spend"]
+        path_idx = np.searchsorted(spend_grid, spend, side = "right") - 1
+        if path_idx < 0:
+            return np.zeros(self._dim, dtype = "intp")
+
+
+        ipath = self._path["ipath"]
+        kpath = self._path["kpath"]
+
+        return 42
 
     def average_gain(self, spend):
         assert np.isscalar(spend), "spend should be a scalar."
@@ -53,7 +63,7 @@ class MAQ:
 
         gain_path = self._path["gain"]
         se_path = self._path["std_err"]
-        if spend_grid.shape[0] == 0 or spend < spend_grid[0]:
+        if path_idx < 0:
             estimate = 0
             std_err = 0
         elif path_idx == spend_grid.shape[0] - 1:
@@ -65,6 +75,22 @@ class MAQ:
             std_err = se_path[path_idx] + (se_path[path_idx+1] - se_path[path_idx]) * interp_ratio
 
         return estimate, std_err
+
+
+    @property
+    def path_spend_(self):
+        assert self._is_fit, "MAQ object is not fit."
+        return self._path["spend"]
+
+    @property
+    def path_gain_(self):
+        assert self._is_fit, "MAQ object is not fit."
+        return self._path["gain"]
+
+    @property
+    def path_std_err_(self):
+        assert self._is_fit, "MAQ object is not fit."
+        return self._path["std_err"]
 
     def __repr__(self):
         return "MAQ object."
