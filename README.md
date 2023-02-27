@@ -26,7 +26,3 @@ devtools::install_github("grf-labs/maq", subdir = "r-package/maq")
 ```
 
 Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
-
-### Usage Example
-
-### References
