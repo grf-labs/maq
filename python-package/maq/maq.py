@@ -43,14 +43,30 @@ class MAQ:
 
         spend_grid = self._path["spend"]
         path_idx = np.searchsorted(spend_grid, spend, side = "right") - 1
+        pi_mat = np.zeros(self._dim, dtype = "double")
         if path_idx < 0:
-            return np.zeros(self._dim, dtype = "intp")
+            return pi_mat
 
+        ipath = self._path["ipath"][:path_idx+1]
+        kpath = self._path["kpath"][:path_idx+1]
+        ix = np.unique(ipath[::-1], return_index=True)[1]
+        pi_mat[ipath[::-1][ix], kpath[::-1][ix]] = 1
 
-        ipath = self._path["ipath"]
-        kpath = self._path["kpath"]
+        if path_idx == spend_grid.shape[0] - 1:
+            return pi_mat
 
-        return 42
+        # fractional adjustment?
+        spend_diff = spend - spend_grid[path_idx]
+        next_unit = self._path["ipath"][path_idx+1]
+        next_arm = self._path["kpath"][path_idx+1]
+        prev_arm = np.nonzero(pi_mat[next_unit,])[0] # already assigned?
+
+        fraction = spend_diff / (spend_grid[path_idx+1] - spend_grid[path_idx])
+        pi_mat[next_unit, next_arm] = fraction
+        if prev_arm.shape[0] > 0:
+            pi_mat[next_unit, prev_arm[0]] = 1 - fraction
+
+        return pi_mat
 
     def average_gain(self, spend):
         assert np.isscalar(spend), "spend should be a scalar."
