@@ -199,6 +199,25 @@ average_gain <- function(object,
   c(estimate = estimate, std.err = std.err)
 }
 
+#' MAQ Summary.
+#' @param object The maq object.
+#' @param ... Additional arguments (currently ignored).
+#'
+#' @return A data.frame with the computed path.
+#' @method summary maq
+#' @export
+summary.maq <- function(object,
+                        ...) {
+
+  data.frame(
+    spend = object[["_path"]]$spend,
+    gain = object[["_path"]]$gain,
+    std.err = object[["_path"]]$std.err,
+    allocated.unit = object[["_path"]]$ipath + 1,
+    allocated.arm = object[["_path"]]$kpath + 1
+  )
+}
+
 #' Print a maq object.
 #' @param x The maq object.
 #' @param ... Additional arguments (currently ignored).

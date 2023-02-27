@@ -7,6 +7,8 @@ test_that("maq works as expected", {
 
   mq <- maq(-abs(reward), cost, budget, R = 150)
   plot(mq)
+  summary(mq)
+  print(mq)
   expect_true(all(predict(mq, 10) == 0))
   expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
 

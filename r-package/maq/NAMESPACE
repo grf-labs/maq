@@ -3,6 +3,7 @@
 S3method(plot,maq)
 S3method(predict,maq)
 S3method(print,maq)
+S3method(summary,maq)
 export(average_gain)
 export(maq)
 import(Matrix)
