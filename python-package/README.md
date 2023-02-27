@@ -20,7 +20,8 @@ cost = np.random.rand(n, K)
 
 # Fit a MAQ up to the maximum spend per unit.
 mq = MAQ(n_bootstrap=150)
-mq.fit(reward, cost, np.mean(cost))
+max_budget = np.mean(cost)
+mq.fit(reward, cost, max_budget)
 
 # Get an estimate of optimal reward along with standard errors.
 mq.average_gain(spend=0.1)
