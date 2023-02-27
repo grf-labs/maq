@@ -92,7 +92,6 @@ class MAQ:
 
         return estimate, std_err
 
-
     @property
     def path_spend_(self):
         assert self._is_fit, "MAQ object is not fit."
