@@ -93,8 +93,9 @@ class MAQ:
         assert not np.isnan(cost).any(), "cost contains nans."
         self.budget = budget
 
-        self._path = solver_cpp(reward, cost, budget,
-            self.n_bootstrap, self.n_threads, self.seed)
+        self._path = solver_cpp(
+            reward, cost, budget, self.n_bootstrap, self.n_threads, self.seed
+        )
 
         self._is_fit = True
         self._dim = reward.shape
@@ -125,8 +126,8 @@ class MAQ:
         if path_idx < 0:
             return pi_mat
 
-        ipath = self._path["ipath"][:path_idx+1]
-        kpath = self._path["kpath"][:path_idx+1]
+        ipath = self._path["ipath"][:path_idx + 1]
+        kpath = self._path["kpath"][:path_idx + 1]
         ix = np.unique(ipath[::-1], return_index=True)[1]
         pi_mat[ipath[::-1][ix], kpath[::-1][ix]] = 1
 
@@ -135,11 +136,11 @@ class MAQ:
 
         # fractional adjustment?
         spend_diff = spend - spend_grid[path_idx]
-        next_unit = self._path["ipath"][path_idx+1]
-        next_arm = self._path["kpath"][path_idx+1]
+        next_unit = self._path["ipath"][path_idx + 1]
+        next_arm = self._path["kpath"][path_idx + 1]
         prev_arm = np.nonzero(pi_mat[next_unit, ])[0] # already assigned?
 
-        fraction = spend_diff / (spend_grid[path_idx+1] - spend_grid[path_idx])
+        fraction = spend_diff / (spend_grid[path_idx + 1] - spend_grid[path_idx])
         pi_mat[next_unit, next_arm] = fraction
         if prev_arm.shape[0] > 0:
             pi_mat[next_unit, prev_arm[0]] = 1 - fraction
@@ -177,9 +178,9 @@ class MAQ:
             estimate = gain_path[path_idx]
             std_err = se_path[path_idx]
         else:
-            interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx+1] - spend_grid[path_idx])
-            estimate = gain_path[path_idx] + (gain_path[path_idx+1] - gain_path[path_idx]) * interp_ratio
-            std_err = se_path[path_idx] + (se_path[path_idx+1] - se_path[path_idx]) * interp_ratio
+            interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
+            estimate = gain_path[path_idx] + (gain_path[path_idx + 1] - gain_path[path_idx]) * interp_ratio
+            std_err = se_path[path_idx] + (se_path[path_idx + 1] - se_path[path_idx]) * interp_ratio
 
         return estimate, std_err
 
