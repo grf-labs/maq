@@ -59,7 +59,6 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
   double reward_l = data.get_reward(sample, point_l);
 
   // C++: a/0 = Inf if a > 0, a/0 = -Inf if a <0, and 0/0 = NaN (all logical operators on NaN evaluate to false)
-  // return (reward_l - reward_k) / (cost_l - cost_k) >= (reward_k - reward_j) / (cost_k - cost_j);
   return (reward_l - reward_k) / (cost_l - cost_k) > (reward_k - reward_j) / (cost_k - cost_j);
 }
 
@@ -72,7 +71,6 @@ std::vector<std::vector<size_t>> convex_hull(const Data& data) {
     std::vector<size_t>& Ri = R[sample];
 
     // Get sort order by increasing cost
-    // std::sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
     std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
       return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
     });
