@@ -13,11 +13,9 @@ In particular, `maq` efficiently computes the path of solutions to the following
 \max_{\pi_b} \quad & \mathbb{E}[\langle \pi_b(X_i),~ \tau(X_i) \rangle] \\
 \textrm{s.t.} \quad & \mathbb{E}[\langle \pi_b(X_i),~ C(X_i) \rangle] \leq b \\
 & \langle \pi_b(X_i),~ \mathbf{1} \rangle \leq 1 \\
-& \pi_b(X_i) \geq 0,
+& \pi_b(X_i) \geq 0.
 \end{aligned}
 ```
-
-by using a priority-queue based algorithm that leverages the Knapsack-type structure of this problem.
 
 The development version (R) can be installed by
 
