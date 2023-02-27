@@ -30,7 +30,7 @@ class MAQ:
     --------
     >>> import numpy as np
     >>> from maq import MAQ
-    >>> # Fit a MAQ up to the maximum spend per unnit.
+    >>> # Fit a MAQ up to the maximum spend per unit.
     >>> reward = np.random.randn(500, 4)
     >>> cost = np.random.rand(500, 4)
     >>> mq = MAQ()
