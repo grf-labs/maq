@@ -23,7 +23,7 @@ def test_bindings():
 
 def test_MAQ():
     budget = 100
-    n = 1000
+    n = 10000
     K = 10
     reward = 1 + np.random.randn(n, K)
     cost = 0.05 + np.random.rand(n, K)
