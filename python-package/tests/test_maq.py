@@ -81,3 +81,11 @@ def test_MAQ():
         np.sum(mq.predict(sp) * reward) / n,
         decimal=10
     )
+
+    reward2 = np.random.randn(n, 1)
+    cost2 = np.random.rand(n, 1)
+    mq.fit(reward2, cost2, budget)
+    nt.assert_equal(
+        np.nonzero(mq.predict(budget)),
+        np.where(reward2 > 0)
+    )
