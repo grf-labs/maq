@@ -4,10 +4,50 @@ from maq.ext import solver_cpp
 
 
 class MAQ:
-    r"""
-    Fit a Multi-Action QINI.
+    """Fit a Multi-Action QINI.
 
+    Parameters
+    ----------
+    n_bootstrap : int, default=150
+        Number of bootstrap replicates for SEs. Default is 200.
 
+    n_threads : int, default=0
+        Number of threads used in bootstrap replicates. Default is the maximum hardware concurrency.
+
+    seed : int, default=42
+        The seed of the C++ random number generator. Default is 42.
+
+    Attributes
+    ----------
+    path_spend_ : ndarray
+        Fit spend path.
+    path_gain_ : ndarray
+        Fit gain path.
+    path_std_err_ : ndarray
+        Fit gain path std.err.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from maq import MAQ
+    >>> # Fit a MAQ up to the maximum spend per unnit.
+    >>> reward = np.random.randn(500, 4)
+    >>> cost = np.random.rand(500, 4)
+    >>> mq = MAQ()
+    >>> mq.fit(reward, cost, np.mean(cost))
+    MAQ object.
+    >>> # Get an estimate of optimal reward along with standard errors.
+    >>> mq.average_gain(spend=0.1)
+    (0.5917015252593616, 0.021926570827925398)
+    >>> # Get the optimal treatment allocation matrix at a given spend.
+    >>> mq.predict(spend=0.1)
+    array([[1., 0., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 0.],
+        ...,
+        [0., 0., 0., 1.],
+        [0., 0., 0., 0.],
+        [0., 0., 0., 0.]])
     """
 
     def __init__(self, n_bootstrap=200, n_threads=0, seed=42):
@@ -19,6 +59,20 @@ class MAQ:
         self._is_fit = False
 
     def fit(self, reward, cost, budget):
+        """Fit the MAQ curve up to a maximum spend/user.
+
+        Parameters
+        ----------
+        reward : ndarray
+            A matrix of reward estimates.
+
+        costs : ndarray
+            A matrix of cost estimates.
+
+        budget : scalar
+            The maximum spend/unit to fit the MAQ path on.
+        """
+
         reward = np.atleast_2d(reward)
         cost = np.atleast_2d(cost)
         assert reward.shape == cost.shape, "reward and cost should have equal dims."
@@ -36,6 +90,19 @@ class MAQ:
         return self
 
     def predict(self, spend):
+        """Predict the optimal treatment allocation matrix.
+
+        Parameters
+        ----------
+        spend : scalar
+            The budget constraint level to predict at.
+
+        Returns
+        -------
+        pi_mat : ndarray
+            The optimal treatment allocation.
+        """
+
         assert np.isscalar(spend), "spend should be a scalar."
         assert self._is_fit, "MAQ object is not fit."
         if not self._path["complete_path"]:
@@ -69,6 +136,19 @@ class MAQ:
         return pi_mat
 
     def average_gain(self, spend):
+        """Get estimate of gain given a spend level.
+
+        Parameters
+        ----------
+        spend : scalar
+            The budget constraint level to predict at.
+
+        Returns
+        -------
+        estimate, std_error : tuple
+            Estimate of gain along with standard error,
+        """
+
         assert np.isscalar(spend), "spend should be a scalar."
         assert self._is_fit, "MAQ object is not fit."
         if not self._path["complete_path"]:
