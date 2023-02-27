@@ -39,5 +39,8 @@ setup(
     version='0.1.0',
     packages=find_packages(include=['maq']),
     ext_modules=cythonize(ext, compiler_directives={'language_level': 3}),
-    url='https://github.com/grf-labs/maq'
+    url='https://github.com/grf-labs/maq',
+    classifiers = [
+      "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    ]
 )
