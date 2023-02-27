@@ -7,7 +7,7 @@ pip install git+https://github.com/grf-labs/maq.git#egg=maq\&subdirectory=python
 
 (requires Cython/Numpy)
 
-### Useage Example
+### Usage Example
 
 ```python
 import numpy as np
