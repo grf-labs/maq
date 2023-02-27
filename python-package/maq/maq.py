@@ -25,6 +25,10 @@ class MAQ:
         Fit gain path.
     path_std_err_ : ndarray
         Fit gain path std.err.
+    path_allocated_unit_ : ndarray
+        The unit allocated in spend path.
+    path_allocated_arm_ : ndarray
+        The arm allocated in spend path.
 
     Examples
     --------
@@ -193,6 +197,16 @@ class MAQ:
     def path_std_err_(self):
         assert self._is_fit, "MAQ object is not fit."
         return self._path["std_err"]
+
+    @property
+    def path_allocated_unit_(self):
+        assert self._is_fit, "MAQ object is not fit."
+        return self._path["ipath"]
+
+    @property
+    def path_allocated_arm_(self):
+        assert self._is_fit, "MAQ object is not fit."
+        return self._path["kpath"]
 
     def __repr__(self):
         return "MAQ object."
