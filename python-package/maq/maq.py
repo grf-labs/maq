@@ -109,8 +109,8 @@ class MAQ:
             assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
         spend_grid = self._path["spend"]
-        path_idx = np.searchsorted(spend_grid, spend, side = "right") - 1
-        pi_mat = np.zeros(self._dim, dtype = "double")
+        path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
+        pi_mat = np.zeros(self._dim, dtype="double")
         if path_idx < 0:
             return pi_mat
 
@@ -126,7 +126,7 @@ class MAQ:
         spend_diff = spend - spend_grid[path_idx]
         next_unit = self._path["ipath"][path_idx+1]
         next_arm = self._path["kpath"][path_idx+1]
-        prev_arm = np.nonzero(pi_mat[next_unit,])[0] # already assigned?
+        prev_arm = np.nonzero(pi_mat[next_unit, ])[0] # already assigned?
 
         fraction = spend_diff / (spend_grid[path_idx+1] - spend_grid[path_idx])
         pi_mat[next_unit, next_arm] = fraction
@@ -155,7 +155,7 @@ class MAQ:
             assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
         spend_grid = self._path["spend"]
-        path_idx = np.searchsorted(spend_grid, spend, side = "right") - 1
+        path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
 
         gain_path = self._path["gain"]
         se_path = self._path["std_err"]
