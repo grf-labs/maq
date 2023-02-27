@@ -26,6 +26,7 @@ class MAQ:
         assert (cost > 0).all(), "cost should be > 0."
         assert not np.isnan(reward).any(), "reward contains nans."
         assert not np.isnan(cost).any(), "cost contains nans."
+        self.budget = budget
 
         self._path = solver_cpp(reward, cost, budget,
             self.n_bootstrap, self.n_threads, self.seed)
@@ -33,10 +34,37 @@ class MAQ:
         self._is_fit = True
         return self
 
-    def predict(spend):
+    def predict(self, spend):
+        assert np.isscalar(spend), "spend should be a scalar."
+        assert self._is_fit, "MAQ object is not fit."
+        if not self._path["complete_path"]:
+            assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
-        return 1
+        pass
 
-    def average_gain(spend):
+    def average_gain(self, spend):
+        assert np.isscalar(spend), "spend should be a scalar."
+        assert self._is_fit, "MAQ object is not fit."
+        if not self._path["complete_path"]:
+            assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
-        return 1
+        spend_grid = self._path["spend"]
+        path_idx = np.searchsorted(spend_grid, spend, side = "right") - 1
+
+        gain_path = self._path["gain"]
+        se_path = self._path["std_err"]
+        if spend_grid.shape[0] == 0 or spend < spend_grid[0]:
+            estimate = 0
+            std_err = 0
+        elif path_idx == spend_grid.shape[0] - 1:
+            estimate = gain_path[path_idx]
+            std_err = se_path[path_idx]
+        else:
+            interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx+1] - spend_grid[path_idx])
+            estimate = gain_path[path_idx] + (gain_path[path_idx+1] - gain_path[path_idx]) * interp_ratio
+            std_err = se_path[path_idx] + (se_path[path_idx+1] - se_path[path_idx]) * interp_ratio
+
+        return estimate, std_err
+
+    def __repr__(self):
+        return "MAQ object."
