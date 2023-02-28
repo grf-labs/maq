@@ -25,8 +25,6 @@ namespace maq {
 
 typedef std::pair<std::vector<std::vector<double>>, std::vector<std::vector<size_t>>> solution_path;
 
-bool equal_doubles(double first, double second, double epsilon);
-
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<std::vector<size_t>>& R,
                            const Data& data,
