@@ -27,11 +27,11 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        const Rcpp::NumericVector& sample_weights,
                        const Rcpp::IntegerVector& tie_breaker,
                        const std::vector<size_t>& clusters,
-                       uint samples_per_cluster,
+                       unsigned int samples_per_cluster,
                        double budget,
                        size_t num_bootstrap,
-                       uint num_threads,
-                       uint seed) {
+                       unsigned int num_threads,
+                       unsigned int seed) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
   const double* weights_ptr = nullptr;
