@@ -167,3 +167,49 @@ test_that("std errors works as expected", {
   expect_equal(sd(res[, "est2"]), mean(res[, "se2"]), tolerance = 0.005)
   expect_equal(sd(res[, "est3"]), mean(res[, "se3"]), tolerance = 0.005)
 })
+
+test_that("null effect std errors works as expected", {
+  budget <- 100
+  n <- 1000
+  K <- 10
+  s.grid <- seq(0.05, 0.7, length.out = 10)
+
+  res <- t(replicate(500, {
+    reward <- matrix(rnorm(n * K), n, K)
+    cost <- 0.05 + matrix(runif(n * K), n, K)
+    reward.eval <- matrix(rnorm(n * K), n, K)
+    mq <- maq(reward, cost, budget, reward.eval)
+
+    est <- lapply(s.grid, function(s) average_gain(mq, s))
+    df.est <- do.call(rbind, est)
+
+    z.stat <- abs(df.est[, "estimate"] - 0) / df.est[, "std.err"]
+    coverage <- z.stat <= 1.96
+    coverage[is.na(coverage)] <- 1 # all cates zero?
+
+    c(
+      est = df.est[, "estimate"],
+      se = df.est[, "std.err"],
+      cov = coverage
+    )
+  }))
+  iest <- 1:length(s.grid)
+  ise <- iest + 10
+  icov <- -c(iest, ise)
+
+  expect_equal(
+    unname(colMeans(res[, iest])),
+    rep(0, length(s.grid)),
+    tolerance = 0.01
+  )
+  expect_equal(
+    unname(colMeans(res[, ise])),
+    unname(apply(res[, iest], 2, sd)),
+    tolerance = 0.01
+  )
+  expect_equal(
+    unname(colMeans(res[, icov])),
+    rep(0.95, length(s.grid)),
+    tolerance = 0.05
+  )
+})
