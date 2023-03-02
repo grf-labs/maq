@@ -8,7 +8,7 @@ class MAQ:
 
     Parameters
     ----------
-    n_bootstrap : int, default=150
+    n_bootstrap : int, default=200
         Number of bootstrap replicates for SEs. Default is 200.
 
     n_threads : int, default=0
