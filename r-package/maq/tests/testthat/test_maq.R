@@ -34,6 +34,34 @@ test_that("maq works as expected", {
   expect_equal(mq[["_path"]]$kpath, mq.scalecost[["_path"]]$kpath)
 })
 
+test_that("basic invariances hold", {
+  budget <- 25
+  n <- 100
+  K <- 10
+  reward <- matrix(1 + 2 * runif(n * K), n, K)
+  cost <- matrix(runif(n * K), n, K)
+  reward.eval <- matrix(1 + 2 * runif(n * K), n, K)
+
+  mqini <- maq(reward, cost, budget, reward.eval, seed = 42)
+  spend <- seq(0.05, 0.7, length.out = 20)
+
+  pi.gain <- c()
+  gain <- c()
+  for (s in spend) {
+    pi.mat <- predict(mqini, spend = s)
+    pi.gain <- c(pi.gain, sum(reward.eval * pi.mat) / n)
+    gain <-c(gain, average_gain(mqini, spend = s)[[1]])
+  }
+  expect_equal(pi.gain, gain, tolerance = 1e-12)
+
+  mq.scale <- maq(reward, cost, budget, reward.eval / 10, seed = 42)
+  expect_equal(mqini[["_path"]]$spend, mq.scale[["_path"]]$spend, tolerance = 1e-12)
+  expect_equal(mqini[["_path"]]$gain, mq.scale[["_path"]]$gain * 10, tolerance = 1e-12)
+  expect_equal(mqini[["_path"]]$std.err, mq.scale[["_path"]]$std.err * 10, tolerance = 1e-12)
+  expect_equal(mqini[["_path"]]$ipath, mq.scale[["_path"]]$ipath)
+  expect_equal(mqini[["_path"]]$kpath, mq.scale[["_path"]]$kpath)
+})
+
 test_that("sample weighting works as expected", {
   budget <- 1000
   n <- 200
