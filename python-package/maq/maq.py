@@ -8,7 +8,7 @@ class MAQ:
 
     Parameters
     ----------
-    n_bootstrap : int, default=150
+    n_bootstrap : int, default=200
         Number of bootstrap replicates for SEs. Default is 200.
 
     n_threads : int, default=0
@@ -41,7 +41,7 @@ class MAQ:
     >>> cost = np.random.rand(500, 4)
     >>> max_budget np.mean(cost)
     >>> mq = MAQ()
-    >>> mq.fit(reward, cost, max_budget)
+    >>> mq.fit(reward, cost, max_budget, reward)
     MAQ object.
 
     Get an estimate of optimal gain at a given spend along with standard errors.
@@ -69,7 +69,7 @@ class MAQ:
         self.seed = seed
         self._is_fit = False
 
-    def fit(self, reward, cost, budget):
+    def fit(self, reward, cost, budget, reward_scores):
         """Fit the MAQ curve up to a maximum spend/user.
 
         Parameters
@@ -82,19 +82,25 @@ class MAQ:
 
         budget : scalar
             The maximum spend/unit to fit the MAQ path on.
+
+        reward_scores : ndarray
+            A matrix of evaluation set reward score estimates.
         """
 
         reward = np.atleast_2d(reward)
         cost = np.atleast_2d(cost)
+        reward_scores = np.atleast_2d(reward_scores)
         assert reward.shape == cost.shape, "reward and cost should have equal dims."
+        assert reward.shape == reward_scores.shape, "reward and reward scores should have equal dims."
         assert np.isscalar(budget), "budget should be a scalar."
         assert (cost > 0).all(), "cost should be > 0."
         assert not np.isnan(reward).any(), "reward contains nans."
+        assert not np.isnan(reward_scores).any(), "reward scores contains nans."
         assert not np.isnan(cost).any(), "cost contains nans."
         self.budget = budget
 
         self._path = solver_cpp(
-            reward, cost, budget, self.n_bootstrap, self.n_threads, self.seed
+            reward, reward_scores, cost, budget, self.n_bootstrap, self.n_threads, self.seed
         )
 
         self._is_fit = True

@@ -74,13 +74,13 @@ solution_path compute_path(const std::vector<size_t>& samples,
       size_t active = active_set[top.sample] - 1;
       size_t active_arm = R[top.sample][active];
       spend -= data.get_cost(top.sample, active_arm);
-      gain -= data.get_reward(top.sample, active_arm);
+      gain -= data.get_reward_scores(top.sample, active_arm);
     }
 
     // assign
     double weight = bootstrap ? 2 : 1; // "0-2" bootstrap: half-sample with weight 2.
     double cost = weight * data.get_cost(top.sample, top.arm);
-    double reward = weight * data.get_reward(top.sample, top.arm);
+    double reward = weight * data.get_reward_scores(top.sample, top.arm);
     double current_spend = spend + cost;
     spend += cost;
     gain += reward;

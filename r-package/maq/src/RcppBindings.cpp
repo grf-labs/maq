@@ -23,6 +23,7 @@ using namespace maq;
 
 // [[Rcpp::export]]
 Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
+                       const Rcpp::NumericMatrix& reward_scores,
                        const Rcpp::NumericMatrix& cost,
                        const Rcpp::NumericVector& sample_weights,
                        const Rcpp::IntegerVector& tie_breaker,
@@ -43,7 +44,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
     tie_breaker_ptr = tie_breaker.begin();
   }
 
-  Data data(reward.begin(), cost.begin(), weights_ptr, tie_breaker_ptr, num_rows, num_cols, true);
+  Data data(reward.begin(), reward_scores.begin(), cost.begin(), weights_ptr, tie_breaker_ptr, num_rows, num_cols, true);
   MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
   MAQ maq(data, options);
 
@@ -67,7 +68,7 @@ Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), cost.begin(), nullptr, nullptr, num_rows, num_cols, true);
+  Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, num_rows, num_cols, true);
 
   return Rcpp::List::create(convex_hull(data));
 }

@@ -4,6 +4,7 @@
 #' @param reward A matrix of reward estimates.
 #' @param cost A matrix of cost estimates.
 #' @param budget The maximum spend/unit to fit the MAQ path on.
+#' @param reward.scores A matrix of evaluation set reward score estimates.
 #' @param R Number of bootstrap replicates for SEs. Default is 200.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
@@ -20,21 +21,37 @@
 #'
 #' @examples
 #' \donttest{
-#' # Fit a MAQ up to the maximum spend per unit.
-#' n <- 5000
-#' K <- 5
-#' reward <- matrix(0.1 + rnorm(n * K), n, K)
-#' cost <- 0.05 + matrix(runif(n * K), n, K)
-#' mq <- maq(reward, cost, mean(cost))
+#'
+#' if (require("grf", quietly = TRUE)) {
+#' # Estimate treatment effects on training data.
+#' n <- 1500
+#' p <- 5
+#' X <- matrix(rnorm(n * p), n, p)
+#' W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
+#' Y <- X[, 1] +  rnorm(n)
+#' cf <- multi_arm_causal_forest(X, Y, W, W.hat = rep(1/3, 3))
+#'
+#' # Predict CATEs and evaluation DR scores.
+#' cate.hat <- predict(cf)$predictions[,,]
+#' dr.hat <- get_scores(cf)[,,]
+#'
+#' # Form cost estimates.
+#' cost <- matrix(abs(colMeans(cate.hat)), nrow(cate.hat), ncol(cate.hat), byrow = TRUE)
+#' cost <- n *cost / sum(cost)
+#'
+#' # Fit MAQ using estimated CATEs and evaluate on DR scores.
+#' max.budget <- 1
+#' mq <- maq(cate.hat, cost, max.budget, dr.hat)
 #'
 #' # Plot the MAQ curve.
 #' plot(mq)
 #'
-#' # Get an estimate of optimal reward along with standard errors.
+#' # Get an estimate of optimal reward at given spend along with standard errors.
 #' average_gain(mq, spend = 0.1)
 #'
 #' # Get the optimal treatment allocation matrix at a given spend.
 #' pi.mat <- predict(mq, spend = 0.1)
+#' }
 #'
 #' }
 #'
@@ -42,15 +59,21 @@
 maq <- function(reward,
                 cost,
                 budget,
+                reward.scores = NULL,
                 R = 200,
                 sample.weights = NULL,
                 clusters = NULL,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
+  if (is.null(reward.scores)) {
+    reward.scores <- reward
+  }
+
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
-        || anyNA(reward) || anyNA(cost)) {
-    stop("reward and cost should be matrices of equal size with no missing values.")
+        || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
+        || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {
+    stop("rewards and costs should be matrices of equal size with no missing values.")
   }
 
   if (any(cost <= 0)) {
@@ -109,7 +132,8 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  ret <- solver_rcpp(as.matrix(reward), as.matrix(cost), sample.weights, tie.breaker, clusters,
+  ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
+                     sample.weights, tie.breaker, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
   output <- list()
