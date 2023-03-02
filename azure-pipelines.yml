@@ -35,6 +35,7 @@ jobs:
       ./run.sh bootstrap
       ./run.sh install_deps
       ./run.sh install_r lpSolve
+      ./run.sh install_r grf
     workingDirectory: r-package/maq
     displayName: Setup R
   - script: ./run.sh run_tests
