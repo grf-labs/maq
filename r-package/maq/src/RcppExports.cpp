@@ -11,12 +11,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // solver_rcpp
-Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const std::vector<size_t>& clusters, unsigned int samples_per_cluster, double budget, size_t num_bootstrap, unsigned int num_threads, unsigned int seed);
-RcppExport SEXP _maq_solver_rcpp(SEXP rewardSEXP, SEXP costSEXP, SEXP sample_weightsSEXP, SEXP tie_breakerSEXP, SEXP clustersSEXP, SEXP samples_per_clusterSEXP, SEXP budgetSEXP, SEXP num_bootstrapSEXP, SEXP num_threadsSEXP, SEXP seedSEXP) {
+Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& reward_scores, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const std::vector<size_t>& clusters, unsigned int samples_per_cluster, double budget, size_t num_bootstrap, unsigned int num_threads, unsigned int seed);
+RcppExport SEXP _maq_solver_rcpp(SEXP rewardSEXP, SEXP reward_scoresSEXP, SEXP costSEXP, SEXP sample_weightsSEXP, SEXP tie_breakerSEXP, SEXP clustersSEXP, SEXP samples_per_clusterSEXP, SEXP budgetSEXP, SEXP num_bootstrapSEXP, SEXP num_threadsSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type reward(rewardSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type reward_scores(reward_scoresSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type cost(costSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type sample_weights(sample_weightsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tie_breaker(tie_breakerSEXP);
@@ -26,7 +27,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< size_t >::type num_bootstrap(num_bootstrapSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type seed(seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(solver_rcpp(reward, cost, sample_weights, tie_breaker, clusters, samples_per_cluster, budget, num_bootstrap, num_threads, seed));
+    rcpp_result_gen = Rcpp::wrap(solver_rcpp(reward, reward_scores, cost, sample_weights, tie_breaker, clusters, samples_per_cluster, budget, num_bootstrap, num_threads, seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -44,7 +45,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_maq_solver_rcpp", (DL_FUNC) &_maq_solver_rcpp, 10},
+    {"_maq_solver_rcpp", (DL_FUNC) &_maq_solver_rcpp, 11},
     {"_maq_convex_hull_rcpp", (DL_FUNC) &_maq_convex_hull_rcpp, 2},
     {NULL, NULL, 0}
 };

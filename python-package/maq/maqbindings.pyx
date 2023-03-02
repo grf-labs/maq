@@ -9,6 +9,7 @@ from cython.operator cimport dereference as deref
 from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
+                 np.ndarray[double, ndim=2, mode="c"] reward_scores,
                  np.ndarray[double, ndim=2, mode="c"] cost,
                  double budget,
                  size_t n_bootstrap,
@@ -25,10 +26,14 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
 
     cdef bool col_major = False
     cdef Data* data_ptr
-    data_ptr = new Data(&reward[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols, col_major)
+    data_ptr = new Data(
+        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols, col_major
+    )
 
     cdef MAQOptions* opt_ptr
-    opt_ptr = new MAQOptions(budget, n_bootstrap, clusters, samples_per_cluster, num_threads, seed)
+    opt_ptr = new MAQOptions(
+        budget, n_bootstrap, clusters, samples_per_cluster, num_threads, seed
+    )
 
     cdef MAQ* maq_ptr
     maq_ptr = new MAQ(deref(data_ptr), deref(opt_ptr))

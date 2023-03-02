@@ -7,6 +7,7 @@ ctypedef pair[vector[vector[double]], vector[vector[size_t]]] solution_path
 cdef extern from '../../core/src/Data.h' namespace 'maq':
     cdef cppclass Data:
         Data(const double* data_reward,
+             const double* data_reward_scores,
              const double* data_cost,
              const double* data_weight,
              const int* data_tie_breaker,

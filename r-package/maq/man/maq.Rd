@@ -8,6 +8,7 @@ maq(
   reward,
   cost,
   budget,
+  reward.scores = NULL,
   R = 200,
   sample.weights = NULL,
   clusters = NULL,
@@ -22,6 +23,8 @@ maq(
 \item{cost}{A matrix of cost estimates.}
 
 \item{budget}{The maximum spend/unit to fit the MAQ path on.}
+
+\item{reward.scores}{A matrix of reward score estimates.}
 
 \item{R}{Number of bootstrap replicates for SEs. Default is 200.}
 
@@ -53,7 +56,8 @@ n <- 5000
 K <- 5
 reward <- matrix(0.1 + rnorm(n * K), n, K)
 cost <- 0.05 + matrix(runif(n * K), n, K)
-mq <- maq(reward, cost, mean(cost))
+max.budget <- mean(cost)
+mq <- maq(reward, cost, max.budget, reward)
 
 # Plot the MAQ curve.
 plot(mq)

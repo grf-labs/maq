@@ -4,6 +4,7 @@
 #' @param reward A matrix of reward estimates.
 #' @param cost A matrix of cost estimates.
 #' @param budget The maximum spend/unit to fit the MAQ path on.
+#' @param reward.scores A matrix of reward score estimates.
 #' @param R Number of bootstrap replicates for SEs. Default is 200.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
@@ -25,7 +26,8 @@
 #' K <- 5
 #' reward <- matrix(0.1 + rnorm(n * K), n, K)
 #' cost <- 0.05 + matrix(runif(n * K), n, K)
-#' mq <- maq(reward, cost, mean(cost))
+#' max.budget <- mean(cost)
+#' mq <- maq(reward, cost, max.budget, reward)
 #'
 #' # Plot the MAQ curve.
 #' plot(mq)
@@ -42,15 +44,21 @@
 maq <- function(reward,
                 cost,
                 budget,
+                reward.scores = NULL,
                 R = 200,
                 sample.weights = NULL,
                 clusters = NULL,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
+  if (is.null(reward.scores)) {
+    reward.scores <- reward
+  }
+
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
-        || anyNA(reward) || anyNA(cost)) {
-    stop("reward and cost should be matrices of equal size with no missing values.")
+        || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
+        || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {
+    stop("rewards and costs should be matrices of equal size with no missing values.")
   }
 
   if (any(cost <= 0)) {
@@ -109,7 +117,8 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  ret <- solver_rcpp(as.matrix(reward), as.matrix(cost), sample.weights, tie.breaker, clusters,
+  ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
+                     sample.weights, tie.breaker, clusters,
                      samples.per.cluster, budget, R, num.threads, seed)
 
   output <- list()

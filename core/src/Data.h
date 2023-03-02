@@ -29,6 +29,7 @@ namespace maq {
 class Data {
 public:
   Data(const double* data_reward,
+       const double* data_reward_scores,
        const double* data_cost,
        const double* data_weight,
        const int* data_tie_breaker,
@@ -38,6 +39,7 @@ public:
       num_rows(num_rows),
       num_cols(num_cols),
       data_reward(data_reward),
+      data_reward_scores(data_reward_scores),
       data_cost(data_cost),
       data_weight(data_weight),
       data_tie_breaker(data_tie_breaker),
@@ -48,6 +50,10 @@ public:
 
   double get_reward(size_t row, size_t col) const {
     return data_reward[index(row, col)] * get_weight(row);
+  }
+
+  double get_reward_scores(size_t row, size_t col) const {
+    return data_reward_scores[index(row, col)] * get_weight(row);
   }
 
   double get_cost(size_t row, size_t col) const {
@@ -83,6 +89,7 @@ private:
   }
 
   const double* data_reward;
+  const double* data_reward_scores;
   const double* data_cost;
   const double* data_weight;
   const int* data_tie_breaker;
