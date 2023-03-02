@@ -24,7 +24,7 @@ maq(
 
 \item{budget}{The maximum spend/unit to fit the MAQ path on.}
 
-\item{reward.scores}{A matrix of reward score estimates.}
+\item{reward.scores}{A matrix of evaluation set reward score estimates.}
 
 \item{R}{Number of bootstrap replicates for SEs. Default is 200.}
 

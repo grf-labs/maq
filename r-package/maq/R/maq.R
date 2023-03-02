@@ -4,7 +4,7 @@
 #' @param reward A matrix of reward estimates.
 #' @param cost A matrix of cost estimates.
 #' @param budget The maximum spend/unit to fit the MAQ path on.
-#' @param reward.scores A matrix of reward score estimates.
+#' @param reward.scores A matrix of evaluation set reward score estimates.
 #' @param R Number of bootstrap replicates for SEs. Default is 200.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.

@@ -84,7 +84,7 @@ class MAQ:
             The maximum spend/unit to fit the MAQ path on.
 
         reward_scores : ndarray
-            A matrix of reward score estimates.
+            A matrix of evaluation set reward score estimates.
         """
 
         reward = np.atleast_2d(reward)
