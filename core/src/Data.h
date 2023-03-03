@@ -25,7 +25,7 @@ namespace maq {
 // Data wrapper for column or row major storage
 // Rewards can be any real number
 // Costs should be > 0
-// Weights should be > 0
+// Weights should be > 0 and sum to 1
 class Data {
 public:
   Data(const double* data_reward,
