@@ -8,7 +8,7 @@ maq(
   reward,
   cost,
   budget,
-  reward.scores = NULL,
+  reward.scores,
   R = 200,
   sample.weights = NULL,
   clusters = NULL,
