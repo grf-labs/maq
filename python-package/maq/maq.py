@@ -37,10 +37,14 @@ class MAQ:
 
     Fit a MAQ up to the maximum spend per unit.
 
-    >>> reward = np.random.randn(500, 4)
-    >>> cost = np.random.rand(500, 4)
+    >>> np.random.seed(42)
+    >>> n = 1000
+    >>> K = 5
+    >>> reward = np.random.randn(n, K)
+    >>> cost = np.random.rand(n, K)
     >>> reward_eval = np.random.randn(n, K)
-    >>> max_budget np.mean(cost)
+    >>> max_budget = np.mean(cost)
+
     >>> mq = MAQ()
     >>> mq.fit(reward, cost, max_budget, reward_eval)
     MAQ object.
@@ -48,18 +52,18 @@ class MAQ:
     Get an estimate of optimal gain at a given spend along with standard errors.
 
     >>> mq.average_gain(spend=0.1)
-    (0.5917015252593616, 0.021926570827925398)
+    (0.005729002695991717, 0.021181093438878026)
 
     Get the optimal treatment allocation matrix at a given spend, a n x K array.
 
     >>> mq.predict(spend=0.1)
-    array([[1., 0., 0., 0.],
-        [0., 0., 1., 0.],
-        [0., 0., 0., 0.],
-        ...,
-        [0., 0., 0., 1.],
-        [0., 0., 0., 0.],
-        [0., 0., 0., 0.]])
+    array([[0., 0., 0., 1., 0.],
+           [0., 0., 0., 0., 1.],
+           [0., 0., 0., 0., 0.],
+           ...,
+           [0., 0., 0., 0., 1.],
+           [0., 0., 0., 1., 0.],
+           [0., 0., 1., 0., 0.]])
     """
 
     def __init__(self, n_bootstrap=200, n_threads=0, seed=42):

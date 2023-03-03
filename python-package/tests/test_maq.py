@@ -1,7 +1,9 @@
 import pytest
+import doctest
 import numpy as np
 import numpy.testing as nt
 
+import maq
 from maq import MAQ
 from maq.ext import solver_cpp
 
@@ -20,6 +22,10 @@ def test_bindings():
     mq = MAQ(n_bootstrap=n_bootstrap, n_threads=0, seed=0)
     mq.fit(reward, cost, budget, reward)
     nt.assert_equal(ret, mq._path)
+
+def test_docstring():
+    test = doctest.testmod(maq.maq)
+    assert test.failed == 0
 
 def test_MAQ():
     budget = 100
