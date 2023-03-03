@@ -39,9 +39,10 @@ class MAQ:
 
     >>> reward = np.random.randn(500, 4)
     >>> cost = np.random.rand(500, 4)
+    >>> reward_eval = np.random.randn(n, K)
     >>> max_budget np.mean(cost)
     >>> mq = MAQ()
-    >>> mq.fit(reward, cost, max_budget, reward)
+    >>> mq.fit(reward, cost, max_budget, reward_eval)
     MAQ object.
 
     Get an estimate of optimal gain at a given spend along with standard errors.
