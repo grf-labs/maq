@@ -64,6 +64,15 @@ class MAQ:
            [0., 0., 0., 0., 1.],
            [0., 0., 0., 1., 0.],
            [0., 0., 1., 0., 0.]])
+
+    Plot the gain curve.
+
+    >>> import matplotlib.pyplot as plt # doctest: +SKIP
+
+    >>> plt.plot(mq.path_spend_, mq.path_gain_) # doctest: +SKIP
+    >>> plt.xlabel("Spend/unit") # doctest: +SKIP
+    >>> plt.title("Gain/unit") # doctest: +SKIP
+    >>> plt.show() # doctest: +SKIP
     """
 
     def __init__(self, n_bootstrap=200, n_threads=0, seed=42):
