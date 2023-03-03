@@ -36,7 +36,7 @@ test_that("gain solution path is same as LP solution (small problem)", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget)
+  mqini <- maq(reward, cost, budget, reward)
   gain <- mqini[["_path"]]$gain
 
   lp.gain <- c()
@@ -55,7 +55,7 @@ test_that("solution is same as LP solution (fixed medium problem)", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget)
+  mqini <- maq(reward, cost, budget, reward)
 
   ix <- length(mqini[["_path"]]$spend) - 1
   spend <- mqini[["_path"]]$spend[ix]
@@ -71,7 +71,7 @@ test_that("pi matrix is consistent with gain path", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget)
+  mqini <- maq(reward, cost, budget, reward)
   gain <- mqini[["_path"]]$gain
 
   pi.gain <- c()
@@ -90,7 +90,7 @@ test_that("arbitrary points off gain path is same as LP", {
   reward <- matrix(0.1 + rnorm(n * K), n, K);
   cost <- matrix(0.05 + runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget)
+  mqini <- maq(reward, cost, budget, reward)
   spend.rng <- range(mqini[["_path"]]$spend)
   spends <- runif(25, spend.rng[1], spend.rng[2])
 

@@ -59,17 +59,13 @@
 maq <- function(reward,
                 cost,
                 budget,
-                reward.scores = NULL,
+                reward.scores,
                 R = 200,
                 sample.weights = NULL,
                 clusters = NULL,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
-  if (is.null(reward.scores)) {
-    reward.scores <- reward
-  }
-
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
         || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
         || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {

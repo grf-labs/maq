@@ -5,7 +5,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.210864071284327, 0.336992370772761, 0.40415666673176)
@@ -17,7 +17,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.210864071284327, 0.336992370772761, 0.353321995537749,
@@ -30,7 +30,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     numeric(0)
@@ -42,7 +42,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.00110506400430251, 0.00189594507415308, 0.0033522551095379,
@@ -350,7 +350,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.000458416965646791, 0.00149052057251392, 0.00259724891425233,
