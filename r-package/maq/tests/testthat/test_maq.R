@@ -213,3 +213,16 @@ test_that("null effect std errors works as expected", {
     tolerance = 0.05
   )
 })
+
+test_that("tie handling works as expected", {
+  budget <- 100
+  n <- 500
+  K <- 3
+  reward <- matrix(sample(c(1, 10), n * K, TRUE), n, K)
+  cost <- matrix(sample(c(1, 2), n * K, TRUE), n, K)
+
+  mq1 <- maq(reward, cost, budget, reward, R = 0)
+  mq2 <- maq(reward, cost, budget, reward, tie.breaker = rev(1:n), R = 0)
+
+  expect_true(all(mq1[["_path"]]$ipath[1:20] < mq2[["_path"]]$ipath[1:20]))
+})

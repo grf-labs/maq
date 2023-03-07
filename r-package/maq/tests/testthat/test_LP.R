@@ -111,3 +111,20 @@ test_that("arbitrary points off gain path is same as LP", {
   expect_equal(gain.mq, gain.lp, tolerance = 1e-12)
   expect_equal(gain.mq.alt, gain.lp, tolerance = 1e-12)
 })
+
+test_that("non-unique solution works as expected", {
+  budget <- 100
+  n <- 100
+  K <- 5
+  reward <- matrix(sample(c(1, 10), n * K, TRUE), n, K)
+  cost <- matrix(sample(c(1, 2), n * K, TRUE), n, K)
+  spend <- 1
+
+  mq1 <- maq(reward, cost, budget, reward, R = 0)
+  mq2 <- maq(reward, cost, budget, reward, R = 0, tie.breaker = sample(1:n))
+  lp <- lp_solver(reward, cost, spend)
+  lp.reward <- sum(lp$alloc.mat * reward) / n
+
+  expect_equal(average_gain(mq1, spend = spend)[[1]], lp.reward, tolerance = 1e-10)
+  expect_equal(average_gain(mq2, spend = spend)[[1]], lp.reward, tolerance = 1e-10)
+})
