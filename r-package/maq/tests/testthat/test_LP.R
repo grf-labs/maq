@@ -1,4 +1,4 @@
-# Solves the linear knapsack-type problem with a generic LP solver for a given spend.
+# Solves the linear knapsack-type (MCKP) problem with a generic LP solver for a given spend.
 tryCatch(
   {
     attachNamespace("lpSolve")
@@ -127,4 +127,28 @@ test_that("non-unique solution works as expected", {
 
   expect_equal(average_gain(mq1, spend = spend)[[1]], lp.reward, tolerance = 1e-10)
   expect_equal(average_gain(mq2, spend = spend)[[1]], lp.reward, tolerance = 1e-10)
+})
+
+test_that("SEs capture LP resolved", {
+  budget <- 100
+  n <- 50
+  K <- 3
+  reward <- matrix(rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+  mq <- maq(reward, cost, budget, reward, R = 500)
+
+  # pick an arbitrary spend point except the initial grid point
+  sp <- sample(mq[["_path"]]$spend[-(1:3)], 1)
+  mq.se <- average_gain(mq, spend = sp)[[2]]
+  # this SE should correspond to
+
+  res <- t(replicate(500, {
+    reward <- matrix(rnorm(n * K), n, K)
+    cost <- 0.05 + matrix(runif(n * K), n, K)
+    lp <- lp_solver(reward, cost, sp)
+
+    c(gain = lp$gain)
+  }))
+
+  expect_equal(mq.se, sd(res), tolerance = 0.025)
 })
