@@ -4,7 +4,7 @@
 
 A C++ solver for the Multi-Action QINI (maq) - a generalization of the "QINI" to multiple costly treatment arms.
 
-The development version (R) can be installed by
+The development version (R package) can be installed by
 
 ```R
 devtools::install_github("grf-labs/maq", subdir = "r-package/maq")
