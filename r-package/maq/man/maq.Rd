@@ -51,38 +51,41 @@ Fit a Multi-Action QINI.
 }
 \examples{
 \donttest{
-
 if (require("grf", quietly = TRUE)) {
-# Estimate treatment effects on training data.
-n <- 1500
+# Fit a CATE estimator on a training sample.
+n <- 2000
 p <- 5
-X <- matrix(rnorm(n * p), n, p)
+X <- matrix(runif(n * p), n, p)
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
-Y <- X[, 1] +  rnorm(n)
-cf <- multi_arm_causal_forest(X, Y, W, W.hat = rep(1/3, 3))
+Y <- X[, 1] + X[, 2] * (W == "B") + X[, 3] * (W == "C") + rnorm(n)
+train <- sample(1:n, n/2)
+eval <- -train
 
-# Predict CATEs and evaluation DR scores.
-cate.hat <- predict(cf)$predictions[,,]
-dr.hat <- get_scores(cf)[,,]
+tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 
-# Form cost estimates.
-cost <- matrix(abs(colMeans(cate.hat)), nrow(cate.hat), ncol(cate.hat), byrow = TRUE)
-cost <- n *cost / sum(cost)
+# Predict CATEs on held out evaluation data.
+tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
 
-# Fit MAQ using estimated CATEs and evaluate on DR scores.
+# Form cost estimates - the following are a toy example.
+cost.hat <- X[eval, 2:3]
+
+# Fit a evaluation forest to compute doubly robust evaluation set scores.
+eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
+dr.scores <- grf::get_scores(eval.forest)[,,]
+
+# Fit a MAQ using evaluation set estimates.
 max.budget <- 1
-mq <- maq(cate.hat, cost, max.budget, dr.hat)
+mq <- maq(tau.hat, cost.hat, max.budget, dr.scores)
 
 # Plot the MAQ curve.
 plot(mq)
 
-# Get an estimate of optimal reward at given spend along with standard errors.
-average_gain(mq, spend = 0.1)
+# Get an estimate of optimal reward at a given spend/unit along with standard errors.
+average_gain(mq, spend = 0.3)
 
-# Get the optimal treatment allocation matrix at a given spend.
-pi.mat <- predict(mq, spend = 0.1)
+# Get the optimal treatment allocation matrix at a given spend/unit.
+pi.mat <- predict(mq, spend = 0.3)
 }
-
 }
 
 }
