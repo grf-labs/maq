@@ -52,7 +52,7 @@ Fit a Multi-Action QINI.
 \examples{
 \donttest{
 if (require("grf", quietly = TRUE)) {
-# Fit a CATE estimator on a training sample.
+# Fit a CATE estimator (using GRF) on a training sample.
 n <- 2000
 p <- 5
 X <- matrix(runif(n * p), n, p)
