@@ -41,11 +41,11 @@
 #'
 #' # Fit a evaluation forest to compute doubly robust evaluation set scores.
 #' eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
-#' dr.scores <- grf::get_scores(eval.forest)[,,]
+#' DR.scores <- grf::get_scores(eval.forest)[,,]
 #'
 #' # Fit a MAQ using evaluation set estimates.
 #' max.budget <- 1
-#' mq <- maq(tau.hat, cost.hat, max.budget, dr.scores)
+#' mq <- maq(tau.hat, cost.hat, max.budget, DR.scores)
 #'
 #' # Plot the MAQ curve.
 #' plot(mq)
