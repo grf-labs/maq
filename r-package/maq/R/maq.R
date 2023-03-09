@@ -37,7 +37,7 @@
 #' tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
 #'
 #' # Form cost estimates - the following are a toy example.
-#' cost.hat <- X[eval, 2:3]
+#' cost.hat <- X[eval, 4:5]
 #'
 #' # Fit a evaluation forest to compute doubly robust evaluation set scores.
 #' eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
@@ -50,14 +50,14 @@
 #' # Plot the MAQ curve.
 #' plot(mq)
 #'
-#' # Get an estimate of optimal reward at a given spend/unit along with standard errors.
+#' # Get an estimate of optimal reward at a given spend per unit along with standard errors.
 #' average_gain(mq, spend = 0.3)
 #'
-#' # Get the optimal treatment allocation matrix at a given spend/unit.
+#' # Get the optimal treatment allocation matrix at a given spend per unit.
 #' pi.mat <- predict(mq, spend = 0.3)
 #'
 #' # If the treatment randomization probabilities are known, then an alternative to
-#' # evaluation via AIPW scores could be to use inverse-propensity weighting (IPW).
+#' # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
 #' W.hat.true <- rep(1/3, 3)
 #' observed.W <- match(W, levels(W))
 #' Y.k.mat <- matrix(0, length(W), nlevels(W))
