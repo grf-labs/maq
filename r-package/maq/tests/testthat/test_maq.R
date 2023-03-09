@@ -214,6 +214,47 @@ test_that("null effect std errors works as expected", {
   )
 })
 
+test_that("A grf workflow works as expected", {
+  n <- 2000
+  p <- 5
+  X <- matrix(runif(n * p), n, p)
+  W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
+  Y <- X[, 1] + X[, 2] * (W == "B") + X[, 3] * (W == "C") + rnorm(n)
+
+  max.budget <- 1
+  spend <- 0.3
+  tau.true <- cbind(X[,2], X[,3])
+  mq.true <- maq(tau.true, X[, 4:5], max.budget, tau.true)
+  est.true <- average_gain(mq.true, spend = spend)[[1]]
+
+  train <- sample(1:n, n/2)
+  eval <- -train
+  cost.hat <- X[eval, 4:5]
+  tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
+  tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
+
+  # A MAQ evaluated via DR scores
+  eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
+  DR.scores <- grf::get_scores(eval.forest)[,,]
+  mq.aipw <- maq(tau.hat, cost.hat, max.budget, DR.scores)
+  est.aipw <- average_gain(mq.aipw, spend = spend)
+
+  # A MAQ evaluated via IPW
+  W.hat.true <- rep(1/3, 3)
+  observed.W <- match(W, levels(W))
+  Y.k.mat <- matrix(0, length(W), nlevels(W))
+  Y.k.mat[cbind(seq_along(observed.W), observed.W)] <- Y
+  Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
+  Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
+
+  mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
+  est.ipw <- average_gain(mq.ipw, spend = spend)
+
+  expect_equal(est.aipw[[1]], est.ipw[[1]], tolerance = 0.15)
+  expect_equal(est.aipw[[1]], est.true, tolerance = 3 * est.aipw[[2]])
+  expect_equal(est.ipw[[1]], est.true, tolerance = 3 * est.ipw[[2]])
+})
+
 test_that("tie handling works as expected", {
   budget <- 100
   n <- 500
