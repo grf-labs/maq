@@ -2,9 +2,10 @@
 #'
 #'
 #' @param reward A matrix of reward estimates.
-#' @param cost A matrix of cost estimates.
+#' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
+#'  be a ncol(reward)-length vector.
 #' @param budget The maximum spend/unit to fit the MAQ path on.
-#' @param reward.scores A matrix of evaluation set reward score estimates.
+#' @param reward.scores A matrix of rewards to evaluate the MAQ on.
 #' @param R Number of bootstrap replicates for SEs. Default is 200.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
@@ -80,6 +81,10 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = runif(1, 0, .Machine$integer.max)) {
+  if (is.vector(cost) && length(cost) == NCOL(reward)) {
+    cost <- matrix(cost, NROW(reward), NCOL(reward), byrow = TRUE)
+  }
+
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
         || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
         || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {

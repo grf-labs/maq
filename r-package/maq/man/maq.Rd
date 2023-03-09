@@ -20,11 +20,12 @@ maq(
 \arguments{
 \item{reward}{A matrix of reward estimates.}
 
-\item{cost}{A matrix of cost estimates.}
+\item{cost}{A matrix of cost estimates. If the costs are the same for each unit, then this can also
+be a ncol(reward)-length vector.}
 
 \item{budget}{The maximum spend/unit to fit the MAQ path on.}
 
-\item{reward.scores}{A matrix of evaluation set reward score estimates.}
+\item{reward.scores}{A matrix of rewards to evaluate the MAQ on.}
 
 \item{R}{Number of bootstrap replicates for SEs. Default is 200.}
 
