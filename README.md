@@ -76,6 +76,6 @@ In particular, `maq` efficiently computes the path of solutions to the following
 \end{aligned}
 ```
 
-That is, a point on the Multi-Action QINI curve is a solution to the above LP.
+That is, the Multi-Action QINI traces out the expected value of an optimal treatment allocation as the spend level increases, where the optimal allocation is given by the above LP.
 
 ### References

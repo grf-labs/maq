@@ -1,5 +1,5 @@
 Package: maq
-Title: Multi-Action QINI.
+Title: Multi-Action QINI
 Version: 0.1.0
 Authors@R: c(
     person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
