@@ -95,7 +95,7 @@ class MAQ:
             A matrix of cost estimates.
 
         budget : scalar
-            The maximum spend/unit to fit the MAQ path on.
+            The maximum spend per unit to fit the MAQ path on.
 
         reward_scores : ndarray
             A matrix of rewards to evaluate the MAQ on.

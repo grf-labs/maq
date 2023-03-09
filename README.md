@@ -32,7 +32,7 @@ tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
 # Form cost estimates - the following are a toy example.
 cost.hat <- X[eval, 4:5]
 
-# Fit a evaluation forest to compute doubly robust evaluation set scores.
+# Fit an evaluation forest to compute doubly robust evaluation set scores.
 eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
 DR.scores <- grf::get_scores(eval.forest)[,,]
 

@@ -23,7 +23,7 @@ maq(
 \item{cost}{A matrix of cost estimates. If the costs are the same for each unit, then this can also
 be a ncol(reward)-length vector.}
 
-\item{budget}{The maximum spend/unit to fit the MAQ path on.}
+\item{budget}{The maximum spend per unit to fit the MAQ path on.}
 
 \item{reward.scores}{A matrix of rewards to evaluate the MAQ on.}
 
@@ -70,7 +70,7 @@ tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
 # Form cost estimates - the following are a toy example.
 cost.hat <- X[eval, 4:5]
 
-# Fit a evaluation forest to compute doubly robust evaluation set scores.
+# Fit an evaluation forest to compute doubly robust evaluation set scores.
 eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
 DR.scores <- grf::get_scores(eval.forest)[,,]
 
