@@ -1,4 +1,4 @@
-#' Fit a Multi-Action QINI.
+#' Fit a Multi-Action Qini.
 #'
 #'
 #' @param reward A matrix of reward estimates.

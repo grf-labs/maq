@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A C++ solver for the Multi-Action QINI ("maq") - a generalization of the QINI to multiple costly treatment arms.
+A C++ solver for the Multi-Action Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
 
 The development version (R package) can be installed by
 
@@ -76,6 +76,6 @@ In particular, `maq` efficiently computes the path of solutions to the following
 \end{aligned}
 ```
 
-That is, the Multi-Action QINI traces out the expected value of an optimal treatment allocation as the spend level increases, where the optimal allocation is given by the above LP.
+That is, the Multi-Action Qini traces out the expected value of an optimal treatment allocation as the spend level increases, where the optimal allocation is given by the above LP.
 
 ### References

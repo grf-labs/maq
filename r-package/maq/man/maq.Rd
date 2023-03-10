@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{maq}
 \alias{maq}
-\title{Fit a Multi-Action QINI.}
+\title{Fit a Multi-Action Qini.}
 \usage{
 maq(
   reward,
@@ -48,7 +48,7 @@ is set to the maximum hardware concurrency.}
 A fit maq object.
 }
 \description{
-Fit a Multi-Action QINI.
+Fit a Multi-Action Qini.
 }
 \examples{
 \donttest{
