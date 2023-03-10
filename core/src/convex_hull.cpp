@@ -22,10 +22,10 @@
 #include "convex_hull.h"
 
 /*
-Find the upper left convex hull on the (cost, reward) plane for each sample.
-This takes O(num_rows * num_arms * log(num_arms)) time using the Graham scan
-for finding a convex hull, with the the "angle calculation" replaced by
-a variant of the "LP dominance" criteria (11.6) and (11.7) in Kellerer et al. (2004, Chapter 11).
+Find the upper left convex hull on the (cost, reward) plane for each sample. This takes
+O(num_rows * num_arms * log(num_arms)) time using the Graham scan for finding a convex hull,
+with the the "angle calculation" replaced by a variant of the "LP dominance" criteria
+(11.6) and (11.7) in Kellerer et al. (2004, Chapter 11).
 
 Consider 3 points j, k, l ordered according to cost j < k < l.
 This algorithm maintains a stack with the first two points on top, then iteratively
