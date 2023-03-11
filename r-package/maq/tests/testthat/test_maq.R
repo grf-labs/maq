@@ -38,6 +38,8 @@ test_that("maq works as expected", {
   mq.sp <- maq(reward, cost, sp, reward, seed = 42)
   len <- length(mq.sp[["_path"]]$spend)
   expect_equal(mq.sp[["_path"]]$spend[len], sp)
+  expect_equal(mq[["_path"]]$gain[1:100], mq.sp[["_path"]]$gain)
+  expect_equal(mq[["_path"]]$std.err[1:100], mq.sp[["_path"]]$std.err)
 })
 
 test_that("basic invariances hold", {
