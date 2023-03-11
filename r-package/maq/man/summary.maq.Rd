@@ -7,7 +7,7 @@
 \method{summary}{maq}(object, ...)
 }
 \arguments{
-\item{object}{The maq object.}
+\item{object}{A maq object.}
 
 \item{...}{Additional arguments (currently ignored).}
 }

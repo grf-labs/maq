@@ -7,7 +7,7 @@
 \method{print}{maq}(x, ...)
 }
 \arguments{
-\item{x}{The maq object.}
+\item{x}{A maq object.}
 
 \item{...}{Additional arguments (currently ignored).}
 }

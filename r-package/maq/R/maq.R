@@ -239,7 +239,7 @@ average_gain <- function(object,
 }
 
 #' MAQ Summary.
-#' @param object The maq object.
+#' @param object A maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A data.frame with the computed path.
@@ -258,7 +258,7 @@ summary.maq <- function(object,
 }
 
 #' Print a maq object.
-#' @param x The maq object.
+#' @param x A maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @method print maq
@@ -270,7 +270,7 @@ print.maq <- function(x,
 }
 
 #' Plot the gain/spend curve.
-#' @param x The output of maq.
+#' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #'
 #' @method plot maq

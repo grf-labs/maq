@@ -7,7 +7,7 @@
 \method{plot}{maq}(x, ...)
 }
 \arguments{
-\item{x}{The output of maq.}
+\item{x}{A maq object.}
 
 \item{...}{Additional arguments passed to plot.}
 }
