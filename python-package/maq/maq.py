@@ -52,7 +52,7 @@ class MAQ:
     Get an estimate of optimal gain at a given spend along with standard errors.
 
     >>> mq.average_gain(spend=0.1)
-    (0.005729002695991717, 0.021032360332699597)
+    (0.005729002695991717, 0.02073373413287298)
 
     Get the optimal treatment allocation matrix at a given spend, a n x K array.
 

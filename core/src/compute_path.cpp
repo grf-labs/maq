@@ -65,6 +65,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
 
   double spend = 0;
   double gain = 0;
+  double bs_weight = bootstrap ? 2 : 1; // "0-2" bootstrap: half-sample with weight 2.
   while (pqueue.size() > 0 && spend < budget) {
     auto top = pqueue.top();
     pqueue.pop();
@@ -73,15 +74,13 @@ solution_path compute_path(const std::vector<size_t>& samples,
     if (active_set[top.sample] > 0) {
       size_t active = active_set[top.sample] - 1;
       size_t active_arm = R[top.sample][active];
-      spend -= data.get_cost(top.sample, active_arm);
-      gain -= data.get_reward_scores(top.sample, active_arm);
+      spend -= bs_weight * data.get_cost(top.sample, active_arm);
+      gain -= bs_weight * data.get_reward_scores(top.sample, active_arm);
     }
 
     // assign
-    double bs_weight = bootstrap ? 2 : 1; // "0-2" bootstrap: half-sample with weight 2.
     double cost = data.get_cost(top.sample, top.arm);
     double reward = data.get_reward(top.sample, top.arm);
-
     double current_spend = spend + bs_weight * cost;
 
     spend += bs_weight * cost;

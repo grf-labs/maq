@@ -129,7 +129,7 @@ test_that("non-unique solution works as expected", {
   expect_equal(average_gain(mq2, spend = spend)[[1]], lp.reward, tolerance = 1e-10)
 })
 
-test_that("SEs capture LP resolved", {
+test_that("SEs capture LP re-solved", {
   budget <- 100
   n <- 50
   K <- 3
