@@ -39,10 +39,6 @@ bool operator <(const QueueElement& lhs, const QueueElement& rhs) {
     || (lhs.priority == rhs.priority && lhs.tie_breaker > rhs.tie_breaker);
 }
 
-bool equal_doubles(double first, double second, double epsilon) {
-  return std::abs(first - second) < epsilon;
-}
-
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<std::vector<size_t>>& R,
                            const Data& data,
@@ -103,7 +99,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
 
     // have we reached maximum spend? if so stop at nearest integer solution (rounded up)
-    if (spend >= budget || equal_doubles(spend, budget, 1e-16)) {
+    if (spend >= budget) {
       break;
     }
   }

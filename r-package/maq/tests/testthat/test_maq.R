@@ -32,6 +32,12 @@ test_that("maq works as expected", {
   expect_equal(mq[["_path"]]$std.err, mq.scalecost[["_path"]]$std.err, tolerance = 1e-12)
   expect_equal(mq[["_path"]]$ipath, mq.scalecost[["_path"]]$ipath)
   expect_equal(mq[["_path"]]$kpath, mq.scalecost[["_path"]]$kpath)
+
+  # incomplete path
+  sp <- mq[["_path"]]$spend[100]
+  mq.sp <- maq(reward, cost, sp, reward, seed = 42)
+  len <- length(mq.sp[["_path"]]$spend)
+  expect_equal(mq.sp[["_path"]]$spend[len], sp)
 })
 
 test_that("basic invariances hold", {
