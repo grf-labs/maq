@@ -81,7 +81,6 @@ solution_path compute_path(const std::vector<size_t>& samples,
     // assign
     double cost = data.get_cost(top.sample, top.arm);
     double reward = data.get_reward(top.sample, top.arm);
-    double current_spend = spend + bs_weight * cost;
 
     spend += bs_weight * cost;
     gain += bs_weight * data.get_reward_scores(top.sample, top.arm);
@@ -104,7 +103,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
 
     // have we reached maximum spend? if so stop at nearest integer solution (rounded up)
-    if (current_spend >= budget || equal_doubles(current_spend, budget, 1e-16)) {
+    if (spend >= budget || equal_doubles(spend, budget, 1e-16)) {
       break;
     }
   }
