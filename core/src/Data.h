@@ -18,6 +18,7 @@
 #ifndef MAQ_DATA_H
 #define MAQ_DATA_H
 
+#include <vector>
 #include <cstddef>
 
 namespace maq {
