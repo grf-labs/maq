@@ -142,6 +142,7 @@ class MAQ:
 
         spend_grid = self._path["spend"]
         path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
+        # an optional dependency on scipy could make this a sparse array.
         pi_mat = np.zeros(self._dim, dtype="double")
         if path_idx < 0:
             return pi_mat
