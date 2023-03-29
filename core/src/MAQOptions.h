@@ -8,13 +8,11 @@
 
 namespace maq {
 
-typedef unsigned int uint;
-
 struct MAQOptions {
   MAQOptions(double budget,
              unsigned int num_bootstrap,
-             uint num_threads,
-             uint random_seed) :
+             unsigned int num_threads,
+             unsigned int random_seed) :
       budget(budget),
       num_bootstrap(num_bootstrap),
       random_seed(random_seed) {
@@ -26,8 +24,8 @@ struct MAQOptions {
 
   double budget;
   unsigned int num_bootstrap;
-  uint num_threads;
-  uint random_seed;
+  unsigned int num_threads;
+  unsigned int random_seed;
 };
 
 } // namespace maq

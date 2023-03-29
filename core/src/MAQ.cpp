@@ -35,7 +35,7 @@ solution_path MAQ::fit() {
 
 std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat,
                                                 const std::vector<std::vector<size_t>>& R) {
-  std::vector<uint> thread_ranges;
+  std::vector<unsigned int> thread_ranges;
   split_sequence(thread_ranges, 0, static_cast<unsigned int>(options.num_bootstrap - 1), options.num_threads);
 
   std::vector<std::future<std::vector<std::vector<double>>>> futures;
@@ -44,7 +44,7 @@ std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat,
   std::vector<std::vector<double>> predictions;
   predictions.reserve(options.num_bootstrap);
 
-  for (uint i = 0; i < thread_ranges.size() - 1; ++i) {
+  for (unsigned int i = 0; i < thread_ranges.size() - 1; ++i) {
     size_t start_index = thread_ranges[i];
     size_t num_replicates_batch = thread_ranges[i + 1] - start_index;
 
@@ -168,7 +168,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
 
 }
 
-void MAQ::split_sequence(std::vector<uint>& result, uint start, uint end, uint num_parts) {
+void MAQ::split_sequence(std::vector<unsigned int>& result, unsigned int start, unsigned int end, unsigned int num_parts) {
   result.reserve(num_parts + 1);
 
   // Return range if only 1 part
@@ -180,24 +180,24 @@ void MAQ::split_sequence(std::vector<uint>& result, uint start, uint end, uint n
 
   // Return vector from start to end+1 if more parts than elements
   if (num_parts > end - start + 1) {
-    for (uint i = start; i <= end + 1; ++i) {
+    for (unsigned int i = start; i <= end + 1; ++i) {
       result.push_back(i);
     }
     return;
   }
 
-  uint length = (end - start + 1);
-  uint part_length_short = length / num_parts;
-  uint part_length_long = (uint) std::ceil(length / ((double) num_parts));
-  uint cut_pos = length % num_parts;
+  unsigned int length = (end - start + 1);
+  unsigned int part_length_short = length / num_parts;
+  unsigned int part_length_long = (unsigned int) std::ceil(length / ((double) num_parts));
+  unsigned int cut_pos = length % num_parts;
 
   // Add long ranges
-  for (uint i = start; i < start + cut_pos * part_length_long; i = i + part_length_long) {
+  for (unsigned int i = start; i < start + cut_pos * part_length_long; i = i + part_length_long) {
     result.push_back(i);
   }
 
   // Add short ranges
-  for (uint i = start + cut_pos * part_length_long; i <= end + 1; i = i + part_length_short) {
+  for (unsigned int i = start + cut_pos * part_length_long; i <= end + 1; i = i + part_length_short) {
     result.push_back(i);
   }
 }
