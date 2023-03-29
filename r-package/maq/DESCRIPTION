@@ -8,7 +8,7 @@ Authors@R: c(
     person("Stefan", "Wager", role = "aut")
     )
 Description: Evaluate treatment prioritization across many costly and mutually exclusive treatment arms.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3

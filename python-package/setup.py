@@ -41,6 +41,6 @@ setup(
     ext_modules=cythonize(ext, compiler_directives={'language_level': 3}),
     url='https://github.com/grf-labs/maq',
     classifiers = [
-      "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+      "License :: OSI Approved :: MIT License",
     ]
 )
