@@ -1,7 +1,6 @@
 #ifndef MAQ_OPTIONS_H
 #define MAQ_OPTIONS_H
 
-#include <vector>
 #include <thread>
 
 #include "Data.h"
