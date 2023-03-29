@@ -24,9 +24,6 @@
 #include "convex_hull.h"
 #include "Sampler.h"
 
-#include "random/random.hpp"
-#include "random/algorithm.hpp"
-
 namespace maq {
 
 MAQ::MAQ(const Data& data,
