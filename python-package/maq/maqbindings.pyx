@@ -21,18 +21,17 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     # Ignore these options for now (TODO)
     cdef double* weights_ptr = NULL
     cdef int* tie_breaker_ptr = NULL
-    cdef vector[size_t] clusters
-    cdef unsigned int samples_per_cluster = 0
+    cdef int* clusters_ptr = NULL
 
     cdef bool col_major = False
     cdef Data* data_ptr
     data_ptr = new Data(
-        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, num_rows, num_cols, col_major
+        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, col_major
     )
 
     cdef MAQOptions* opt_ptr
     opt_ptr = new MAQOptions(
-        budget, n_bootstrap, clusters, samples_per_cluster, num_threads, seed
+        budget, n_bootstrap, num_threads, seed
     )
 
     cdef MAQ* maq_ptr
