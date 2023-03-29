@@ -71,6 +71,9 @@ public:
   std::vector<std::vector<size_t>> samples_by_cluster;
 
 private:
+  // these extra runtime layers of indirection in get methods add neglishable
+  // overhead wrt speed and don't really warrant the complexity of doing
+  // this with templates.
   size_t index(size_t row, size_t col) const {
     if (col_major) {
       return col * num_rows + row;
