@@ -29,6 +29,9 @@ cdef extern from '../../core/src/MAQ.h' namespace 'maq':
             const MAQOptions& options)
         solution_path fit()
 
+cdef extern from '../../core/src/Data.cpp' namespace 'maq':
+    pass
+
 cdef extern from '../../core/src/MAQ.cpp' namespace 'maq':
     pass
 
@@ -40,4 +43,3 @@ cdef extern from '../../core/src/compute_path.cpp' namespace 'maq':
 
 cdef extern from '../../core/src/Sampler.cpp' namespace 'maq':
     pass
-
