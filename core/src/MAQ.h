@@ -23,7 +23,6 @@
 #include "compute_path.h"
 #include "Data.h"
 #include "MAQOptions.h"
-#include "sampling/SamplingOptions.h"
 
 namespace maq {
 
@@ -55,7 +54,6 @@ class MAQ {
 
   Data data;
   MAQOptions options;
-  grf::SamplingOptions sampling_options;
 };
 
 } // namespace maq

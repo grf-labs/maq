@@ -27,8 +27,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        const Rcpp::NumericMatrix& cost,
                        const Rcpp::NumericVector& sample_weights,
                        const Rcpp::IntegerVector& tie_breaker,
-                       const std::vector<size_t>& clusters,
-                       unsigned int samples_per_cluster,
+                       const Rcpp::IntegerVector& clusters,
                        double budget,
                        size_t num_bootstrap,
                        unsigned int num_threads,
@@ -43,9 +42,13 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   if (tie_breaker.size() > 0) {
     tie_breaker_ptr = tie_breaker.begin();
   }
+  const int* clusters_ptr = nullptr;
+  if (clusters.size() > 0) {
+    clusters_ptr = clusters.begin();
+  }
 
-  Data data(reward.begin(), reward_scores.begin(), cost.begin(), weights_ptr, tie_breaker_ptr, num_rows, num_cols, true);
-  MAQOptions options(budget, num_bootstrap, clusters, samples_per_cluster, num_threads, seed);
+  Data data(reward.begin(), reward_scores.begin(), cost.begin(), weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, true);
+  MAQOptions options(budget, num_bootstrap, num_threads, seed);
   MAQ maq(data, options);
 
   auto ret = maq.fit();
@@ -68,7 +71,7 @@ Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, num_rows, num_cols, true);
+  Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, nullptr, num_rows, num_cols, true);
 
   return Rcpp::List::create(convex_hull(data));
 }

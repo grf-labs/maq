@@ -110,7 +110,6 @@ maq <- function(reward,
 
   if (is.null(clusters)) {
     clusters <- vector(mode = "numeric", length = 0)
-    samples.per.cluster <- 0
   } else {
     if (mode(clusters) != "numeric") {
       stop("clusters must be able to be coerced to a numeric vector.")
@@ -128,7 +127,6 @@ maq <- function(reward,
     if (floor(length(cluster.size.counts) / 2) <= 1) {
       stop("Cannot bootstrap sample with only one effective unit.")
     }
-    samples.per.cluster <- max(cluster.size.counts)
   }
 
   if (is.null(tie.breaker)) {
@@ -149,7 +147,7 @@ maq <- function(reward,
 
   ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
-                     samples.per.cluster, budget, R, num.threads, seed)
+                     budget, R, num.threads, seed)
 
   output <- list()
   class(output) <- "maq"
