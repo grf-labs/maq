@@ -12,7 +12,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        const Rcpp::IntegerVector& tie_breaker,
                        const Rcpp::IntegerVector& clusters,
                        double budget,
-                       size_t num_bootstrap,
+                       unsigned int num_bootstrap,
                        unsigned int num_threads,
                        unsigned int seed) {
   size_t num_rows = reward.rows();

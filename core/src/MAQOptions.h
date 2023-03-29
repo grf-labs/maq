@@ -12,7 +12,7 @@ typedef unsigned int uint;
 
 struct MAQOptions {
   MAQOptions(double budget,
-             size_t num_bootstrap,
+             unsigned int num_bootstrap,
              uint num_threads,
              uint random_seed) :
       budget(budget),
@@ -25,7 +25,7 @@ struct MAQOptions {
   }
 
   double budget;
-  size_t num_bootstrap;
+  unsigned int num_bootstrap;
   uint num_threads;
   uint random_seed;
 };

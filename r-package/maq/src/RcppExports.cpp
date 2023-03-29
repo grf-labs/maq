@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // solver_rcpp
-Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& reward_scores, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const Rcpp::IntegerVector& clusters, double budget, size_t num_bootstrap, unsigned int num_threads, unsigned int seed);
+Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& reward_scores, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const Rcpp::IntegerVector& clusters, double budget, unsigned int num_bootstrap, unsigned int num_threads, unsigned int seed);
 RcppExport SEXP _maq_solver_rcpp(SEXP rewardSEXP, SEXP reward_scoresSEXP, SEXP costSEXP, SEXP sample_weightsSEXP, SEXP tie_breakerSEXP, SEXP clustersSEXP, SEXP budgetSEXP, SEXP num_bootstrapSEXP, SEXP num_threadsSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -23,7 +23,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tie_breaker(tie_breakerSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type clusters(clustersSEXP);
     Rcpp::traits::input_parameter< double >::type budget(budgetSEXP);
-    Rcpp::traits::input_parameter< size_t >::type num_bootstrap(num_bootstrapSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type num_bootstrap(num_bootstrapSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type seed(seedSEXP);
     rcpp_result_gen = Rcpp::wrap(solver_rcpp(reward, reward_scores, cost, sample_weights, tie_breaker, clusters, budget, num_bootstrap, num_threads, seed));

@@ -36,7 +36,7 @@ solution_path MAQ::fit() {
 std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat,
                                                 const std::vector<std::vector<size_t>>& R) {
   std::vector<uint> thread_ranges;
-  split_sequence(thread_ranges, 0, static_cast<uint>(options.num_bootstrap - 1), options.num_threads);
+  split_sequence(thread_ranges, 0, static_cast<unsigned int>(options.num_bootstrap - 1), options.num_threads);
 
   std::vector<std::future<std::vector<std::vector<double>>>> futures;
   futures.reserve(thread_ranges.size());

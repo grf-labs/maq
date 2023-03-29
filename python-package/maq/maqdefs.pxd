@@ -19,7 +19,7 @@ cdef extern from '../../core/src/Data.h' namespace 'maq':
 cdef extern from '../../core/src/MAQOptions.h' namespace 'maq':
     cdef cppclass MAQOptions:
         MAQOptions(double budget,
-                   size_t num_bootstrap,
+                   unsigned int num_bootstrap,
                    unsigned int num_threads,
                    unsigned int random_seed)
 
