@@ -85,6 +85,39 @@ print(b42, digits = 3)
 print(b5, digits = 3)
 print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
+#' @ 9edff55064ca75b7806b0532ec24f82096b22010
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
+# [[1]]
+# Unit: seconds
+# expr min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200) 1.9 1.91 1.93   1.92 1.94 1.96    10
+#
+# [[2]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200) 4.64 4.65 4.67   4.67 4.69 4.72    10
+#
+# [[3]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200) 22.2 22.2 22.3   22.3 22.3 22.5     5
+#
+# [[4]]
+# Unit: seconds
+# expr min lq mean median   uq max neval
+# maq(reward, cost, budget, reward, R = 0)   2  2 2.02   2.01 2.02 2.1    10
+#
+# [[5]]
+# Unit: seconds
+# expr  min lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200) 31.7 32 32.1     32 32.1 32.4    10
+#
+# [[6]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 0) 18.2 18.2 18.2   18.3 18.3 18.3     5
+
+
 #' @ ec1d19cb19b9001886ba468e638edaece4b40579
 # > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
@@ -116,5 +149,3 @@ print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
 # maq(reward, cost, budget, R = 0) 18.1 18.1 18.2   18.1 18.2 18.3     5
-
-
