@@ -131,7 +131,7 @@ test_that("non-unique solution works as expected", {
 
 test_that("SEs capture LP re-solved", {
   budget <- 100
-  n <- 50
+  n <- 100
   K <- 3
   reward <- matrix(rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
