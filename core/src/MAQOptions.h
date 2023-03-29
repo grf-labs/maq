@@ -22,8 +22,6 @@
 #include <thread>
 
 #include "Data.h"
-#include "sampling/SamplingOptions.h"
-#include "sampling/RandomSampler.h"
 
 namespace maq {
 
@@ -32,14 +30,10 @@ typedef unsigned int uint;
 struct MAQOptions {
   MAQOptions(double budget,
              size_t num_bootstrap,
-             const std::vector<size_t>& clusters,
-             uint samples_per_cluster,
              uint num_threads,
              uint random_seed) :
       budget(budget),
       num_bootstrap(num_bootstrap),
-      clusters(clusters),
-      samples_per_cluster(samples_per_cluster),
       random_seed(random_seed) {
     if (num_threads == 0) {
       num_threads = std::thread::hardware_concurrency();
@@ -49,8 +43,6 @@ struct MAQOptions {
 
   double budget;
   size_t num_bootstrap;
-  const std::vector<size_t> clusters;
-  uint samples_per_cluster;
   uint num_threads;
   uint random_seed;
 };

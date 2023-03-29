@@ -11,6 +11,7 @@ cdef extern from '../../core/src/Data.h' namespace 'maq':
              const double* data_cost,
              const double* data_weight,
              const int* data_tie_breaker,
+             const int* clusters,
              size_t num_rows,
              size_t num_cols,
              bool col_major)
@@ -19,8 +20,6 @@ cdef extern from '../../core/src/MAQOptions.h' namespace 'maq':
     cdef cppclass MAQOptions:
         MAQOptions(double budget,
                    size_t num_bootstrap,
-                   const vector[size_t]& clusters,
-                   unsigned int samples_per_cluster,
                    unsigned int num_threads,
                    unsigned int random_seed)
 
@@ -39,8 +38,6 @@ cdef extern from '../../core/src/convex_hull.cpp' namespace 'maq':
 cdef extern from '../../core/src/compute_path.cpp' namespace 'maq':
     pass
 
-cdef extern from '../../core/third_party/sampling/RandomSampler.cpp' namespace 'grf':
+cdef extern from '../../core/src/Sampler.cpp' namespace 'maq':
     pass
 
-cdef extern from '../../core/third_party/sampling/SamplingOptions.cpp' namespace 'grf':
-    pass

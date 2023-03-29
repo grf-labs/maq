@@ -18,6 +18,7 @@
 #ifndef MAQ_DATA_H
 #define MAQ_DATA_H
 
+#include <vector>
 #include <cstddef>
 
 namespace maq {
@@ -26,6 +27,7 @@ namespace maq {
 // Rewards can be any real number
 // Costs should be > 0
 // Weights should be > 0 and sum to 1
+// Clusters, if present, should be labeled as consecutive integers 0, ..., num_clusters
 class Data {
 public:
   Data(const double* data_reward,
@@ -33,6 +35,7 @@ public:
        const double* data_cost,
        const double* data_weight,
        const int* data_tie_breaker,
+       const int* clusters,
        size_t num_rows,
        size_t num_cols,
        bool col_major) :
@@ -44,8 +47,20 @@ public:
       data_weight(data_weight),
       data_tie_breaker(data_tie_breaker),
       col_major(col_major) {
+
     this->has_weight = data_weight == nullptr ? false : true;
     this->has_tie_breaker = data_tie_breaker == nullptr ? false : true;
+
+    // If clusters are present, then fill samples_by_cluster with samples belonging to each cluster.
+    if (clusters != nullptr) {
+      for (size_t sample = 0; sample < num_rows; sample++) {
+        size_t cluster_id = clusters[sample];
+        if (cluster_id + 1 > samples_by_cluster.size()) {
+          samples_by_cluster.resize(cluster_id + 1);
+        }
+        samples_by_cluster[cluster_id].push_back(sample);
+      }
+    }
   }
 
   double get_reward(size_t row, size_t col) const {
@@ -70,6 +85,7 @@ public:
 
   size_t num_rows;
   size_t num_cols;
+  std::vector<std::vector<size_t>> samples_by_cluster;
 
 private:
   size_t index(size_t row, size_t col) const {

@@ -22,17 +22,17 @@
 #include "MAQ.h"
 #include "compute_path.h"
 #include "convex_hull.h"
-#include "sampling/SamplingOptions.h"
-#include "sampling/RandomSampler.h"
+#include "Sampler.h"
+
+#include "random/random.hpp"
+#include "random/algorithm.hpp"
 
 namespace maq {
 
 MAQ::MAQ(const Data& data,
          const MAQOptions& options) :
     data(data),
-    options(options) {
-  this->sampling_options = grf::SamplingOptions(options.samples_per_cluster, options.clusters);
-}
+    options(options) {}
 
 solution_path MAQ::fit() {
   std::vector<size_t> samples;
@@ -87,21 +87,11 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
                                                       size_t num_replicates,
                                                       const solution_path& path_hat,
                                                       const std::vector<std::vector<size_t>>& R) {
-  std::mt19937_64 random_number_generator;
-  nonstd::uniform_int_distribution<uint> udist;
-
   std::vector<std::vector<double>> predictions;
   predictions.reserve(num_replicates);
 
   for (size_t b = 0; b < num_replicates; b++) {
-    random_number_generator.seed(options.random_seed + start + b);
-    uint bs_seed = udist(random_number_generator);
-    grf::RandomSampler sampler(bs_seed, sampling_options);
-    std::vector<size_t> clusters;
-    std::vector<size_t> samples;
-    sampler.sample_clusters(data.num_rows, 0.5, clusters);
-    sampler.sample_from_clusters(clusters, samples);
-
+    std::vector<size_t> samples = Sampler::sample(data, 0.5, options.random_seed + start + b);
     auto path_b = compute_path(samples, R, data, options.budget, true);
     auto gain_b = interpolate_path(path_hat, path_b);
     predictions.push_back(std::move(gain_b));
