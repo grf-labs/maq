@@ -6,11 +6,14 @@
 
 namespace maq {
 
-// Data wrapper for column or row major storage
-// Rewards can be any real number
-// Costs should be > 0
-// Weights should be > 0 and sum to 1
-// Clusters, if present, should be labeled as consecutive integers 0, ..., num_clusters
+/**
+ * Data wrapper for column or row major storage.
+ *
+ * Costs should be > 0
+ * Weights should be > 0 and sum to 1
+ * Clusters, if present, should be labeled as consecutive integers 0, ..., num_clusters
+ *
+ */
 class Data {
 public:
   Data(const double* data_reward,

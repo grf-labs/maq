@@ -18,6 +18,14 @@ class MAQ {
   MAQ(const Data& data,
       const MAQOptions& options);
 
+  /**
+   * Fit a Multi-Action Qini curve.
+   *
+   * The solution path is a pair where the first entry are vectors containing the path of
+   * {spend, gain, std.err} and the second pair the path of the corresponding optimal allocations
+   * {unit index, arm index}.
+   *
+   */
   solution_path fit();
 
   private:
