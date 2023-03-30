@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include "Sampler.h"
 #include "random/random.hpp"
 #include "random/algorithm.hpp"
