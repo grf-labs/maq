@@ -40,6 +40,16 @@ test_that("maq works as expected", {
   expect_equal(mq.sp[["_path"]]$spend[len], sp)
   expect_equal(mq[["_path"]]$gain[1:100], mq.sp[["_path"]]$gain)
   expect_equal(mq[["_path"]]$std.err[1:100], mq.sp[["_path"]]$std.err)
+
+  # num.threads don't affect SEs
+  mq.1 <- maq(reward, cost, budget, reward, seed = 42, num.threads = 1)
+  mq.5 <- maq(reward, cost, budget, reward, seed = 42, num.threads = 5)
+  expect_equal(mq.1[["_path"]]$std.err, mq.5[["_path"]]$std.err)
+
+  # clusters = 1:n
+  mq.nocl <- maq(reward, cost, budget, reward, seed = 42)
+  mq.cl <- maq(reward, cost, budget, reward, seed = 42, clusters = 1:n)
+  expect_equal(mq.nocl[["_path"]]$std.err, mq.cl[["_path"]]$std.err)
 })
 
 test_that("basic invariances hold", {

@@ -135,20 +135,36 @@ test_that("SEs capture LP re-solved", {
   K <- 3
   reward <- matrix(rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
-  mq <- maq(reward, cost, budget, reward, R = 500)
+  R <- 500
+  mq <- maq(reward, cost, budget, reward, R = R)
 
   # pick an arbitrary spend point except the initial grid point
   sp <- sample(mq[["_path"]]$spend[-(1:3)], 1)
   mq.se <- average_gain(mq, spend = sp)[[2]]
   # this SE should correspond to
 
-  res <- t(replicate(500, {
-    reward <- matrix(rnorm(n * K), n, K)
-    cost <- 0.05 + matrix(runif(n * K), n, K)
-    lp <- lp_solver(reward, cost, sp)
+  clusters <- 1:n
+  samples.by.cluster <- split(seq_along(clusters), clusters)
+  n.bs <- floor(length(samples.by.cluster) / 2)
+  index.list <- replicate(R, unlist(samples.by.cluster[sample.int(n, n.bs, replace = FALSE)], use.names = FALSE), simplify = FALSE)
 
-    c(gain = lp$gain)
-  }))
+  resbs <- lapply(index.list, function(ix) {
+    lp_solver(reward[ix, ], cost[ix, ], sp)$gain
+  })
+  expect_equal(mq.se, sd(unlist(resbs)), tolerance = 0.005)
 
-  expect_equal(mq.se, sd(res), tolerance = 0.025)
+  # same, with clusters
+  clusters <- rep(1:10, 10)
+  mq.cl <- maq(reward, cost, 100, reward, R = R, clusters = clusters)
+  mq.se.cl <- average_gain(mq.cl, sp)[[2]]
+
+  samples.by.cluster <- split(seq_along(clusters), clusters)
+  n <- length(samples.by.cluster)
+  n.bs <- floor(length(samples.by.cluster) / 2)
+  index.list <- replicate(R, unlist(samples.by.cluster[sample.int(n, n.bs, replace = FALSE)], use.names = FALSE), simplify = FALSE)
+
+  resbs <- lapply(index.list, function(ix) {
+    lp_solver(reward[ix, ], cost[ix, ], sp)$gain
+  })
+  expect_equal(mq.se.cl, sd(unlist(resbs)), tolerance = 0.005)
 })
