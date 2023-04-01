@@ -7,7 +7,7 @@
 namespace maq {
 
 /**
- * Data wrapper for column or row major storage.
+ * Read-only data wrapper for column or row major storage.
  *
  * Costs should be > 0
  * Weights should be > 0 and sum to 1
