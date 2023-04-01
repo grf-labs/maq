@@ -63,7 +63,7 @@ mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 ### Details
 
-Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element ($k > 0$) is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive costs, i.e. the $k$-th element is the cost of assigning user $i$ arm $k$. `maq` finds the optimal cost-constrained treatment allocation $\pi_b(X_i) \in [0, 1]^K$ for any budget constraint $b$ along with a confidence interval for the corresponding policy value.
+Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element ($k > 0$) is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive costs, i.e. the $k$-th element is the cost of assigning unit $i$ arm $k$. `maq` finds the optimal cost-constrained treatment allocation $\pi_b(X_i) \in [0, 1]^K$ for any budget constraint $b$ along with a confidence interval for the corresponding policy value.
 
 In particular, `maq` efficiently computes the path of solutions to the following series of stochastic LPs:
 
