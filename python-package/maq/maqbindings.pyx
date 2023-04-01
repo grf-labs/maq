@@ -26,7 +26,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef bool col_major = False
     cdef Data* data_ptr
     data_ptr = new Data(
-        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, col_major
+        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, clusters_ptr,
+        num_rows, num_cols, col_major
     )
 
     cdef MAQOptions* opt_ptr
@@ -63,8 +64,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     else:
         res["complete_path"] = True
 
-    del data_ptr
-    del opt_ptr
     del maq_ptr
+    del opt_ptr
+    del data_ptr
 
     return res
