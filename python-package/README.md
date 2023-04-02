@@ -29,4 +29,19 @@ mq.average_gain(spend=0.1)
 
 # Get the optimal treatment allocation matrix at a given spend.
 mq.predict(spend=0.1)
+
+# Plot the gain curve.
+import matplotlib.pyplot as plt
+
+plt.plot(mq.path_spend_, mq.path_gain_)
+plt.xlabel("Spend/unit")
+plt.title("Gain/unit")
+plt.show()
+
+# Show 95% confidence bars.
+ub = mq.path_gain_ + 1.96 * mq.path_std_err_
+lb = mq.path_gain_ - 1.96 * mq.path_std_err_
+plt.plot(mq.path_spend_, ub, color="black", linestyle="dashed")
+plt.plot(mq.path_spend_, lb, color="black", linestyle="dashed")
+plt.show()
 ```

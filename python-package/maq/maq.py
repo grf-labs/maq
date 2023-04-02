@@ -73,6 +73,14 @@ class MAQ:
     >>> plt.xlabel("Spend/unit") # doctest: +SKIP
     >>> plt.title("Gain/unit") # doctest: +SKIP
     >>> plt.show() # doctest: +SKIP
+
+    Show 95% confidence bars.
+
+    >>> ub = mq.path_gain_ + 1.96 * mq.path_std_err_
+    >>> lb = mq.path_gain_ - 1.96 * mq.path_std_err_
+    >>> plt.plot(mq.path_spend_, ub, color="black", linestyle="dashed") # doctest: +SKIP
+    >>> plt.plot(mq.path_spend_, lb, color="black", linestyle="dashed") # doctest: +SKIP
+    >>> plt.show() # doctest: +SKIP
     """
 
     def __init__(self, n_bootstrap=200, n_threads=0, seed=42):
