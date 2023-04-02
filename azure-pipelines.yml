@@ -74,7 +74,7 @@ jobs:
     workingDirectory: 'python-package'
     displayName: 'Setup Python'
   - script: |
-      pip install .
+      pip install -v .
       pytest
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
