@@ -7,13 +7,13 @@ from distutils.core import Extension
 from Cython.Build import cythonize
 
 if 'darwin' in sys.platform:
-    COMPILE_ARGS = ['-stdlib=libc++', '-Wall', '-O2', '-pthread']
+    COMPILE_ARGS = ['-std=c++11', '-stdlib=libc++', '-Wall', '-O2', '-pthread']
     LINK_ARGS = ['-stdlib=libc++']
 elif 'linux' in sys.platform:
-    COMPILE_ARGS = ['-lstdc++', '-Wall', '-O2', '-pthread']
+    COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2', '-pthread']
     LINK_ARGS = ['-lstdc++', '-pthread']
 elif 'win32' in sys.platform:
-    COMPILE_ARGS = ['-lstdc++', '-Wall', '-O2']
+    COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2']
     LINK_ARGS = ['-lstdc++']
 else:
     raise ImportError('Unsupported OS.')
