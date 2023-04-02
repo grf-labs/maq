@@ -13,10 +13,10 @@ elif 'linux' in sys.platform:
     COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2', '-pthread']
     LINK_ARGS = ['-lstdc++', '-pthread']
 elif 'win32' in sys.platform:
-    COMPILE_ARGS = ['-std=c++11', '-lstdc++', '-Wall', '-O2']
-    LINK_ARGS = ['-lstdc++']
+    COMPILE_ARGS = ['-Wall', '-O2']
+    LINK_ARGS = []
 else:
-    raise ImportError('Unsupported OS.')
+    raise ImportError('Unknown OS.')
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 INCLUDE_DIRS = [os.path.join(setup_dir, '..', 'core', 'src')]
