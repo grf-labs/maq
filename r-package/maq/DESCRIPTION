@@ -7,7 +7,7 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment prioritization across many costly and mutually exclusive treatment arms.
+Description: Evaluate treatment targeting across costly and mutually exclusive treatment arms.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,3 +23,4 @@ Suggests:
     testthat (>= 3.0.0)
 SystemRequirements: GNU make
 URL: https://github.com/grf-labs/maq
+BugReports: https://github.com/grf-labs/maq/issues
