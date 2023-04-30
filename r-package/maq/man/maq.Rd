@@ -99,7 +99,7 @@ Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 plot(mq.ipw, col = 2, add = TRUE)
-legend("topleft", c("DR", "IPW"), col = 1:2, lty = 1, bty = "n")
+legend("topleft", c("DR", "IPW", "95\% CI"), col = 1:2, lty = c(1, 1, 3))
 }
 }
 
