@@ -9,6 +9,7 @@ test_that("maq works as expected", {
   plot(mq)
   summary(mq)
   print(mq)
+  plot(mq, add = TRUE, col = 3, ci.args = FALSE)
   expect_true(all(predict(mq, 10) == 0))
   expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
 

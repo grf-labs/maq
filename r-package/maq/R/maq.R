@@ -67,6 +67,9 @@
 #' Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 #'
 #' mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
+#'
+#' plot(mq.ipw, col = 2, add = TRUE)
+#' legend("topleft", c("DR", "IPW"), col = 1:2, lty = 1, bty = "n")
 #' }
 #' }
 #'
@@ -270,11 +273,19 @@ print.maq <- function(x,
 #' Plot the gain/spend curve.
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
+#' @param add Whether to add to an already existing plot. Default is FALSE.
+#' @param ci.args Optional lines() arguments for 95 % confidence bars. Set to FALSE to exlcude CIs.
+#' @param grid.step The grid increment size to plot the curve on. Default is
+#'  max(floor(length(path.length) / 1000), 1).
 #'
 #' @method plot maq
 #' @export
 plot.maq <- function(x,
-                     ...) {
+                     ...,
+                     add = FALSE,
+                     ci.args = list(),
+                     grid.step = NULL
+                     ) {
   spend.grid <- x[["_path"]]$spend
   gain.grid <- x[["_path"]]$gain
   std.err.grid <- x[["_path"]]$std.err
@@ -282,14 +293,32 @@ plot.maq <- function(x,
     return(invisible(x))
   }
 
-  plot.grid <- seq(1, length(spend.grid), by = max(floor(length(spend.grid) / 1000), 1))
+  if (is.null(grid.step)) {
+    grid.step <- max(floor(length(spend.grid) / 1000), 1)
+  }
+  plot.grid <- seq(1, length(spend.grid), by = grid.step)
   spend <- spend.grid[plot.grid]
   gain <- gain.grid[plot.grid]
   std.err <- std.err.grid[plot.grid]
   lb <- gain - 1.96 * std.err
   ub <- gain + 1.96 * std.err
 
-  plot(spend, gain, type = "l", ylim = c(min(lb), max(ub)), ...)
-  graphics::lines(spend, lb, lty = 3)
-  graphics::lines(spend, ub, lty = 3)
+  plot.args <- list(type = "l", ylim = c(min(lb), max(ub)), xlab = "spend", ylab = "gain", col = 1)
+  new.args <- list(...)
+  plot.args[names(new.args)] <- new.args
+
+  lines.args <- list(lty = 3, col = plot.args$col)
+  lines.args[names(ci.args)] <- ci.args
+
+
+  if (!add || dev.cur() == 1L) {
+    do.call(plot, c(list(x = spend, y = gain), plot.args))
+  } else {
+    do.call(graphics::lines, c(list(x = spend, y = gain), plot.args))
+  }
+
+  if (!isFALSE(ci.args)) {
+    do.call(graphics::lines, c(list(x = spend, y = lb), lines.args))
+    do.call(graphics::lines, c(list(x = spend, y = ub), lines.args))
+  }
 }
