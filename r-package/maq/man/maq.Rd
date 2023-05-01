@@ -109,7 +109,7 @@ plot(mq.ipw, col = 2, add = TRUE)
 legend("topleft", c("DR", "IPW", "95\% CI"), col = 1:2, lty = c(1, 1, 3))
 
 # Compute a cost curve for only arm one.
-mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1])
+mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1], R = 200)
 plot(mq.arm1, col = "blue", add = TRUE, ci.args = FALSE)
 
 # Get an estimate of the difference between a point on two curves along with paired standard errors.
