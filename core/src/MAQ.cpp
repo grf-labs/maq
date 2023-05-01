@@ -18,7 +18,7 @@ MAQ::MAQ(const Data& data,
     data(data),
     options(options) {}
 
-solution_path MAQ::fit() {
+std::pair<solution_path, std::vector<std::vector<double>>> MAQ::fit() {
   std::vector<size_t> samples;
   samples.reserve(data.num_rows);
   for (size_t sample = 0; sample < data.num_rows; sample++) {
@@ -30,7 +30,8 @@ solution_path MAQ::fit() {
   auto gain_bs = fit_paths(path_hat, R);
   compute_std_err(path_hat, gain_bs);
 
-  return path_hat;
+  return std::make_pair(path_hat,
+    options.paired_inference ? std::move(gain_bs) : std::vector<std::vector<double>>());
 }
 
 std::vector<std::vector<double>> MAQ::fit_paths(const solution_path& path_hat,

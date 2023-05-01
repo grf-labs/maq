@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // solver_rcpp
-Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& reward_scores, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const Rcpp::IntegerVector& clusters, double budget, unsigned int num_bootstrap, unsigned int num_threads, unsigned int seed);
-RcppExport SEXP _maq_solver_rcpp(SEXP rewardSEXP, SEXP reward_scoresSEXP, SEXP costSEXP, SEXP sample_weightsSEXP, SEXP tie_breakerSEXP, SEXP clustersSEXP, SEXP budgetSEXP, SEXP num_bootstrapSEXP, SEXP num_threadsSEXP, SEXP seedSEXP) {
+Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward, const Rcpp::NumericMatrix& reward_scores, const Rcpp::NumericMatrix& cost, const Rcpp::NumericVector& sample_weights, const Rcpp::IntegerVector& tie_breaker, const Rcpp::IntegerVector& clusters, double budget, bool paired_inference, unsigned int num_bootstrap, unsigned int num_threads, unsigned int seed);
+RcppExport SEXP _maq_solver_rcpp(SEXP rewardSEXP, SEXP reward_scoresSEXP, SEXP costSEXP, SEXP sample_weightsSEXP, SEXP tie_breakerSEXP, SEXP clustersSEXP, SEXP budgetSEXP, SEXP paired_inferenceSEXP, SEXP num_bootstrapSEXP, SEXP num_threadsSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,10 +23,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tie_breaker(tie_breakerSEXP);
     Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type clusters(clustersSEXP);
     Rcpp::traits::input_parameter< double >::type budget(budgetSEXP);
+    Rcpp::traits::input_parameter< bool >::type paired_inference(paired_inferenceSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type num_bootstrap(num_bootstrapSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type num_threads(num_threadsSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type seed(seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(solver_rcpp(reward, reward_scores, cost, sample_weights, tie_breaker, clusters, budget, num_bootstrap, num_threads, seed));
+    rcpp_result_gen = Rcpp::wrap(solver_rcpp(reward, reward_scores, cost, sample_weights, tie_breaker, clusters, budget, paired_inference, num_bootstrap, num_threads, seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -44,7 +45,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_maq_solver_rcpp", (DL_FUNC) &_maq_solver_rcpp, 10},
+    {"_maq_solver_rcpp", (DL_FUNC) &_maq_solver_rcpp, 11},
     {"_maq_convex_hull_rcpp", (DL_FUNC) &_maq_convex_hull_rcpp, 2},
     {NULL, NULL, 0}
 };

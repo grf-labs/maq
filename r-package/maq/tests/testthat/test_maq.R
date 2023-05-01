@@ -187,6 +187,40 @@ test_that("std errors works as expected", {
   expect_equal(sd(res[, "est3"]), mean(res[, "se3"]), tolerance = 0.005)
 })
 
+test_that("paired std errors works as expected", {
+  n <- 1000
+  K <- 3
+  budget <- 1000
+  spend <- 0.15
+
+  res <- t(replicate(500, {
+    reward <- matrix(0.1 + rnorm(n * K), n, K)
+    reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
+    cost <- 0.05 + matrix(runif(n * K), n, K)
+
+    mq <- maq(reward, cost, budget, reward.eval)
+    mq2 <- maq(reward + matrix(0.1 * rnorm(n * K), n, K), cost, budget, reward.eval)
+
+    est.diff <- difference_gain(mq, mq2, spend = spend)
+
+    est.1 <- average_gain(mq, spend)
+    est.2 <- average_gain(mq2, spend)
+    se.naive <- sqrt(est.1[[2]]^2 + est.2[[2]]^2)
+
+    cov <- abs(est.diff[[1]]) / est.diff[[2]] <= 1.96
+    cov.naive <- abs(est.diff[[1]]) / se.naive <= 1.96
+
+    c(
+      cov = as.numeric(cov),
+      cov.naive = as.numeric(cov.naive)
+    )
+  }))
+  cov <- colMeans(res)
+
+  expect_lt(cov[["cov"]], cov[["cov.naive"]])
+  expect_equal(cov[["cov"]], 0.95, tolerance = 0.04)
+})
+
 test_that("null effect std errors works as expected", {
   budget <- 100
   n <- 1000
