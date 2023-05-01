@@ -7,9 +7,9 @@
 difference_gain(object.lhs, object.rhs, spend)
 }
 \arguments{
-\item{object.lhs}{A maq object.}
+\item{object.lhs}{A maq object to subtract from.}
 
-\item{object.rhs}{A maq object.}
+\item{object.rhs}{A maq object to subtract with.}
 
 \item{spend}{The spend level.}
 }

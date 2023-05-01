@@ -8,8 +8,8 @@ class MAQ:
 
     Parameters
     ----------
-    n_bootstrap : int, default=200
-        Number of bootstrap replicates for SEs. Default is 200.
+    n_bootstrap : int, default=0
+        Number of bootstrap replicates for SEs. Default is 0.
 
     n_threads : int, default=0
         Number of threads used in bootstrap replicates. Default is the maximum hardware concurrency.
@@ -45,7 +45,7 @@ class MAQ:
     >>> reward_eval = np.random.randn(n, K)
     >>> max_budget = np.mean(cost)
 
-    >>> mq = MAQ()
+    >>> mq = MAQ(n_bootstrap=200)
     >>> mq.fit(reward, cost, max_budget, reward_eval)
     MAQ object.
 
@@ -83,7 +83,7 @@ class MAQ:
     >>> plt.show() # doctest: +SKIP
     """
 
-    def __init__(self, n_bootstrap=200, n_threads=0, seed=42):
+    def __init__(self, n_bootstrap=0, n_threads=0, seed=42):
         assert n_threads >= 0, "n_threads should be >=0."
         assert n_bootstrap >= 0, "n_bootstrap should be >=0."
         self.n_bootstrap = n_bootstrap

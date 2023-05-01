@@ -6,10 +6,11 @@
 #'  be a ncol(reward)-length vector.
 #' @param budget The maximum spend per unit to fit the MAQ path on.
 #' @param reward.scores A matrix of rewards to evaluate the MAQ on.
-#' @param R Number of bootstrap replicates for SEs. Default is 200.
+#' @param R Number of bootstrap replicates for computing standard errors. Default is 0
+#'  (only point estimates are computed).
 #' @param paired.inference Whether to allow for paired tests with other cost curves. If TRUE (Default)
-#'  then the path of bootstrap replicates are stored in order to compute paired standard errors.
-#'  This takes memory on the order of O(RNK) and requires the comparison objects to be fit with the
+#'  then the path of bootstrap replicates are stored in order to perform paired comparisons.
+#'  This takes memory on the order of O(RnK) and requires the comparison objects to be fit with the
 #'  same seed and R values as well as the same number of samples.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
@@ -48,9 +49,9 @@
 #' eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
 #' DR.scores <- grf::get_scores(eval.forest)[,,]
 #'
-#' # Fit a MAQ using evaluation set estimates.
+#' # Fit a MAQ with evaluation set estimates using 200 bootstrap replicates for confidence intervals.
 #' max.budget <- 1
-#' mq <- maq(tau.hat, cost.hat, max.budget, DR.scores)
+#' mq <- maq(tau.hat, cost.hat, max.budget, DR.scores, R = 200)
 #'
 #' # Plot the MAQ curve.
 #' plot(mq)
@@ -70,7 +71,7 @@
 #' Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
 #' Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 #'
-#' mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
+#' mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval, R = 200)
 #'
 #' plot(mq.ipw, col = 2, add = TRUE)
 #' legend("topleft", c("DR", "IPW", "95% CI"), col = 1:2, lty = c(1, 1, 3))
@@ -92,7 +93,7 @@ maq <- function(reward,
                 cost,
                 budget,
                 reward.scores,
-                R = 200,
+                R = 0,
                 paired.inference = TRUE,
                 sample.weights = NULL,
                 clusters = NULL,
@@ -263,8 +264,8 @@ average_gain <- function(object,
 #' Get estimate of difference in gain given a spend level.
 #'
 #'
-#' @param object.lhs A maq object.
-#' @param object.rhs A maq object.
+#' @param object.lhs A maq object to subtract from.
+#' @param object.rhs A maq object to subtract with.
 #' @param spend The spend level.
 #'
 #' @return An estimate of difference in gain along with standard errors.
