@@ -91,7 +91,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
     i_k_path[2].push_back(pqueue.size() > 0 ? 1 : 0);
   }
 
-  return std::make_pair(spend_gain, i_k_path);
+  return std::make_pair(std::move(spend_gain), std::move(i_k_path));
 }
 
 } // namespace maq
