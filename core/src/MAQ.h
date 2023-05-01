@@ -26,7 +26,7 @@ class MAQ {
    * {unit index, arm index}.
    *
    */
-  solution_path fit();
+  std::pair<solution_path, std::vector<std::vector<double>>> fit();
 
   private:
   std::vector<std::vector<double>> fit_paths(const solution_path& path_hat,

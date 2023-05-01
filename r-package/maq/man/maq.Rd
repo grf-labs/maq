@@ -10,11 +10,12 @@ maq(
   budget,
   reward.scores,
   R = 200,
+  paired.inference = TRUE,
   sample.weights = NULL,
   clusters = NULL,
   tie.breaker = NULL,
   num.threads = NULL,
-  seed = runif(1, 0, .Machine$integer.max)
+  seed = 42
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ be a ncol(reward)-length vector.}
 
 \item{R}{Number of bootstrap replicates for SEs. Default is 200.}
 
+\item{paired.inference}{Whether to allow for paired tests with other cost curves. If TRUE (Default)
+then the path of bootstrap replicates are stored in order to compute paired standard errors.
+This takes memory on the order of O(RNK) and requires the comparison objects to be fit with the
+same seed and R values as well as the same number of samples.}
+
 \item{sample.weights}{Weights given to an observation in estimation.
 If NULL, each observation is given the same weight. Default is NULL.}
 
@@ -42,7 +48,7 @@ the lowest sample id (i.e. the sample appearing first in the data). Default is N
 \item{num.threads}{Number of threads used in bootstrap replicates. By default, the number of threads
 is set to the maximum hardware concurrency.}
 
-\item{seed}{The seed of the C++ random number generator.}
+\item{seed}{The seed of the C++ random number generator. Default is 42.}
 }
 \value{
 A fit maq object.
@@ -99,7 +105,14 @@ Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 plot(mq.ipw, col = 2, add = TRUE)
-legend("topleft", c("DR", "IPW"), col = 1:2, lty = 1, bty = "n")
+legend("topleft", c("DR", "IPW", "95\% CI"), col = 1:2, lty = c(1, 1, 3))
+
+# Compute a cost curve for only arm one.
+mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1])
+plot(mq.arm1, col = "blue", add = TRUE, ci.args = FALSE)
+
+# Get an estimate of the difference between a point on two curves along with paired standard errors.
+difference_gain(mq.ipw, mq.arm1, spend = 0.3)
 }
 }
 

@@ -7,6 +7,10 @@
 #' @param budget The maximum spend per unit to fit the MAQ path on.
 #' @param reward.scores A matrix of rewards to evaluate the MAQ on.
 #' @param R Number of bootstrap replicates for SEs. Default is 200.
+#' @param paired.inference Whether to allow for paired tests with other cost curves. If TRUE (Default)
+#'  then the path of bootstrap replicates are stored in order to compute paired standard errors.
+#'  This takes memory on the order of O(RNK) and requires the comparison objects to be fit with the
+#'  same seed and R values as well as the same number of samples.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
 #' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to.
@@ -16,7 +20,7 @@
 #'  the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.
 #' @param num.threads Number of threads used in bootstrap replicates. By default, the number of threads
 #'  is set to the maximum hardware concurrency.
-#' @param seed The seed of the C++ random number generator.
+#' @param seed The seed of the C++ random number generator. Default is 42.
 #'
 #' @return A fit maq object.
 #'
@@ -69,7 +73,14 @@
 #' mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 #'
 #' plot(mq.ipw, col = 2, add = TRUE)
-#' legend("topleft", c("DR", "IPW"), col = 1:2, lty = 1, bty = "n")
+#' legend("topleft", c("DR", "IPW", "95% CI"), col = 1:2, lty = c(1, 1, 3))
+#'
+#' # Compute a cost curve for only arm one.
+#' mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1])
+#' plot(mq.arm1, col = "blue", add = TRUE, ci.args = FALSE)
+#'
+#' # Get an estimate of the difference between a point on two curves along with paired standard errors.
+#' difference_gain(mq.ipw, mq.arm1, spend = 0.3)
 #' }
 #' }
 #'
@@ -79,11 +90,12 @@ maq <- function(reward,
                 budget,
                 reward.scores,
                 R = 200,
+                paired.inference = TRUE,
                 sample.weights = NULL,
                 clusters = NULL,
                 tie.breaker = NULL,
                 num.threads = NULL,
-                seed = runif(1, 0, .Machine$integer.max)) {
+                seed = 42) {
   if (is.vector(cost) && length(cost) == NCOL(reward)) {
     cost <- matrix(cost, NROW(reward), NCOL(reward), byrow = TRUE)
   }
@@ -150,12 +162,14 @@ maq <- function(reward,
 
   ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
-                     budget, R, num.threads, seed)
+                     budget, paired.inference, R, num.threads, seed)
 
   output <- list()
   class(output) <- "maq"
   output[["_path"]] <- ret
   output[["seed"]] <- seed
+  output[["paired.inference"]] <- paired.inference
+  output[["R"]] <- R
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
   output[["budget"]] <- budget
 
@@ -234,6 +248,63 @@ average_gain <- function(object,
     interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
     estimate <- gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
     std.err <- se.path[path.idx] + (se.path[path.idx + 1] - se.path[path.idx]) * interp.ratio
+  }
+
+  c(estimate = estimate, std.err = std.err)
+}
+
+#' Get estimate of difference in gain given a spend level.
+#'
+#'
+#' @param object.lhs A maq object.
+#' @param object.rhs A maq object.
+#' @param spend The spend level.
+#'
+#' @return An estimate of difference in gain along with standard errors.
+#' @export
+difference_gain <- function(object.lhs,
+                            object.rhs,
+                            spend) {
+  if (!object.lhs[["_path"]]$complete.path && spend > object.lhs$budget) {
+    stop("lhs maq path is not fit beyond given spend level.")
+  }
+  if (!object.rhs[["_path"]]$complete.path && spend > object.rhs$budget) {
+    stop("rhs maq path is not fit beyond given spend level.")
+  }
+  if (object.lhs[["seed"]] != object.rhs[["seed"]] ||
+      object.lhs[["R"]] != object.rhs[["R"]] ||
+      object.lhs[["dim"]][[1]] != object.rhs[["dim"]][[1]] ||
+      !object.lhs[["paired.inference"]] ||
+      !object.rhs[["paired.inference"]]) {
+    stop(paste("Paired comparisons require maq objects to be fit with paired.inference=TRUE",
+               "as well as with the same random seed, bootstrap replicates, and data"))
+  }
+
+  estimate <- average_gain(object.lhs, spend)[[1]] - average_gain(object.rhs, spend)[[1]]
+  # Compute paired std.errors
+  .get_estimates <- function(object) {
+    gain.bs <- object[["_path"]]$gain.bs
+    spend.grid <- object[["_path"]]$spend
+    path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
+    if (path.idx <= 2) {
+      estimates <- -1
+    } else if (path.idx == length(spend.grid)) {
+      estimates <- unlist(lapply(gain.bs, function(gain.path.bs) gain.path.bs[path.idx]))
+    } else {
+      interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+      estimates <- unlist(lapply(gain.bs, function(gain.path.bs) {
+        gain.path.bs[path.idx] + (gain.path.bs[path.idx + 1] - gain.path.bs[path.idx]) * interp.ratio
+      }))
+    }
+
+    estimates
+  }
+  estimates.lhs <- .get_estimates(object.lhs)
+  estimates.rhs <- .get_estimates(object.rhs)
+  if (object.lhs[["R"]] < 2 || estimates.lhs[1] == -1 || estimates.rhs[1] == -1) {
+    std.err <- 0
+  } else {
+    std.err <- sd(estimates.lhs - estimates.rhs)
   }
 
   c(estimate = estimate, std.err = std.err)
