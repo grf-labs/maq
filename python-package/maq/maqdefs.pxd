@@ -19,6 +19,7 @@ cdef extern from 'Data.h' namespace 'maq':
 cdef extern from 'MAQOptions.h' namespace 'maq':
     cdef cppclass MAQOptions:
         MAQOptions(double budget,
+                   bool paired_inference,
                    unsigned int num_bootstrap,
                    unsigned int num_threads,
                    unsigned int random_seed)
@@ -27,7 +28,7 @@ cdef extern from 'MAQ.h' namespace 'maq':
     cdef cppclass MAQ:
         MAQ(const Data& data,
             const MAQOptions& options)
-        solution_path fit()
+        pair[solution_path, vector[vector[double]]] fit()
 
 cdef extern from 'Data.cpp' namespace 'maq':
     pass

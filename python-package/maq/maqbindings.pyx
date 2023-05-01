@@ -19,6 +19,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
 
     # Ignore these options for now (TODO)
+    cdef bool paired_inference = False
     cdef double* weights_ptr = NULL
     cdef int* tie_breaker_ptr = NULL
     cdef int* clusters_ptr = NULL
@@ -32,12 +33,12 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
 
     cdef MAQOptions* opt_ptr
     opt_ptr = new MAQOptions(
-        budget, n_bootstrap, num_threads, seed
+        budget, paired_inference, n_bootstrap, num_threads, seed
     )
 
     cdef MAQ* maq_ptr
     maq_ptr = new MAQ(deref(data_ptr), deref(opt_ptr))
-    cdef solution_path ret = deref(maq_ptr).fit()
+    cdef solution_path ret = deref(maq_ptr).fit().first
 
     res = dict()
     path_len = ret.first[0].size()
