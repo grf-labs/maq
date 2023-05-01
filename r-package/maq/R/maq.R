@@ -81,6 +81,9 @@
 #'
 #' # Get an estimate of the difference between a point on two curves along with paired standard errors.
 #' difference_gain(mq.ipw, mq.arm1, spend = 0.3)
+#'
+#' # Estimate a random baseline that only takes the average reward/cost into account.
+#' mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, Y.k.ipw.eval)
 #' }
 #' }
 #'
@@ -96,8 +99,12 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = 42) {
-  if (is.vector(cost) && length(cost) == NCOL(reward)) {
-    cost <- matrix(cost, NROW(reward), NCOL(reward), byrow = TRUE)
+  if (is.vector(cost) && length(cost) == NCOL(reward.scores)) {
+    cost <- matrix(cost, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
+  }
+
+  if (is.vector(reward) && length(reward) == NCOL(reward.scores)) {
+    reward <- matrix(reward, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
   }
 
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)

@@ -113,6 +113,9 @@ plot(mq.arm1, col = "blue", add = TRUE, ci.args = FALSE)
 
 # Get an estimate of the difference between a point on two curves along with paired standard errors.
 difference_gain(mq.ipw, mq.arm1, spend = 0.3)
+
+# Estimate a random baseline that only takes the average reward/cost into account.
+mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, Y.k.ipw.eval)
 }
 }
 
