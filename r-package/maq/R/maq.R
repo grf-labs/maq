@@ -388,7 +388,6 @@ plot.maq <- function(x,
   lines.args <- list(lty = 3, col = plot.args$col)
   lines.args[names(ci.args)] <- ci.args
 
-
   if (!add || dev.cur() == 1L) {
     do.call(plot, c(list(x = spend, y = gain), plot.args))
   } else {
