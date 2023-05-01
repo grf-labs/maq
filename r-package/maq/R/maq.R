@@ -311,7 +311,7 @@ difference_gain <- function(object.lhs,
   if (object.lhs[["R"]] < 2 || estimates.lhs[1] == -1 || estimates.rhs[1] == -1) {
     std.err <- 0
   } else {
-    std.err <- sd(estimates.lhs - estimates.rhs)
+    std.err <- stats::sd(estimates.lhs - estimates.rhs)
   }
 
   c(estimate = estimate, std.err = std.err)
@@ -388,7 +388,7 @@ plot.maq <- function(x,
   lines.args <- list(lty = 3, col = plot.args$col)
   lines.args[names(ci.args)] <- ci.args
 
-  if (!add || dev.cur() == 1L) {
+  if (!add || grDevices::dev.cur() == 1L) {
     do.call(plot, c(list(x = spend, y = gain), plot.args))
   } else {
     do.call(graphics::lines, c(list(x = spend, y = gain), plot.args))
