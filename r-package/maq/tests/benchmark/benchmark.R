@@ -18,7 +18,7 @@ reward = matrix(1 + rnorm(n*K), n, K)
 cost = 0.05 + matrix(runif(n*K), n, K)
 
 b1 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 200),
+  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE),
   times = 10,
   unit = "seconds"
 )
@@ -30,7 +30,7 @@ reward = matrix(1 + rnorm(n*K), n, K)
 cost = 0.05 + matrix(runif(n*K), n, K)
 
 b2 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 200),
+  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE),
   times = 10,
   unit = "seconds"
 )
@@ -42,7 +42,7 @@ reward = matrix(1 + rnorm(n*K), n, K)
 cost = 0.05 + matrix(runif(n*K), n, K)
 
 b3 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 200),
+  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE),
   times = 5,
   unit = "seconds"
 )
@@ -54,13 +54,13 @@ reward = matrix(1 + rnorm(n*K), n, K)
 cost = 0.05 + matrix(runif(n*K), n, K)
 
 b41 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 0),
+  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE),
   times = 10,
   unit = "seconds"
 )
 
 b42 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 200),
+  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE),
   times = 10,
   unit = "seconds"
 )
@@ -72,7 +72,7 @@ reward = matrix(1 + rnorm(n*K), n, K)
 cost = 0.05 + matrix(runif(n*K), n, K)
 
 b5 <- microbenchmark(
-  maq(reward, cost, budget, reward, R = 0),
+  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE),
   times = 5,
   unit = "seconds"
 )
