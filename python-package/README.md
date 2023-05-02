@@ -5,7 +5,9 @@ Python bindings for `maq` can be installed from source by
 pip install "git+https://github.com/grf-labs/maq.git#egg=maq&subdirectory=python-package"
 ```
 
-(requires Cython/Numpy)
+Compiling from source requires Cython/Numpy. There are no C++ dependencies except the Standard Template Library, and it should work with C++11 or higher.
+
+Currently, only the core MAQ solver features (point estimates and confidence intervals of the solution path) are implemented. The R package has support for all the functionality (like clustered/paired bootstraps, etc).
 
 ### Usage Example
 
