@@ -13,7 +13,7 @@
 
 \item{add}{Whether to add to an already existing plot. Default is FALSE.}
 
-\item{ci.args}{Optional lines() arguments for 95 \% confidence bars. Set to FALSE to exlcude CIs.}
+\item{ci.args}{A list of optional arguments to lines() for drawing 95 \% confidence bars. Set to NULL to ignore CIs.}
 
 \item{grid.step}{The grid increment size to plot the curve on. Default is
 max(floor(length(path.length) / 1000), 1).}

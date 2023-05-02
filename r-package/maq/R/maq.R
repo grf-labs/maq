@@ -78,7 +78,7 @@
 #'
 #' # Compute a cost curve for only arm one.
 #' mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1], R = 200)
-#' plot(mq.arm1, col = "blue", add = TRUE, ci.args = FALSE)
+#' plot(mq.arm1, col = "blue", add = TRUE, ci.args = NULL)
 #'
 #' # Get an estimate of the difference between a point on two curves along with paired standard errors.
 #' difference_gain(mq.ipw, mq.arm1, spend = 0.3)
@@ -353,7 +353,7 @@ print.maq <- function(x,
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
-#' @param ci.args Optional lines() arguments for 95 % confidence bars. Set to FALSE to exlcude CIs.
+#' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars. Set to NULL to ignore CIs.
 #' @param grid.step The grid increment size to plot the curve on. Default is
 #'  max(floor(length(path.length) / 1000), 1).
 #'
@@ -395,7 +395,7 @@ plot.maq <- function(x,
     do.call(graphics::lines, c(list(x = spend, y = gain), plot.args))
   }
 
-  if (!isFALSE(ci.args)) {
+  if (!is.null(ci.args)) {
     do.call(graphics::lines, c(list(x = spend, y = lb), lines.args))
     do.call(graphics::lines, c(list(x = spend, y = ub), lines.args))
   }
