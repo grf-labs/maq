@@ -294,8 +294,8 @@ difference_gain <- function(object.lhs,
     gain.bs <- object[["_path"]]$gain.bs
     spend.grid <- object[["_path"]]$spend
     path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
-    if (path.idx <= 2) {
-      estimates <- -1
+    if (path.idx == 0) {
+      estimates <- 0
     } else if (path.idx == length(spend.grid)) {
       estimates <- unlist(lapply(gain.bs, function(gain.path.bs) gain.path.bs[path.idx]))
     } else {
@@ -309,10 +309,9 @@ difference_gain <- function(object.lhs,
   }
   estimates.lhs <- .get_estimates(object.lhs)
   estimates.rhs <- .get_estimates(object.rhs)
-  if (object.lhs[["R"]] < 2 || estimates.lhs[1] == -1 || estimates.rhs[1] == -1) {
+  std.err <- stats::sd(estimates.lhs - estimates.rhs, na.rm = TRUE)
+  if (is.na(std.err)) {
     std.err <- 0
-  } else {
-    std.err <- stats::sd(estimates.lhs - estimates.rhs)
   }
 
   c(estimate = estimate, std.err = std.err)

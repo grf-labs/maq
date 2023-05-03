@@ -2,6 +2,7 @@
 // https://github.com/grf-labs/maq
 // Distributed under the MIT License.
 
+#include <cmath>
 #include <future>
 #include <random>
 #include <vector>
@@ -104,7 +105,7 @@ std::vector<double> MAQ::interpolate_path(const solution_path& path_hat, const s
     double val = grid[i];
     // out of left range?
     if (val < grid_b[left]) {
-      gain_b_interp[i] = -1;
+      gain_b_interp[i] = NAN;
       continue;
     }
     // update active interval?
@@ -144,7 +145,7 @@ void MAQ::compute_std_err(solution_path& path_hat, const std::vector<std::vector
         continue;
       }
       double val = gain_bs[b][i];
-      if (val == -1) {
+      if (std::isnan(val)) {
         continue;
       }
       n++;
