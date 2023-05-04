@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A C++ solver for the Multi-Action Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
+A package for evaluating treatment targeting with multiple arms via the Multi-Action Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
 
 The development version (R package) can be installed by
 
