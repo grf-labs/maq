@@ -17,6 +17,7 @@ LinkingTo:
 Imports:
     Rcpp
 Depends:
+    R (>= 3.5.0),
     Matrix
 Suggests:
     grf,
