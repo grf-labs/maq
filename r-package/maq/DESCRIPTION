@@ -20,7 +20,7 @@ Depends:
     R (>= 3.5.0),
     Matrix
 Suggests:
-    grf,
+    grf (>= 2.3.0),
     testthat (>= 3.0.0)
 SystemRequirements: GNU make
 URL: https://github.com/grf-labs/maq

@@ -28,14 +28,14 @@ eval <- -train
 tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 
 # Predict CATEs on held out evaluation data.
-tau.hat <- predict(tau.forest, X[eval, ])$predictions[,,]
+tau.hat <- predict(tau.forest, X[eval, ], drop = TRUE)$predictions
 
 # Form cost estimates - the following are a toy example.
 cost.hat <- X[eval, 4:5]
 
 # Fit an evaluation forest to compute doubly robust evaluation set scores.
 eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
-DR.scores <- grf::get_scores(eval.forest)[,,]
+DR.scores <- grf::get_scores(eval.forest, drop = TRUE)
 
 # Fit a MAQ using evaluation set estimates.
 max.budget <- 1
