@@ -4,7 +4,14 @@
 \alias{plot.maq}
 \title{Plot the gain/spend curve.}
 \usage{
-\method{plot}{maq}(x, ..., add = FALSE, ci.args = list(), grid.step = NULL)
+\method{plot}{maq}(
+  x,
+  ...,
+  add = FALSE,
+  horizontal.line = TRUE,
+  ci.args = list(),
+  grid.step = NULL
+)
 }
 \arguments{
 \item{x}{A maq object.}
@@ -13,7 +20,11 @@
 
 \item{add}{Whether to add to an already existing plot. Default is FALSE.}
 
-\item{ci.args}{A list of optional arguments to lines() for drawing 95 \% confidence bars. Set to NULL to ignore CIs.}
+\item{horizontal.line}{Whether to draw a horizontal line where the cost curve continues.
+Only applies if add = TRUE. Default is TRUE.}
+
+\item{ci.args}{A list of optional arguments to lines() for drawing 95 \% confidence bars.
+Set to NULL to ignore CIs.}
 
 \item{grid.step}{The grid increment size to plot the curve on. Default is
 max(floor(length(path.length) / 1000), 1).}

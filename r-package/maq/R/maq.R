@@ -357,7 +357,10 @@ print.maq <- function(x,
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
-#' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars. Set to NULL to ignore CIs.
+#' @param horizontal.line Whether to draw a horizontal line where the cost curve continues.
+#'  Only applies if add = TRUE. Default is TRUE.
+#' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars.
+#'  Set to NULL to ignore CIs.
 #' @param grid.step The grid increment size to plot the curve on. Default is
 #'  max(floor(length(path.length) / 1000), 1).
 #'
@@ -366,6 +369,7 @@ print.maq <- function(x,
 plot.maq <- function(x,
                      ...,
                      add = FALSE,
+                     horizontal.line = TRUE,
                      ci.args = list(),
                      grid.step = NULL
                      ) {
@@ -383,6 +387,13 @@ plot.maq <- function(x,
   spend <- spend.grid[plot.grid]
   gain <- gain.grid[plot.grid]
   std.err <- std.err.grid[plot.grid]
+  if (add && horizontal.line) {
+    len <- length(spend)
+    xmax <- par("usr")[2]
+    spend <- c(spend, seq(spend[len], xmax, length.out = 100))
+    gain <- c(gain, rep(gain[len], 100))
+    std.err <- c(std.err, rep(std.err[len], 100))
+  }
   lb <- gain - 1.96 * std.err
   ub <- gain + 1.96 * std.err
 
