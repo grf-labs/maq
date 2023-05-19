@@ -336,8 +336,8 @@ summary.maq <- function(object,
     spend = object[["_path"]]$spend,
     gain = object[["_path"]]$gain,
     std.err = object[["_path"]]$std.err,
-    allocated.unit = object[["_path"]]$ipath + 1,
-    allocated.arm = object[["_path"]]$kpath + 1
+    unit.allocation = object[["_path"]]$ipath + 1,
+    arm.allocation = object[["_path"]]$kpath + 1
   )
 }
 
