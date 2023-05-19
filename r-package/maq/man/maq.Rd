@@ -60,6 +60,7 @@ Fit a Multi-Action Qini.
 \examples{
 \donttest{
 if (require("grf", quietly = TRUE)) {
+
 # Fit a CATE estimator (using GRF) on a training sample.
 n <- 2000
 p <- 5
@@ -87,6 +88,7 @@ mq <- maq(tau.hat, cost.hat, max.budget, DR.scores, R = 200)
 
 # Plot the MAQ curve.
 plot(mq)
+legend("topleft", c("All arms", "95\% CI"), lty = c(1, 3))
 
 # Get an estimate of optimal reward at a given spend per unit along with standard errors.
 average_gain(mq, spend = 0.3)
@@ -102,21 +104,24 @@ Y.k.mat <- matrix(0, length(W), nlevels(W))
 Y.k.mat[cbind(seq_along(observed.W), observed.W)] <- Y
 Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
 Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
+mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
-mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval, R = 200)
+# Estimate some baseline policies.
+# 1) A policy that ignores covariates and only only takes the average reward/cost into account.
+mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, DR.scores, R = 200)
+plot(mq.random, col = "red", add = TRUE, ci.args = NULL)
 
-plot(mq.ipw, col = 2, add = TRUE)
-legend("topleft", c("DR", "IPW", "95\% CI"), col = 1:2, lty = c(1, 1, 3))
-
-# Compute a cost curve for only arm one.
-mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, Y.k.ipw.eval[, 1], R = 200)
+# 2) A policy that only use arm 1.
+mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
 plot(mq.arm1, col = "blue", add = TRUE, ci.args = NULL)
+legend("topleft", c("All arms", "95\% CI", "No targeting", "Arm 1"), col = c(1,1,2,4), lty = c(1, 3, 1, 1))
 
-# Get an estimate of the difference between a point on two curves along with paired standard errors.
-difference_gain(mq.ipw, mq.arm1, spend = 0.3)
+# Estimate the value of employing all arms over a random allocation.
+difference_gain(mq, mq.random, spend = 0.3)
 
-# Estimate a random baseline that only takes the average reward/cost into account.
-mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, Y.k.ipw.eval)
+# Estimate the value of adding arm 1 to the optimal policy mix.
+difference_gain(mq, mq.arm1, spend = 0.3)
+
 }
 }
 
