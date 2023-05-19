@@ -16,6 +16,8 @@ Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-pa
 ### Usage Example
 
 ```R
+library(maq)
+
 # Fit a CATE estimator (using GRF) on a training sample.
 n <- 2000
 p <- 5
