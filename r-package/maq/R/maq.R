@@ -5,7 +5,9 @@
 #' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
 #'  be a ncol(reward)-length vector.
 #' @param budget The maximum spend per unit to fit the MAQ path on.
-#' @param reward.scores A matrix of rewards to evaluate the MAQ on.
+#' @param reward.scores A matrix of rewards to evaluate the MAQ on. Warn
+#' @param target The target policy estimand. "optimal" is the policy that takes covariates into account,
+#'  and "average" only allocates treatment based on the average reward and cost. Default is "optimal".
 #' @param R Number of bootstrap replicates for computing standard errors. Default is 0
 #'  (only point estimates are computed).
 #' @param paired.inference Whether to allow for paired tests with other cost curves. If TRUE (Default)
@@ -76,7 +78,7 @@
 #'
 #' # Estimate some baseline policies.
 #' # 1) A policy that ignores covariates and only only takes the average reward/cost into account.
-#' mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, DR.scores, R = 200)
+#' mq.random <- maq(tau.hat, cost.hat, max.budget, DR.scores, target = "average", R = 200)
 #' plot(mq.random, col = "red", add = TRUE, ci.args = NULL)
 #'
 #' # 2) A policy that only use arm 1.
@@ -99,6 +101,7 @@ maq <- function(reward,
                 cost,
                 budget,
                 reward.scores,
+                target = c("optimal", "average"),
                 R = 0,
                 paired.inference = TRUE,
                 sample.weights = NULL,
@@ -106,6 +109,12 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = 42) {
+  target <- match.arg(target)
+  if (target == "average") {
+    reward <- colMeans(as.matrix(reward))
+    cost <- colMeans(as.matrix(cost))
+  }
+
   if (is.vector(cost) && length(cost) == NCOL(reward.scores)) {
     cost <- matrix(cost, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
   }

@@ -9,6 +9,7 @@ maq(
   cost,
   budget,
   reward.scores,
+  target = c("optimal", "average"),
   R = 0,
   paired.inference = TRUE,
   sample.weights = NULL,
@@ -26,7 +27,10 @@ be a ncol(reward)-length vector.}
 
 \item{budget}{The maximum spend per unit to fit the MAQ path on.}
 
-\item{reward.scores}{A matrix of rewards to evaluate the MAQ on.}
+\item{reward.scores}{A matrix of rewards to evaluate the MAQ on. Warn}
+
+\item{target}{The target policy estimand. "optimal" is the policy that takes covariates into account,
+and "average" only allocates treatment based on the average reward and cost. Default is "optimal".}
 
 \item{R}{Number of bootstrap replicates for computing standard errors. Default is 0
 (only point estimates are computed).}
@@ -108,7 +112,7 @@ mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 # Estimate some baseline policies.
 # 1) A policy that ignores covariates and only only takes the average reward/cost into account.
-mq.random <- maq(colMeans(tau.hat), colMeans(cost.hat), max.budget, DR.scores, R = 200)
+mq.random <- maq(tau.hat, cost.hat, max.budget, DR.scores, target = "average", R = 200)
 plot(mq.random, col = "red", add = TRUE, ci.args = NULL)
 
 # 2) A policy that only use arm 1.
