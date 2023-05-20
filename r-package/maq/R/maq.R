@@ -82,7 +82,8 @@
 #' # 2) A policy that only use arm 1.
 #' mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
 #' plot(mq.arm1, col = "blue", add = TRUE, ci.args = NULL)
-#' legend("topleft", c("All arms", "95% CI", "No targeting", "Arm 1"), col = c(1,1,2,4), lty = c(1, 3, 1, 1))
+#' legend("topleft", c("All arms", "95% CI", "No targeting", "Arm 1"),
+#'        col = c(1,1,2,4), lty = c(1, 3, 1, 1))
 #'
 #' # Estimate the value of employing all arms over a random allocation.
 #' difference_gain(mq, mq.random, spend = 0.3)
@@ -389,7 +390,7 @@ plot.maq <- function(x,
   std.err <- std.err.grid[plot.grid]
   if (add && horizontal.line) {
     len <- length(spend)
-    xmax <- par("usr")[2]
+    xmax <- graphics::par("usr")[2]
     spend <- c(spend, seq(spend[len], xmax, length.out = 100))
     gain <- c(gain, rep(gain[len], 100))
     std.err <- c(std.err, rep(std.err[len], 100))

@@ -1,5 +1,5 @@
 #' @useDynLib maq, .registration = TRUE
 #' @importFrom Rcpp evalCpp
-#' @importFrom stats predict runif
+#' @importFrom stats predict
 #' @import Matrix
 NULL
