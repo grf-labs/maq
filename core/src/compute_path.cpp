@@ -104,7 +104,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
 
   double spend = 0;
   double gain = 0;
-  double bs_weight = bootstrap ? 2 : 1;
+  double bs_weight = bootstrap ? 4 : 1;
   size_t previous_arm;
   for (auto arm : R) {
     for (auto sample : samples) {
