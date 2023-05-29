@@ -20,7 +20,7 @@ namespace maq {
 inline bool is_dominated(const std::vector<size_t>& Ri,
                          size_t point_l,
                          size_t sample,
-                         const Data& data) {
+                         const HullData& data) {
   if (Ri.size() < 1) {
     return false;
   }
@@ -45,12 +45,12 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
   return (reward_l - reward_k) / (cost_l - cost_k) > (reward_k - reward_j) / (cost_k - cost_j);
 }
 
-std::vector<std::vector<size_t>> convex_hull(const Data& data) {
-  std::vector<std::vector<size_t>> R(data.num_rows);
-  std::vector<size_t> ordered_arms(data.num_cols);
+std::vector<std::vector<size_t>> convex_hull(const HullData& data) {
+  std::vector<std::vector<size_t>> R(data.get_num_rows());
+  std::vector<size_t> ordered_arms(data.get_num_cols());
   std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
 
-  for (size_t sample = 0; sample < data.num_rows; sample++) {
+  for (size_t sample = 0; sample < data.get_num_rows(); sample++) {
     std::vector<size_t>& Ri = R[sample];
 
     // Get sort order by increasing cost
@@ -59,15 +59,15 @@ std::vector<std::vector<size_t>> convex_hull(const Data& data) {
     });
     // Push first positive reward point onto stack
     size_t start = 0;
-    while (start < data.num_cols && data.get_reward(sample, ordered_arms[start]) <= 0) {
+    while (start < data.get_num_cols() && data.get_reward(sample, ordered_arms[start]) <= 0) {
       start++;
     }
-    if (start == data.num_cols) {
+    if (start == data.get_num_cols()) {
       continue;
     }
     size_t first = ordered_arms[start];
     Ri.push_back(first);
-    for (size_t l = start + 1; l < data.num_cols; l++) {
+    for (size_t l = start + 1; l < data.get_num_cols(); l++) {
       size_t point_l = ordered_arms[l];
       while (is_dominated(Ri, point_l, sample, data)) {
         Ri.pop_back(); // remove point_k

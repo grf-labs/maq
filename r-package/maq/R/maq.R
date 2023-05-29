@@ -111,9 +111,10 @@ maq <- function(reward,
                 num.threads = NULL,
                 seed = 42) {
   target <- match.arg(target)
-  if (target == "average") {
-    reward <- colMeans(as.matrix(reward))
-    cost <- colMeans(as.matrix(cost))
+  if (target == "optimal") {
+    target.type <- 0
+  } else {
+    target.type <- 1
   }
 
   if (is.vector(cost) && length(cost) == NCOL(reward.scores)) {
@@ -186,12 +187,13 @@ maq <- function(reward,
 
   ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
-                     budget, paired.inference, R, num.threads, seed)
+                     budget, target.type, paired.inference, R, num.threads, seed)
 
   output <- list()
   class(output) <- "maq"
   output[["_path"]] <- ret
   output[["seed"]] <- seed
+  output[["target"]] <- target
   output[["paired.inference"]] <- paired.inference
   output[["R"]] <- R
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
