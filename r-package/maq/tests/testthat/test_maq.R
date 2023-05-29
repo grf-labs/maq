@@ -53,33 +53,6 @@ test_that("maq works as expected", {
   expect_equal(mq.nocl[["_path"]]$std.err, mq.cl[["_path"]]$std.err)
 })
 
-test_that("avg maq works as expected", {
-  budget <- 1e9
-  n <- 1000
-  K <- 15
-  reward <- matrix(0.1 + rnorm(n * K), n, K)
-  reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
-  cost <- 1:K
-
-  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
-  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
-            matrix(cost, n, K, byrow = TRUE),
-            budget,
-            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
-  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
-  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
-
-  # < 0
-  reward <- matrix(-10 + rnorm(n * K), n, K)
-  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
-  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
-            matrix(cost, n, K, byrow = TRUE),
-            budget,
-            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
-  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
-  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
-})
-
 test_that("basic invariances hold", {
   budget <- 25
   n <- 100
@@ -346,4 +319,69 @@ test_that("tie handling works as expected", {
   mq2 <- maq(reward, cost, budget, reward, tie.breaker = rev(1:n), R = 0)
 
   expect_true(all(mq1[["_path"]]$ipath[1:20] < mq2[["_path"]]$ipath[1:20]))
+})
+
+test_that("avg maq works as expected", {
+  # Same point estimates as "duplicated" maq-approach
+  budget <- 1e9
+  n <- 1000
+  K <- 15
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 1:K
+
+  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
+            matrix(cost, n, K, byrow = TRUE),
+            budget,
+            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
+  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
+  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
+
+  # < 0
+  reward <- matrix(-10 + rnorm(n * K), n, K)
+  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
+            matrix(cost, n, K, byrow = TRUE),
+            budget,
+            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
+  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
+  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
+
+  # std.errors works as expected
+  ntrue <- 100000
+  K <- 5
+  rewardt <- cbind(runif(n), matrix(-0.1 + rnorm(ntrue * K), ntrue, K))
+  cost <- c(0.1, rep(1, K))
+  mqt <- maq(rewardt, cost, budget, rewardt, target = "average")
+
+  spend1 <- 0.02
+  true1 <- average_gain(mqt, spend1)[[1]]
+  spend2 <- 0.1
+  true2 <- average_gain(mqt, spend2)[[1]]
+
+  n <- 500
+  res <- t(replicate(250, {
+    reward <- rewardt[sample(ntrue, n), ]
+    cost <- c(0.1, rep(1, K))
+    mq <- maq(reward, cost, budget, reward, target = "average", R = 200)
+
+    est1 <- average_gain(mq, spend1)
+    est2 <- average_gain(mq, spend2)
+
+    c(
+      est1 = est1[[1]],
+      se1 = est1[[2]],
+      bias1 = est1[[1]] - true1,
+      cov1 = abs(est1[[1]] - true1) / est1[[2]] <= 1.96,
+
+      est2 = est2[[1]],
+      se2 = est2[[2]],
+      bias2 = est2[[1]] - true2,
+      cov2 = abs(est2[[1]] - true2) / est2[[2]] <= 1.96
+    )
+  }))
+
+  expect_equal(mean(res[, "cov1"]), 0.95, tolerance = 0.04)
+  expect_equal(mean(res[, "cov2"]), 0.95, tolerance = 0.04)
 })
