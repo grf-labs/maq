@@ -193,6 +193,7 @@ maq <- function(reward,
   class(output) <- "maq"
   output[["_path"]] <- ret
   output[["seed"]] <- seed
+  output[["target"]] <- target
   output[["paired.inference"]] <- paired.inference
   output[["R"]] <- R
   output[["dim"]] <- c(NROW(cost), NCOL(cost))
