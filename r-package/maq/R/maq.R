@@ -121,10 +121,6 @@ maq <- function(reward,
     cost <- matrix(cost, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
   }
 
-  if (is.vector(reward) && length(reward) == NCOL(reward.scores)) {
-    reward <- matrix(reward, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
-  }
-
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
         || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
         || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {
