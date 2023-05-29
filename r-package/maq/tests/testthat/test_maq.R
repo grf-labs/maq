@@ -53,6 +53,33 @@ test_that("maq works as expected", {
   expect_equal(mq.nocl[["_path"]]$std.err, mq.cl[["_path"]]$std.err)
 })
 
+test_that("avg maq works as expected", {
+  budget <- 1e9
+  n <- 1000
+  K <- 15
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 1:K
+
+  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
+            matrix(cost, n, K, byrow = TRUE),
+            budget,
+            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
+  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
+  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
+
+  # < 0
+  reward <- matrix(-10 + rnorm(n * K), n, K)
+  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
+            matrix(cost, n, K, byrow = TRUE),
+            budget,
+            matrix(colMeans(reward.eval), n, K, byrow = TRUE))
+  expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
+  expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
+})
+
 test_that("basic invariances hold", {
   budget <- 25
   n <- 100

@@ -12,6 +12,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        const Rcpp::IntegerVector& tie_breaker,
                        const Rcpp::IntegerVector& clusters,
                        double budget,
+                       int target,
                        bool paired_inference,
                        unsigned int num_bootstrap,
                        unsigned int num_threads,
@@ -33,7 +34,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
 
   Data data(reward.begin(), reward_scores.begin(), cost.begin(),
             weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, true);
-  MAQOptions options(budget, paired_inference, num_bootstrap, num_threads, seed);
+  MAQOptions options(budget, target, paired_inference, num_bootstrap, num_threads, seed);
   MAQ maq(data, options);
 
   auto ret = maq.fit();
@@ -60,5 +61,5 @@ Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
   size_t num_cols = reward.cols();
   Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, nullptr, num_rows, num_cols, true);
 
-  return Rcpp::List::create(convex_hull(data));
+  return Rcpp::List::create(convex_hull(CompleteData(data)));
 }

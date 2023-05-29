@@ -9,12 +9,14 @@ namespace maq {
 
 struct MAQOptions {
   MAQOptions(double budget,
+             int target,
              bool paired_inference,
              unsigned int num_bootstrap,
              unsigned int num_threads,
              unsigned int random_seed) :
-      paired_inference(paired_inference),
       budget(budget),
+      target(target),
+      paired_inference(paired_inference),
       num_bootstrap(num_bootstrap),
       random_seed(random_seed) {
     if (num_threads == 0) {
@@ -23,8 +25,9 @@ struct MAQOptions {
     this->num_threads = num_threads;
   }
 
-  bool paired_inference;
   double budget;
+  int target;
+  bool paired_inference;
   unsigned int num_bootstrap;
   unsigned int num_threads;
   unsigned int random_seed;

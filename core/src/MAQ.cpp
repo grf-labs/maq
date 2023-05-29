@@ -11,6 +11,7 @@
 #include "compute_path.h"
 #include "convex_hull.h"
 #include "Sampler.h"
+#include "HullData.h"
 
 namespace maq {
 
@@ -26,8 +27,17 @@ std::pair<solution_path, std::vector<std::vector<double>>> MAQ::fit() {
     samples.push_back(sample);
   }
 
-  auto R = convex_hull(data);
-  auto path_hat = compute_path(samples, R, data, options.budget, false);
+  std::vector<std::vector<size_t>> R;
+  solution_path path_hat;
+  if (options.target == 0) {
+    R = convex_hull(CompleteData(data));
+    path_hat = compute_path(samples, R, data, options.budget, false);
+  } else {
+    auto mean_data = MeanData(data, samples);
+    R = convex_hull(mean_data);
+    path_hat = compute_path(samples, R[0], mean_data, false);
+  }
+
   auto gain_bs = fit_paths(path_hat, R);
   compute_std_err(path_hat, gain_bs);
 
@@ -78,7 +88,14 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
 
   for (size_t b = 0; b < num_replicates; b++) {
     std::vector<size_t> samples = Sampler::sample(data, 0.5, options.random_seed + start + b);
-    auto path_b = compute_path(samples, R, data, options.budget, true);
+    solution_path path_b;
+    if (options.target == 0) {
+      path_b = compute_path(samples, R, data, options.budget, true);
+    } else {
+      auto mean_data = MeanData(data, samples);
+      auto R_mean = convex_hull(mean_data);
+      path_b = compute_path(samples, R_mean[0], mean_data, true);
+    }
     auto gain_b = interpolate_path(path_hat, path_b);
     predictions.push_back(std::move(gain_b));
   }

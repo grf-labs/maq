@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Data.h"
+#include "HullData.h"
 
 namespace maq {
 
@@ -13,6 +14,12 @@ solution_path compute_path(const std::vector<size_t>& samples,
                            const Data& data,
                            double budget,
                            bool bootstrap);
+
+solution_path compute_path(const std::vector<size_t>& samples,
+                           const std::vector<size_t>& R,
+                           const HullData& data,
+                           bool bootstrap);
+
 } // namespace maq
 
 #endif // MAQ_COMPUTE_PATH_H
