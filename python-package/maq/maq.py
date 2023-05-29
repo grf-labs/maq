@@ -8,6 +8,10 @@ class MAQ:
 
     Parameters
     ----------
+    target : str, default="optimal"
+        The target policy estimand. "optimal" is the policy that takes covariates into account,
+        and "average" only allocates treatment based on the average reward and cost.
+
     n_bootstrap : int, default=0
         Number of bootstrap replicates for SEs. Default is 0.
 
@@ -83,9 +87,14 @@ class MAQ:
     >>> plt.show() # doctest: +SKIP
     """
 
-    def __init__(self, n_bootstrap=0, n_threads=0, seed=42):
+    def __init__(self, target="optimal", n_bootstrap=0, n_threads=0, seed=42):
         assert n_threads >= 0, "n_threads should be >=0."
         assert n_bootstrap >= 0, "n_bootstrap should be >=0."
+        assert target in ["optimal", "average"], "target should be either optimal or average."
+        if target == "optimal":
+            self.target_type = 0
+        else:
+            self.target_type = 1
         self.n_bootstrap = n_bootstrap
         self.n_threads = n_threads
         self.seed = seed
@@ -122,7 +131,7 @@ class MAQ:
         self.budget = budget
 
         self._path = solver_cpp(
-            reward, reward_scores, cost, budget, self.n_bootstrap, self.n_threads, self.seed
+            reward, reward_scores, cost, budget, self.target_type, self.n_bootstrap, self.n_threads, self.seed
         )
 
         self._is_fit = True
