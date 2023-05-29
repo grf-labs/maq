@@ -85,6 +85,39 @@ print(b42, digits = 3)
 print(b5, digits = 3)
 print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
+#' @ add pibar (#10) https://github.com/grf-labs/maq/pull/10
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
+# [[1]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 1.98 2.03 2.06   2.06 2.07 2.13    10
+#
+# [[2]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 5.86 5.89 5.94   5.94 5.95 6.08    10
+#
+# [[3]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 35.2 35.3 35.3   35.3 35.4 35.4     5
+#
+# [[4]]
+# Unit: seconds
+# expr min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 2.3 2.31 2.34   2.33 2.34 2.42    10
+#
+# [[5]]
+# Unit: seconds
+# expr  min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.8 31.9 32.4   32.3 32.6 33.4    10
+#
+# [[6]]
+# Unit: seconds
+# expr min   lq mean median   uq  max neval
+# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE)  31 31.1   38   31.1 32.1 64.8     5
+
+
 #' @ 9edff55064ca75b7806b0532ec24f82096b22010
 # > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
