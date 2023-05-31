@@ -9,4 +9,6 @@
 library(testthat)
 library(maq)
 
+# This treats warnings as errors
+options(warn = 2)
 test_check("maq")
