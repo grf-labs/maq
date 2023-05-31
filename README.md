@@ -19,11 +19,11 @@ Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-pa
 library(maq)
 
 # Fit a CATE estimator (using GRF) on a training sample.
-n <- 2000
+n <- 3000
 p <- 5
 X <- matrix(runif(n * p), n, p)
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
-Y <- X[, 1] + X[, 2] * (W == "B") + X[, 3] * (W == "C") + rnorm(n)
+Y <- X[, 1] + X[, 2] * (W == "B") + 1.5 * X[, 3] * (W == "C") + rnorm(n)
 train <- sample(1:n, n/2)
 eval <- -train
 
@@ -33,7 +33,7 @@ tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 tau.hat <- predict(tau.forest, X[eval, ], drop = TRUE)$predictions
 
 # Form cost estimates - the following are a toy example.
-cost.hat <- X[eval, 4:5]
+cost.hat <- cbind(X[eval, 4] / 4, X[eval, 5])
 
 # Fit an evaluation forest to compute doubly robust evaluation set scores.
 eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
@@ -47,10 +47,10 @@ mq <- maq(tau.hat, cost.hat, max.budget, DR.scores)
 plot(mq)
 
 # Get an estimate of optimal reward at a given spend per unit along with standard errors.
-average_gain(mq, spend = 0.3)
+average_gain(mq, spend = 0.2)
 
 # Get the optimal treatment allocation matrix at a given spend per unit.
-pi.mat <- predict(mq, spend = 0.3)
+pi.mat <- predict(mq, spend = 0.2)
 
 # If the treatment randomization probabilities are known, then an alternative to
 # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).

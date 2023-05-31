@@ -67,11 +67,11 @@ Fit a Multi-Action Qini.
 if (require("grf", quietly = TRUE)) {
 
 # Fit a CATE estimator (using GRF) on a training sample.
-n <- 2000
+n <- 3000
 p <- 5
 X <- matrix(runif(n * p), n, p)
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
-Y <- X[, 1] + X[, 2] * (W == "B") + X[, 3] * (W == "C") + rnorm(n)
+Y <- X[, 1] + X[, 2] * (W == "B") + 1.5 * X[, 3] * (W == "C") + rnorm(n)
 train <- sample(1:n, n/2)
 eval <- -train
 
@@ -81,7 +81,7 @@ tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 tau.hat <- predict(tau.forest, X[eval, ], drop = TRUE)$predictions
 
 # Form cost estimates - the following are a toy example.
-cost.hat <- X[eval, 4:5]
+cost.hat <- cbind(X[eval, 4] / 4, X[eval, 5])
 
 # Fit an evaluation forest to compute doubly robust evaluation set scores.
 eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
@@ -96,10 +96,10 @@ plot(mq)
 legend("topleft", c("All arms", "95\% CI"), lty = c(1, 3))
 
 # Get an estimate of optimal reward at a given spend per unit along with standard errors.
-average_gain(mq, spend = 0.3)
+average_gain(mq, spend = 0.2)
 
 # Get the optimal treatment allocation matrix at a given spend per unit.
-pi.mat <- predict(mq, spend = 0.3)
+pi.mat <- predict(mq, spend = 0.2)
 
 # If the treatment randomization probabilities are known, then an alternative to
 # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
@@ -109,24 +109,35 @@ Y.k.mat <- matrix(0, length(W), nlevels(W))
 Y.k.mat[cbind(seq_along(observed.W), observed.W)] <- Y
 Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
 Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
+
 mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
+plot(mq.ipw, add = TRUE, col = 2)
+legend("topleft", c("All arms", "95\% CI", "All arms (IPW)"), col = c(1, 1, 2), lty = c(1, 3, 1))
 
 # Estimate some baseline policies.
 # a) A policy that ignores covariates and only only takes the average reward/cost into account.
 mq.random <- maq(tau.hat, cost.hat, max.budget, DR.scores, target = "average", R = 200)
-plot(mq.random, col = "red", add = TRUE, ci.args = NULL)
 
 # b) A policy that only use arm 1.
 mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
-plot(mq.arm1, col = "blue", add = TRUE, ci.args = NULL)
-legend("topleft", c("All arms", "95\% CI", "No targeting", "Arm 1"),
-       col = c(1,1,2,4), lty = c(1, 3, 1, 1))
+
+# c) A policy that only use arm 2.
+mq.arm2 <- maq(tau.hat[, 2], cost.hat[, 2], max.budget, DR.scores[, 2], R = 200)
+
+plot(mq, ci.args = NULL)
+plot(mq.random, col = 2, add = TRUE, ci.args = NULL)
+plot(mq.arm1, col = 3, add = TRUE, ci.args = NULL)
+plot(mq.arm2, col = 4, add = TRUE, ci.args = NULL)
+legend("topleft", c("All arms", "No targeting", "Arm 1", "Arm 2"), col = 1:4, lty = 1)
 
 # Estimate the value of employing all arms over a random allocation.
-difference_gain(mq, mq.random, spend = 0.3)
+difference_gain(mq, mq.random, spend = 0.2)
 
 # Estimate the value of adding arm 1 to the optimal policy mix.
-difference_gain(mq, mq.arm1, spend = 0.3)
+difference_gain(mq, mq.arm1, spend = 0.2)
+
+# Estimate the value of adding arm 2 to the optimal policy mix.
+difference_gain(mq, mq.arm2, spend = 0.2)
 
 }
 }
