@@ -7,7 +7,7 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment targeting rules for costly and mutually exclusive treatment arms.
+Description: Evaluate treatment rules for costly and mutually exclusive treatment arms.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
