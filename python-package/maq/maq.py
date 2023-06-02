@@ -4,7 +4,7 @@ from maq.ext import solver_cpp
 
 
 class MAQ:
-    """Fit a Multi-Action Qini.
+    """Fit a Multi-Armed Qini.
 
     Parameters
     ----------

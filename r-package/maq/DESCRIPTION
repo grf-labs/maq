@@ -1,5 +1,5 @@
 Package: maq
-Title: Multi-Action Qini
+Title: Multi-Armed Qini
 Version: 0.1.0
 Authors@R: c(
     person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
@@ -7,7 +7,7 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment targeting across costly and mutually exclusive treatment arms.
+Description: Evaluate treatment targeting rules for costly and mutually exclusive treatment arms.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

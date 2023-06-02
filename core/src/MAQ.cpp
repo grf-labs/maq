@@ -1,4 +1,4 @@
-// Multi-Action Qini (maq).
+// Multi-Armed Qini (maq).
 // https://github.com/grf-labs/maq
 // Distributed under the MIT License.
 

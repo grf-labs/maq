@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A package for evaluating treatment targeting with multiple arms via the Multi-Action Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
+A package for evaluating treatment targeting with multiple arms via the Multi-Armed Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
 
 The development version (R package) can be installed by
 
@@ -68,7 +68,7 @@ mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element ($k > 0$) is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive costs, i.e. the $k$-th element is the cost of assigning unit $i$ arm $k$.
 
-The multi-action Qini is defined as the value of the optimal cost-constrained treatment allocation $\pi_B(X_i) \in [0, 1]^K$ at any budget constraint $B$. `maq` delivers the path of these optimal allocations and confidence intervals for the optimal value (on a held out evaluation set) by efficiently solving the following series of linear programs:
+The multi-armed Qini is defined as the value of the optimal cost-constrained treatment allocation $\pi_B(X_i) \in [0, 1]^K$ at any budget constraint $B$. `maq` delivers the path of these optimal allocations and confidence intervals for the optimal value (on a held out evaluation set) by efficiently solving the following series of linear programs:
 
 ```math
 \begin{aligned}

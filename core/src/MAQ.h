@@ -1,4 +1,4 @@
-// Multi-Action Qini (maq).
+// Multi-Armed Qini (maq).
 // https://github.com/grf-labs/maq
 // Distributed under the MIT License.
 
@@ -19,7 +19,7 @@ class MAQ {
       const MAQOptions& options);
 
   /**
-   * Fit a Multi-Action Qini curve.
+   * Fit a Multi-Armed Qini curve.
    *
    * The solution path is a pair where the first entry are vectors containing the path of
    * {spend, gain, std.err} and the second pair the path of the corresponding optimal allocations
