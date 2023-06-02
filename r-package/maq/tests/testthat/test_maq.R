@@ -363,7 +363,6 @@ test_that("avg maq works as expected", {
   n <- 500
   res <- t(replicate(250, {
     reward <- rewardt[sample(ntrue, n), ]
-    cost <- c(0.1, rep(1, K))
     mq <- maq(reward, cost, budget, reward, target.with.covariates = FALSE, R = 200)
 
     est1 <- average_gain(mq, spend1)
@@ -384,4 +383,47 @@ test_that("avg maq works as expected", {
 
   expect_equal(mean(res[, "cov1"]), 0.95, tolerance = 0.04)
   expect_equal(mean(res[, "cov2"]), 0.95, tolerance = 0.04)
+
+  # std.errors works as expected (larger avg hull)
+  rewardt <- cbind(runif(ntrue), 2 * runif(ntrue), 3 * runif(ntrue), -1 * runif(ntrue))
+  cost <- c(0.001, 0.02, 0.06, 1)
+  mqt <- maq(rewardt, cost, budget, rewardt, target.with.covariates = FALSE)
+
+  spend1 <- 0.002
+  true1 <- average_gain(mqt, spend1)[[1]]
+  spend2 <- 0.02
+  true2 <- average_gain(mqt, spend2)[[1]]
+  spend3 <- 0.05
+  true3 <- average_gain(mqt, spend3)[[1]]
+
+  n <- 500
+  res <- t(replicate(250, {
+    reward <- rewardt[sample(ntrue, n), ]
+    mq <- maq(reward, cost, budget, reward, target.with.covariates = FALSE, R = 200)
+
+    est1 <- average_gain(mq, spend1)
+    est2 <- average_gain(mq, spend2)
+    est3 <- average_gain(mq, spend3)
+
+    c(
+      est1 = est1[[1]],
+      se1 = est1[[2]],
+      bias1 = est1[[1]] - true1,
+      cov1 = abs(est1[[1]] - true1) / est1[[2]] <= 1.96,
+
+      est2 = est2[[1]],
+      se2 = est2[[2]],
+      bias2 = est2[[1]] - true2,
+      cov2 = abs(est2[[1]] - true2) / est2[[2]] <= 1.96,
+
+      est3 = est3[[1]],
+      se3 = est3[[2]],
+      bias3 = est3[[1]] - true3,
+      cov3 = abs(est3[[1]] - true3) / est3[[2]] <= 1.96
+    )
+  }))
+
+  expect_equal(mean(res[, "cov1"]), 0.95, tolerance = 0.04)
+  expect_equal(mean(res[, "cov1"]), 0.95, tolerance = 0.04)
+  expect_equal(mean(res[, "cov3"]), 0.95, tolerance = 0.04)
 })
