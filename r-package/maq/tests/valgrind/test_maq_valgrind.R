@@ -13,4 +13,4 @@ clust <- sample(1:250, n, TRUE)
 
 mq <- maq(reward, cost, budget, reward.eval, sample.weights = wts, clusters = clust, R = 200)
 
-mqr <- maq(reward, cost, budget, reward.eval, sample.weights = wts, clusters = clust, R = 200, target = "average")
+mqr <- maq(reward, cost, budget, reward.eval, sample.weights = wts, clusters = clust, R = 200, target.with.covariates = FALSE)
