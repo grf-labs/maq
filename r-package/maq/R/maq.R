@@ -7,8 +7,9 @@
 #' @param budget The maximum spend per unit to fit the MAQ path on.
 #' @param reward.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 #'  reward and cost estimates should be obtained independently from this evaluation data.
-#' @param target The target policy estimand. "optimal" is the policy that takes covariates into account,
-#'  and "average" only allocates treatment based on the average reward and cost. Default is "optimal".
+#' @param target.with.covariates If TRUE, then the optimal policy takes covariates into
+#'  account. If FALSE, then the optimal policy only takes the average reward and cost into account when
+#'  allocating treatment. Default is TRUE.
 #' @param R Number of bootstrap replicates for computing standard errors. Default is 0
 #'  (only point estimates are computed).
 #' @param paired.inference Whether to allow for paired tests with other cost curves. If TRUE (Default)
@@ -82,7 +83,7 @@
 #'
 #' # Estimate some baseline policies.
 #' # a) A policy that ignores covariates and only only takes the average reward/cost into account.
-#' mq.random <- maq(tau.hat, cost.hat, max.budget, DR.scores, target = "average", R = 200)
+#' mq.avg <- maq(tau.hat, cost.hat, max.budget, DR.scores, target.with.covariates = FALSE, R = 200)
 #'
 #' # b) A policy that only use arm 1.
 #' mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
@@ -91,13 +92,14 @@
 #' mq.arm2 <- maq(tau.hat[, 2], cost.hat[, 2], max.budget, DR.scores[, 2], R = 200)
 #'
 #' plot(mq, ci.args = NULL)
-#' plot(mq.random, col = 2, add = TRUE, ci.args = NULL)
+#' plot(mq.avg, col = 2, add = TRUE, ci.args = NULL)
 #' plot(mq.arm1, col = 3, add = TRUE, ci.args = NULL)
 #' plot(mq.arm2, col = 4, add = TRUE, ci.args = NULL)
-#' legend("topleft", c("All arms", "No targeting", "Arm 1", "Arm 2"), col = 1:4, lty = 1)
+#' legend("topleft", c("All arms (targeting)", "All arms (without targeting)", "Arm 1", "Arm 2"),
+#'        col = 1:4, lty = 1)
 #'
 #' # Estimate the value of employing all arms over a random allocation.
-#' difference_gain(mq, mq.random, spend = 0.2)
+#' difference_gain(mq, mq.avg, spend = 0.2)
 #'
 #' # Estimate the value of adding arm 1 to the optimal policy mix.
 #' difference_gain(mq, mq.arm1, spend = 0.2)
@@ -113,7 +115,7 @@ maq <- function(reward,
                 cost,
                 budget,
                 reward.scores,
-                target = c("optimal", "average"),
+                target.with.covariates = TRUE,
                 R = 0,
                 paired.inference = TRUE,
                 sample.weights = NULL,
@@ -121,13 +123,6 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = 42) {
-  target <- match.arg(target)
-  if (target == "optimal") {
-    target.type <- 0
-  } else {
-    target.type <- 1
-  }
-
   if (is.vector(cost) && length(cost) == NCOL(reward.scores)) {
     cost <- matrix(cost, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
   }
@@ -194,13 +189,13 @@ maq <- function(reward,
 
   ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
-                     budget, target.type, paired.inference, R, num.threads, seed)
+                     budget, target.with.covariates, paired.inference, R, num.threads, seed)
 
   output <- list()
   class(output) <- "maq"
   output[["_path"]] <- ret
   output[["seed"]] <- seed
-  output[["target"]] <- target
+  output[["target.with.covariates"]] <- target.with.covariates
   output[["paired.inference"]] <- paired.inference
   output[["R"]] <- R
   output[["dim"]] <- c(NROW(cost), NCOL(cost))

@@ -12,8 +12,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] reward_scores,
                  np.ndarray[double, ndim=2, mode="c"] cost,
                  double budget,
-                 int target,
-                 size_t n_bootstrap,
+                 int target_with_covariates,
+                 unsigned int n_bootstrap,
                  unsigned int num_threads,
                  unsigned int seed):
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
@@ -34,7 +34,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
 
     cdef MAQOptions* opt_ptr
     opt_ptr = new MAQOptions(
-        budget, target, paired_inference, n_bootstrap, num_threads, seed
+        budget, target_with_covariates, paired_inference, n_bootstrap, num_threads, seed
     )
 
     cdef MAQ* maq_ptr

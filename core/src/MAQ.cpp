@@ -29,7 +29,7 @@ std::pair<solution_path, std::vector<std::vector<double>>> MAQ::fit() {
 
   std::vector<std::vector<size_t>> R;
   solution_path path_hat;
-  if (options.target == 0) {
+  if (options.target_with_covariates) {
     R = convex_hull(CompleteData(data));
     path_hat = compute_path(samples, R, data, options.budget, false);
   } else {
@@ -89,7 +89,7 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
   for (size_t b = 0; b < num_replicates; b++) {
     std::vector<size_t> samples = Sampler::sample(data, 0.5, options.random_seed + start + b);
     solution_path path_b;
-    if (options.target == 0) {
+    if (options.target_with_covariates) {
       path_b = compute_path(samples, R, data, options.budget, true);
     } else {
       auto mean_data = MeanData(data, samples);

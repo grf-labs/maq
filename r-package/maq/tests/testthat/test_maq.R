@@ -330,7 +330,7 @@ test_that("avg maq works as expected", {
   reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 1:K
 
-  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mqr <- maq(reward, cost, budget, reward.eval, target.with.covariates = FALSE)
   mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
             matrix(cost, n, K, byrow = TRUE),
             budget,
@@ -340,7 +340,7 @@ test_that("avg maq works as expected", {
 
   # < 0
   reward <- matrix(-10 + rnorm(n * K), n, K)
-  mqr <- maq(reward, cost, budget, reward.eval, target = "average")
+  mqr <- maq(reward, cost, budget, reward.eval, target.with.covariates = FALSE)
   mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
             matrix(cost, n, K, byrow = TRUE),
             budget,
@@ -353,7 +353,7 @@ test_that("avg maq works as expected", {
   K <- 5
   rewardt <- cbind(runif(n), matrix(-0.1 + rnorm(ntrue * K), ntrue, K))
   cost <- c(0.1, rep(1, K))
-  mqt <- maq(rewardt, cost, budget, rewardt, target = "average")
+  mqt <- maq(rewardt, cost, budget, rewardt, target.with.covariates = FALSE)
 
   spend1 <- 0.02
   true1 <- average_gain(mqt, spend1)[[1]]
@@ -364,7 +364,7 @@ test_that("avg maq works as expected", {
   res <- t(replicate(250, {
     reward <- rewardt[sample(ntrue, n), ]
     cost <- c(0.1, rep(1, K))
-    mq <- maq(reward, cost, budget, reward, target = "average", R = 200)
+    mq <- maq(reward, cost, budget, reward, target.with.covariates = FALSE, R = 200)
 
     est1 <- average_gain(mq, spend1)
     est2 <- average_gain(mq, spend2)

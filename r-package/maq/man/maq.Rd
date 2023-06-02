@@ -9,7 +9,7 @@ maq(
   cost,
   budget,
   reward.scores,
-  target = c("optimal", "average"),
+  target.with.covariates = TRUE,
   R = 0,
   paired.inference = TRUE,
   sample.weights = NULL,
@@ -30,8 +30,9 @@ be a ncol(reward)-length vector.}
 \item{reward.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 reward and cost estimates should be obtained independently from this evaluation data.}
 
-\item{target}{The target policy estimand. "optimal" is the policy that takes covariates into account,
-and "average" only allocates treatment based on the average reward and cost. Default is "optimal".}
+\item{target.with.covariates}{If TRUE, then the optimal policy takes covariates into
+account. If FALSE, then the optimal policy only takes the average reward and cost into account when
+allocating treatment. Default is TRUE.}
 
 \item{R}{Number of bootstrap replicates for computing standard errors. Default is 0
 (only point estimates are computed).}
@@ -116,7 +117,7 @@ legend("topleft", c("All arms", "95\% CI", "All arms (IPW)"), col = c(1, 1, 2), 
 
 # Estimate some baseline policies.
 # a) A policy that ignores covariates and only only takes the average reward/cost into account.
-mq.random <- maq(tau.hat, cost.hat, max.budget, DR.scores, target = "average", R = 200)
+mq.avg <- maq(tau.hat, cost.hat, max.budget, DR.scores, target.with.covariates = FALSE, R = 200)
 
 # b) A policy that only use arm 1.
 mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
@@ -125,13 +126,14 @@ mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
 mq.arm2 <- maq(tau.hat[, 2], cost.hat[, 2], max.budget, DR.scores[, 2], R = 200)
 
 plot(mq, ci.args = NULL)
-plot(mq.random, col = 2, add = TRUE, ci.args = NULL)
+plot(mq.avg, col = 2, add = TRUE, ci.args = NULL)
 plot(mq.arm1, col = 3, add = TRUE, ci.args = NULL)
 plot(mq.arm2, col = 4, add = TRUE, ci.args = NULL)
-legend("topleft", c("All arms", "No targeting", "Arm 1", "Arm 2"), col = 1:4, lty = 1)
+legend("topleft", c("All arms (targeting)", "All arms (without targeting)", "Arm 1", "Arm 2"),
+       col = 1:4, lty = 1)
 
 # Estimate the value of employing all arms over a random allocation.
-difference_gain(mq, mq.random, spend = 0.2)
+difference_gain(mq, mq.avg, spend = 0.2)
 
 # Estimate the value of adding arm 1 to the optimal policy mix.
 difference_gain(mq, mq.arm1, spend = 0.2)
