@@ -351,7 +351,7 @@ test_that("avg maq works as expected", {
   # std.errors works as expected
   ntrue <- 100000
   K <- 5
-  rewardt <- cbind(runif(n), matrix(-0.1 + rnorm(ntrue * K), ntrue, K))
+  rewardt <- cbind(runif(ntrue), matrix(-0.1 + rnorm(ntrue * K), ntrue, K))
   cost <- c(0.1, rep(1, K))
   mqt <- maq(rewardt, cost, budget, rewardt, target.with.covariates = FALSE)
 
