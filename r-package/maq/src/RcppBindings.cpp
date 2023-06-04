@@ -46,7 +46,7 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   res.push_back(path.first[2], "std.err");
   res.push_back(path.second[0], "ipath");
   res.push_back(path.second[1], "kpath");
-  res.push_back(path.second[2][0] > 0 ? false : true, "complete.path");
+  res.push_back(path.second[2][0] > 0 ? true : false, "complete.path");
   res.push_back(ret.second, "gain.bs");
 
   return res;

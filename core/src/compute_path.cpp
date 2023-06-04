@@ -28,7 +28,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
-  std::vector<std::vector<size_t>> i_k_path(3); // 3rd entry: complete path?
+  std::vector<std::vector<size_t>> i_k_path(3); // 3rd entry: complete path
   std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one (vec faster than hash table)
 
   // Initialize PQ with initial enrollment
@@ -87,8 +87,9 @@ solution_path compute_path(const std::vector<size_t>& samples,
     }
   }
 
+  // "complete" path?
   if (!bootstrap) {
-    i_k_path[2].push_back(pqueue.size() > 0 ? 1 : 0);
+    i_k_path[2].push_back(pqueue.empty() ? 1 : 0);
   }
 
   return std::make_pair(std::move(spend_gain), std::move(i_k_path));

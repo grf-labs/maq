@@ -62,9 +62,9 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     res["ipath"] = ipath
     res["kpath"] = kpath
     if ret.second[2][0] > 0:
-        res["complete_path"] = False
-    else:
         res["complete_path"] = True
+    else:
+        res["complete_path"] = False
 
     del maq_ptr
     del opt_ptr
