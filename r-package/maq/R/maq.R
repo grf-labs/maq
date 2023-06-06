@@ -5,7 +5,7 @@
 #' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
 #'  be a ncol(reward)-length vector.
 #' @param budget The maximum spend per unit to fit the MAQ path on.
-#' @param reward.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
+#' @param DR.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 #'  reward and cost estimates should be obtained independently from this evaluation data.
 #' @param target.with.covariates If TRUE, then the optimal policy takes covariates into
 #'  account. If FALSE, then the optimal policy only takes the average reward and cost into account when
@@ -114,7 +114,7 @@
 maq <- function(reward,
                 cost,
                 budget,
-                reward.scores,
+                DR.scores,
                 target.with.covariates = TRUE,
                 R = 0,
                 paired.inference = TRUE,
@@ -123,13 +123,13 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = 42) {
-  if (is.vector(cost) && length(cost) == NCOL(reward.scores)) {
-    cost <- matrix(cost, NROW(reward.scores), NCOL(reward.scores), byrow = TRUE)
+  if (is.vector(cost) && length(cost) == NCOL(DR.scores)) {
+    cost <- matrix(cost, NROW(DR.scores), NCOL(DR.scores), byrow = TRUE)
   }
 
   if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
-        || NROW(reward) != NROW(reward.scores) || NCOL(reward) != NCOL(reward.scores)
-        || anyNA(reward) || anyNA(cost) || anyNA(reward.scores)) {
+        || NROW(reward) != NROW(DR.scores) || NCOL(reward) != NCOL(DR.scores)
+        || anyNA(reward) || anyNA(cost) || anyNA(DR.scores)) {
     stop("rewards and costs should be matrices of equal size with no missing values.")
   }
 
@@ -187,7 +187,7 @@ maq <- function(reward,
     stop("seed should be a non-negative integer.")
   }
 
-  ret <- solver_rcpp(as.matrix(reward), as.matrix(reward.scores), as.matrix(cost),
+  ret <- solver_rcpp(as.matrix(reward), as.matrix(DR.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
                      budget, target.with.covariates, paired.inference, R, num.threads, seed)
 

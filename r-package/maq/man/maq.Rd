@@ -8,7 +8,7 @@ maq(
   reward,
   cost,
   budget,
-  reward.scores,
+  DR.scores,
   target.with.covariates = TRUE,
   R = 0,
   paired.inference = TRUE,
@@ -27,7 +27,7 @@ be a ncol(reward)-length vector.}
 
 \item{budget}{The maximum spend per unit to fit the MAQ path on.}
 
-\item{reward.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
+\item{DR.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 reward and cost estimates should be obtained independently from this evaluation data.}
 
 \item{target.with.covariates}{If TRUE, then the optimal policy takes covariates into
