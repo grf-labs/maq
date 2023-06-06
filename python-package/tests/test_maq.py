@@ -18,12 +18,12 @@ def test_bindings():
     ret2 = solver_cpp(reward, reward, cost, budget, True, n_bootstrap, 0, 0)
     nt.assert_equal(ret, ret2)
 
-    mq = MAQ(n_bootstrap=n_bootstrap, n_threads=0, seed=0)
-    mq.fit(reward, cost, budget, reward)
+    mq = MAQ(budget, n_bootstrap=n_bootstrap, n_threads=0, seed=0)
+    mq.fit(reward, cost, reward)
     nt.assert_equal(ret, mq._path)
 
-    mq_avg = MAQ(target_with_covariates=False, n_bootstrap=n_bootstrap, n_threads=0, seed=0)
-    mq_avg.fit(reward, cost, budget, reward)
+    mq_avg = MAQ(budget, target_with_covariates=False, n_bootstrap=n_bootstrap, n_threads=0, seed=0)
+    mq_avg.fit(reward, cost, reward)
     nt.assert_almost_equal(
         mq_avg.average_gain(100)[0],
         np.sum(mq_avg.predict(100) * reward) / n,
@@ -41,9 +41,9 @@ def test_MAQ():
     reward = 1 + np.random.randn(n, K)
     cost = 0.05 + np.random.rand(n, K)
     n_bootstrap = 50
-    mq = MAQ(n_bootstrap=n_bootstrap, n_threads=0, seed=0)
+    mq = MAQ(budget, n_bootstrap=n_bootstrap, n_threads=0, seed=0)
 
-    mq.fit(reward, cost, budget, reward)
+    mq.fit(reward, cost, reward)
 
     nt.assert_equal(mq.average_gain(0), (0, 0))
     nt.assert_equal(mq.average_gain(100), (mq._path["gain"][-1], mq._path["std_err"][-1]))
@@ -97,7 +97,7 @@ def test_MAQ():
 
     reward2 = np.random.randn(n, 1)
     cost2 = np.random.rand(n, 1)
-    mq.fit(reward2, cost2, budget, reward2)
+    mq.fit(reward2, cost2, reward2)
     nt.assert_equal(
         np.nonzero(mq.predict(budget)),
         np.where(reward2 > 0)

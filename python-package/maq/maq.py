@@ -8,6 +8,9 @@ class MAQ:
 
     Parameters
     ----------
+    budget : scalar
+        The maximum spend per unit to fit the MAQ path on.
+
     target_with_covariates : bool, default=True
         If TRUE, then the optimal policy takes covariates into account. If FALSE, then the optimal policy
         only takes the average reward and cost into account when allocating treatment.
@@ -49,8 +52,8 @@ class MAQ:
     >>> reward_eval = np.random.randn(n, K)
     >>> max_budget = np.mean(cost)
 
-    >>> mq = MAQ(n_bootstrap=200)
-    >>> mq.fit(reward, cost, max_budget, reward_eval)
+    >>> mq = MAQ(budget = max_budget, n_bootstrap=200)
+    >>> mq.fit(reward, cost, reward_eval)
     MAQ object.
 
     Get an estimate of optimal gain at a given spend along with standard errors.
@@ -87,16 +90,18 @@ class MAQ:
     >>> plt.show() # doctest: +SKIP
     """
 
-    def __init__(self, target_with_covariates=True, n_bootstrap=0, n_threads=0, seed=42):
+    def __init__(self, budget, target_with_covariates=True, n_bootstrap=0, n_threads=0, seed=42):
+        assert np.isscalar(budget), "budget should be a scalar."
         assert n_threads >= 0, "n_threads should be >=0."
         assert n_bootstrap >= 0, "n_bootstrap should be >=0."
+        self.budget = budget
         self.target_with_covariates = target_with_covariates
         self.n_bootstrap = n_bootstrap
         self.n_threads = n_threads
         self.seed = seed
         self._is_fit = False
 
-    def fit(self, reward, cost, budget, DR_scores):
+    def fit(self, reward, cost, DR_scores):
         """Fit the MAQ curve up to a maximum spend/user.
 
         Parameters
@@ -107,9 +112,6 @@ class MAQ:
         costs : ndarray
             A matrix of cost estimates.
 
-        budget : scalar
-            The maximum spend per unit to fit the MAQ path on.
-
         DR_scores : ndarray
             A matrix of rewards to evaluate the MAQ on.
         """
@@ -119,15 +121,14 @@ class MAQ:
         DR_scores = np.atleast_2d(DR_scores)
         assert reward.shape == cost.shape, "reward and cost should have equal dims."
         assert reward.shape == DR_scores.shape, "reward and reward scores should have equal dims."
-        assert np.isscalar(budget), "budget should be a scalar."
         assert (cost > 0).all(), "cost should be > 0."
         assert not np.isnan(reward).any(), "reward contains nans."
         assert not np.isnan(DR_scores).any(), "reward scores contains nans."
         assert not np.isnan(cost).any(), "cost contains nans."
-        self.budget = budget
 
         self._path = solver_cpp(
-            reward, DR_scores, cost, budget, self.target_with_covariates, self.n_bootstrap, self.n_threads, self.seed
+            reward, DR_scores, cost,
+            self.budget, self.target_with_covariates, self.n_bootstrap, self.n_threads, self.seed
         )
 
         self._is_fit = True
