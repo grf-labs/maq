@@ -18,6 +18,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<size_t>& R,
                            const HullData& data,
+                           double budget,
                            bool bootstrap);
 
 } // namespace maq

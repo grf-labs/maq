@@ -98,9 +98,11 @@ solution_path compute_path(const std::vector<size_t>& samples,
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<size_t>& R,
                            const HullData& data,
+                           double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3);
   std::vector<std::vector<size_t>> i_k_path(3);
+  size_t complete_path = 1;
   bool active_arm = false;
 
   double spend = 0;
@@ -125,13 +127,18 @@ solution_path compute_path(const std::vector<size_t>& samples,
         i_k_path[0].push_back(sample);
         i_k_path[1].push_back(arm);
       }
+      if (spend >= budget) {
+        complete_path = 0;
+        i_k_path[2].push_back(complete_path);
+        return std::make_pair(std::move(spend_gain), std::move(i_k_path));
+      }
     }
     active_arm = true;
     previous_arm = arm;
   }
 
   if (!bootstrap) {
-    i_k_path[2].push_back(0);
+    i_k_path[2].push_back(complete_path);
   }
 
   return std::make_pair(std::move(spend_gain), std::move(i_k_path));

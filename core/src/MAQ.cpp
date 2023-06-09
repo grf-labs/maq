@@ -35,7 +35,7 @@ std::pair<solution_path, std::vector<std::vector<double>>> MAQ::fit() {
   } else {
     auto mean_data = MeanData(data, samples);
     R = convex_hull(mean_data);
-    path_hat = compute_path(samples, R[0], mean_data, false);
+    path_hat = compute_path(samples, R[0], mean_data, options.budget, false);
   }
 
   auto gain_bs = fit_paths(path_hat, R);
@@ -94,7 +94,7 @@ std::vector<std::vector<double>> MAQ::fit_paths_batch(size_t start,
     } else {
       auto mean_data = MeanData(data, samples);
       auto R_mean = convex_hull(mean_data);
-      path_b = compute_path(samples, R_mean[0], mean_data, true);
+      path_b = compute_path(samples, R_mean[0], mean_data, options.budget, true);
     }
     auto gain_b = interpolate_path(path_hat, path_b);
     predictions.push_back(std::move(gain_b));
