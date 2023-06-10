@@ -4,14 +4,14 @@
 #include <cstddef>
 #include <vector>
 
-#include "Data.h"
+#include "Data.hpp"
 
 namespace maq {
 
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <class T>
 class MeanData {
 public:
-  MeanData(const Data<storage, sample_weights, tie_breaker>& data, const std::vector<size_t>& samples) {
+  MeanData(const T& data, const std::vector<size_t>& samples) {
     std::vector<double> reward(data.num_cols);
     std::vector<double> reward_scores(data.num_cols);
     std::vector<double> cost(data.num_cols);

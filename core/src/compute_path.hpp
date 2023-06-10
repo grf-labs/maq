@@ -2,13 +2,13 @@
 #define MAQ_COMPUTE_PATH_H
 
 #include <vector>
-#include "Data.h"
+#include "Data.hpp"
 
 #include <cmath>
 #include <queue>
 #include <vector>
 
-#include "convex_hull.h"
+#include "convex_hull.hpp"
 
 namespace maq {
 
@@ -29,10 +29,10 @@ bool operator <(const QueueElement& lhs, const QueueElement& rhs) {
     || (lhs.priority == rhs.priority && lhs.tie_breaker > rhs.tie_breaker);
 }
 
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <class T>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<std::vector<size_t>>& R,
-                           const Data<storage, sample_weights, tie_breaker>& data,
+                           const T& data,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs

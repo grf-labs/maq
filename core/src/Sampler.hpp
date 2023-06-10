@@ -4,16 +4,16 @@
 #include <vector>
 #include <numeric>
 
-#include "Data.h"
+#include "Data.hpp"
 #include "random/random.hpp"
 #include "random/algorithm.hpp"
 
 namespace maq {
 
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <class T>
 class Sampler {
   public:
-  static std::vector<size_t> sample(const Data<storage, sample_weights, tie_breaker>& data, double sample_fraction, unsigned int seed) {
+  static std::vector<size_t> sample(const T& data, double sample_fraction, unsigned int seed) {
     std::mt19937_64 random_number_generator(seed);
     std::vector<size_t> samples;
 

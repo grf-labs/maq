@@ -75,6 +75,15 @@ public:
   std::vector<std::vector<size_t>> samples_by_cluster;
 
 private:
+  double get_weight(size_t row) const {
+    if (sample_weights == SampleWeights::Default) {
+    // if (data_weight == nullptr) {
+      return 1.0 / num_rows;
+      } else {
+      return data_weight[row];
+    }
+  }
+
   size_t index(size_t row, size_t col) const {
     if (storage == Storage::ColMajor) {
     // if (row >= 0) {
@@ -84,14 +93,6 @@ private:
     }
   }
 
-  double get_weight(size_t row) const {
-    if (sample_weights == SampleWeights::Default) {
-    // if (data_weight == nullptr) {
-      return 1.0 / num_rows;
-      } else {
-      return data_weight[row];
-    }
-  }
 
   const double* data_reward;
   const double* data_reward_scores;

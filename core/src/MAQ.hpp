@@ -10,27 +10,27 @@
 #include <random>
 #include <vector>
 
-#include "compute_path.h"
-#include "Data.h"
-#include "CompleteData.h"
-#include "MeanData.h"
-#include "Sampler.h"
-#include "MAQOptions.h"
+#include "compute_path.hpp"
+#include "Data.hpp"
+#include "CompleteData.hpp"
+#include "MeanData.hpp"
+#include "Sampler.hpp"
+#include "MAQOptions.hpp"
 
 namespace maq {
 
 /**
  * Fit a Multi-Armed Qini curve.
  *
- * The solution path is a pair where the first entry are vectors containing the path of
+ * The solution_path is a pair where the first entry are vectors containing the path of
  * {spend, gain, std.err} and the second pair the path of the corresponding optimal allocations
  * {unit index, arm index}.
  *
  */
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <class T>
 class MAQ {
   public:
-  MAQ(const Data<storage, sample_weights, tie_breaker>& data,
+  MAQ(const T& data,
       const MAQOptions& options) :
     data(data),
     options(options) {}
@@ -45,10 +45,10 @@ class MAQ {
     std::vector<std::vector<size_t>> R;
     solution_path path_hat;
     if (options.target_with_covariates) {
-      R = convex_hull(CompleteData<storage, sample_weights, tie_breaker>(data));
+      R = convex_hull(CompleteData<T>(data));
       path_hat = compute_path(samples, R, data, options.budget, false);
     } else {
-      auto mean_data = MeanData<storage, sample_weights, tie_breaker>(data, samples);
+      auto mean_data = MeanData<T>(data, samples);
       R = convex_hull(mean_data);
       path_hat = compute_path(samples, R[0], mean_data, options.budget, false);
     }
@@ -105,12 +105,12 @@ class MAQ {
       predictions.reserve(num_replicates);
 
       for (size_t b = 0; b < num_replicates; b++) {
-        std::vector<size_t> samples = Sampler<storage, sample_weights, tie_breaker>::sample(data, 0.5, options.random_seed + start + b);
+        std::vector<size_t> samples = Sampler<T>::sample(data, 0.5, options.random_seed + start + b);
         solution_path path_b;
         if (options.target_with_covariates) {
           path_b = compute_path(samples, R, data, options.budget, true);
         } else {
-          auto mean_data = MeanData<storage, sample_weights, tie_breaker>(data, samples);
+          auto mean_data = MeanData<T>(data, samples);
           auto R_mean = convex_hull(mean_data);
           path_b = compute_path(samples, R_mean[0], mean_data, options.budget, true);
         }
@@ -247,7 +247,7 @@ class MAQ {
     }
   }
 
-  const Data<storage, sample_weights, tie_breaker>& data;
+  const T& data;
   const MAQOptions& options;
 };
 

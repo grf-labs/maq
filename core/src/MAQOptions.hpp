@@ -3,7 +3,7 @@
 
 #include <thread>
 
-#include "Data.h"
+#include "Data.hpp"
 
 namespace maq {
 

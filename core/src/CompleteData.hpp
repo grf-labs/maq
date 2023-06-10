@@ -4,14 +4,14 @@
 #include <cstddef>
 #include <vector>
 
-#include "Data.h"
+#include "Data.hpp"
 
 namespace maq {
 
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <class T>
 class CompleteData{
 public:
-  CompleteData(const Data<storage, sample_weights, tie_breaker>& data) :
+  CompleteData(const T& data) :
     data(data) {}
 
   double get_reward(size_t row, size_t col) const {
@@ -35,7 +35,7 @@ public:
   }
 
 private:
-  const Data<storage, sample_weights, tie_breaker>& data;
+  const T& data;
 };
 
 } // namespace maq
