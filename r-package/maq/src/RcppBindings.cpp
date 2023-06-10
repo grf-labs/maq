@@ -32,10 +32,11 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
     clusters_ptr = clusters.begin();
   }
 
-  Data data(reward.begin(), reward_scores.begin(), cost.begin(),
-            weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, true);
+  Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
+    reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
+    weights_ptr, tie_breaker_ptr, clusters_ptr);
   MAQOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
-  MAQ maq(data, options);
+  MAQ<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> maq(data, options);
 
   auto ret = maq.fit();
   auto path = ret.first;
@@ -59,7 +60,7 @@ Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, nullptr, num_rows, num_cols, true);
+  Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(reward.begin(), reward.begin(), cost.begin(), num_rows, num_cols);
 
-  return Rcpp::List::create(convex_hull(CompleteData(data)));
+  return Rcpp::List::create(convex_hull(CompleteData<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default>(data)));
 }
