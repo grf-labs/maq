@@ -31,9 +31,6 @@ cdef extern from 'MAQ.h' namespace 'maq':
             const MAQOptions& options)
         pair[solution_path, vector[vector[double]]] fit()
 
-cdef extern from 'Data.cpp' namespace 'maq':
-    pass
-
 cdef extern from 'MAQ.cpp' namespace 'maq':
     pass
 
