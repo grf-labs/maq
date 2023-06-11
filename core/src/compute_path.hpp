@@ -98,7 +98,7 @@ solution_path compute_path(const std::vector<size_t>& samples,
   return std::make_pair(std::move(spend_gain), std::move(i_k_path));
 }
 
-template<class DataType>
+template <class DataType>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<size_t>& R,
                            const DataType& data,
