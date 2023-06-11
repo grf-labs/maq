@@ -58,7 +58,7 @@ class Solver {
 
   private:
     std::vector<std::vector<double>> fit_paths(const solution_path& path_hat,
-                                              const std::vector<std::vector<size_t>>& R) {
+                                               const std::vector<std::vector<size_t>>& R) {
       std::vector<unsigned int> thread_ranges;
       split_sequence(thread_ranges, 0, static_cast<unsigned int>(options.num_bootstrap - 1), options.num_threads);
 
@@ -92,9 +92,9 @@ class Solver {
     }
 
     std::vector<std::vector<double>> fit_paths_batch(size_t start,
-                                                    size_t num_replicates,
-                                                    const solution_path& path_hat,
-                                                    const std::vector<std::vector<size_t>>& R) {
+                                                     size_t num_replicates,
+                                                     const solution_path& path_hat,
+                                                     const std::vector<std::vector<size_t>>& R) {
       std::vector<std::vector<double>> predictions;
       predictions.reserve(num_replicates);
 
@@ -116,7 +116,7 @@ class Solver {
     }
 
     std::vector<double> interpolate_path(const solution_path& path_hat,
-                                        const solution_path& path_hat_b) {
+                                         const solution_path& path_hat_b) {
       // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
       const std::vector<double>& grid = path_hat.first[0];
       std::vector<double> gain_b_interp;
@@ -156,7 +156,7 @@ class Solver {
     }
 
     void compute_std_err(solution_path& path_hat,
-                        const std::vector<std::vector<double>>& gain_bs) {
+                         const std::vector<std::vector<double>>& gain_bs) {
       size_t grid_len = path_hat.first[0].size();
       std::vector<double>& std_err = path_hat.first[2];
       std_err.resize(grid_len);
