@@ -1,19 +1,17 @@
-#ifndef MAQ_OPTIONS_H
-#define MAQ_OPTIONS_H
+#ifndef MAQ_SOLVEROPTIONS_H
+#define MAQ_SOLVEROPTIONS_H
 
 #include <thread>
 
-#include "Data.h"
-
 namespace maq {
 
-struct MAQOptions {
-  MAQOptions(double budget,
-             bool target_with_covariates,
-             bool paired_inference,
-             unsigned int num_bootstrap,
-             unsigned int num_threads,
-             unsigned int random_seed) :
+struct SolverOptions {
+  SolverOptions(double budget,
+                bool target_with_covariates,
+                bool paired_inference,
+                unsigned int num_bootstrap,
+                unsigned int num_threads,
+                unsigned int random_seed) :
       budget(budget),
       target_with_covariates(target_with_covariates),
       paired_inference(paired_inference),
@@ -35,4 +33,4 @@ struct MAQOptions {
 
 } // namespace maq
 
-#endif // MAQ_OPTIONS_H
+#endif // MAQ_SOLVEROPTIONS_H

@@ -1,8 +1,10 @@
+#ifndef MAQ_CONVEX_HULL_H
+#define MAQ_CONVEX_HULL_H
+
 #include <algorithm>
+#include <cstddef>
 #include <numeric>
 #include <vector>
-
-#include "convex_hull.h"
 
 /*
 Find the upper left convex hull on the (cost, reward) plane for each sample. This takes
@@ -17,10 +19,11 @@ proceeds by checking if point k should be replaced by or augmented by point l.
 
 namespace maq {
 
+template <class DataType>
 inline bool is_dominated(const std::vector<size_t>& Ri,
                          size_t point_l,
                          size_t sample,
-                         const HullData& data) {
+                         const DataType& data) {
   if (Ri.size() < 1) {
     return false;
   }
@@ -45,7 +48,8 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
   return (reward_l - reward_k) / (cost_l - cost_k) > (reward_k - reward_j) / (cost_k - cost_j);
 }
 
-std::vector<std::vector<size_t>> convex_hull(const HullData& data) {
+template <class DataType>
+std::vector<std::vector<size_t>> convex_hull(const DataType& data) {
   std::vector<std::vector<size_t>> R(data.get_num_rows());
   std::vector<size_t> ordered_arms(data.get_num_cols());
   std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1
@@ -54,6 +58,7 @@ std::vector<std::vector<size_t>> convex_hull(const HullData& data) {
     std::vector<size_t>& Ri = R[sample];
 
     // Get sort order by increasing cost
+    // TODO: remove stable?
     std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
       return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
     });
@@ -85,3 +90,5 @@ std::vector<std::vector<size_t>> convex_hull(const HullData& data) {
 }
 
 } // namespace maq
+
+#endif // MAQ_CONVEX_HULL_H

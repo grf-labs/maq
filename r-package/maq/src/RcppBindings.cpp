@@ -31,13 +31,34 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   if (clusters.size() > 0) {
     clusters_ptr = clusters.begin();
   }
+  std::pair<solution_path, std::vector<std::vector<double>>> ret;
+  SolverOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
 
-  Data data(reward.begin(), reward_scores.begin(), cost.begin(),
-            weights_ptr, tie_breaker_ptr, clusters_ptr, num_rows, num_cols, true);
-  MAQOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
-  MAQ maq(data, options);
-
-  auto ret = maq.fit();
+  if (weights_ptr == nullptr && tie_breaker_ptr == nullptr) {
+    Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
+      reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
+      weights_ptr, tie_breaker_ptr, clusters_ptr);
+    auto maq = make_solver(data, options);
+    ret = maq.fit();
+  } else if (weights_ptr != nullptr && tie_breaker_ptr == nullptr) {
+    Data<Storage::ColMajor, SampleWeights::Provided, TieBreaker::Default> data(
+      reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
+      weights_ptr, tie_breaker_ptr, clusters_ptr);
+    auto maq = make_solver(data, options);
+    ret = maq.fit();
+  } else if (weights_ptr != nullptr && tie_breaker_ptr != nullptr) {
+    Data<Storage::ColMajor, SampleWeights::Provided, TieBreaker::Provided> data(
+      reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
+      weights_ptr, tie_breaker_ptr, clusters_ptr);
+    auto maq = make_solver(data, options);
+    ret = maq.fit();
+  } else {
+    Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Provided> data(
+      reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
+      weights_ptr, tie_breaker_ptr, clusters_ptr);
+    auto maq = make_solver(data, options);
+    ret = maq.fit();
+  }
   auto path = ret.first;
 
   Rcpp::List res;
@@ -53,13 +74,13 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
 }
 
 // this function is only wrapped for testing purposes.
-#include "convex_hull.h"
 // [[Rcpp::export]]
 Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data data(reward.begin(), reward.begin(), cost.begin(), nullptr, nullptr, nullptr, num_rows, num_cols, true);
+  Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
+    reward.begin(), reward.begin(), cost.begin(), num_rows, num_cols);
 
-  return Rcpp::List::create(convex_hull(CompleteData(data)));
+  return Rcpp::List::create(convex_hull(data));
 }

@@ -1,11 +1,14 @@
+#ifndef MAQ_COMPUTE_PATH_H
+#define MAQ_COMPUTE_PATH_H
+
 #include <cmath>
+#include <cstddef>
 #include <queue>
 #include <vector>
 
-#include "compute_path.h"
-#include "convex_hull.h"
-
 namespace maq {
+
+typedef std::pair<std::vector<std::vector<double>>, std::vector<std::vector<size_t>>> solution_path;
 
 struct QueueElement {
   QueueElement(size_t sample, size_t arm, int tie_breaker, double priority) :
@@ -22,14 +25,15 @@ bool operator <(const QueueElement& lhs, const QueueElement& rhs) {
     || (lhs.priority == rhs.priority && lhs.tie_breaker > rhs.tie_breaker);
 }
 
+template <class DataType>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<std::vector<size_t>>& R,
-                           const Data& data,
+                           const DataType& data,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
   std::vector<std::vector<size_t>> i_k_path(3); // 3rd entry: complete path
-  std::vector<size_t> active_set(data.num_rows, 0); // active R entry offset by one (vec faster than hash table)
+  std::vector<size_t> active_set(data.get_num_rows(), 0); // active R entry offset by one (vec faster than hash table)
 
   // Initialize PQ with initial enrollment
   std::priority_queue<QueueElement> pqueue;
@@ -95,9 +99,10 @@ solution_path compute_path(const std::vector<size_t>& samples,
   return std::make_pair(std::move(spend_gain), std::move(i_k_path));
 }
 
+template <class DataType>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<size_t>& R,
-                           const HullData& data,
+                           const DataType& data,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3);
@@ -145,3 +150,5 @@ solution_path compute_path(const std::vector<size_t>& samples,
 }
 
 } // namespace maq
+
+#endif // MAQ_COMPUTE_PATH_H
