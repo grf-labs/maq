@@ -6,7 +6,7 @@ from libcpp cimport bool
 from libcpp.vector cimport vector
 from cython.operator cimport dereference as deref
 
-from maq.maqdefs cimport Data, MAQOptions, MAQ, solution_path
+from maq.maqdefs cimport solution_path, run
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] reward_scores,
@@ -19,27 +19,10 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
 
-    # Ignore these options for now (TODO)
-    cdef bool paired_inference = False
-    cdef double* weights_ptr = NULL
-    cdef int* tie_breaker_ptr = NULL
-    cdef int* clusters_ptr = NULL
-
-    cdef bool col_major = False
-    cdef Data* data_ptr
-    data_ptr = new Data(
-        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], weights_ptr, tie_breaker_ptr, clusters_ptr,
-        num_rows, num_cols, col_major
+    cdef solution_path ret = run(
+        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], num_rows, num_cols,
+        budget, target_with_covariates, False, n_bootstrap, num_threads, seed
     )
-
-    cdef MAQOptions* opt_ptr
-    opt_ptr = new MAQOptions(
-        budget, target_with_covariates, paired_inference, n_bootstrap, num_threads, seed
-    )
-
-    cdef MAQ* maq_ptr
-    maq_ptr = new MAQ(deref(data_ptr), deref(opt_ptr))
-    cdef solution_path ret = deref(maq_ptr).fit().first
 
     res = dict()
     path_len = ret.first[0].size()
@@ -65,9 +48,5 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
         res["complete_path"] = True
     else:
         res["complete_path"] = False
-
-    del maq_ptr
-    del opt_ptr
-    del data_ptr
 
     return res
