@@ -12,6 +12,7 @@
 
 #include "convex_hull.hpp"
 #include "compute_path.hpp"
+#include "DataMean.hpp"
 #include "Sampler.hpp"
 #include "SolverOptions.hpp"
 

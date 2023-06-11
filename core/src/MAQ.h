@@ -6,7 +6,6 @@
 // Distributed under the MIT License.
 
 #include "Data.hpp"
-#include "DataMean.hpp"
 #include "SolverOptions.hpp"
 #include "Solver.hpp"
 
