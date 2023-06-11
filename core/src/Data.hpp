@@ -71,7 +71,6 @@ public:
 
   int get_tie_breaker(size_t row) const {
     if (tie_breaker == TieBreaker::Default) {
-    // if (data_tie_breaker == nullptr) {
       return row;
     } else {
       return data_tie_breaker[row];
@@ -83,7 +82,6 @@ public:
 private:
   double get_weight(size_t row) const {
     if (sample_weights == SampleWeights::Default) {
-    // if (data_weight == nullptr) {
       return 1.0 / num_rows;
       } else {
       return data_weight[row];
@@ -92,7 +90,6 @@ private:
 
   size_t index(size_t row, size_t col) const {
     if (storage == Storage::ColMajor) {
-    // if (row >= 0) {
       return col * num_rows + row;
     } else {
       return row * num_cols + col;
