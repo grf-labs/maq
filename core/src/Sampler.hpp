@@ -1,6 +1,7 @@
 #ifndef MAQ_SAMPLER_H
 #define MAQ_SAMPLER_H
 
+#include <cstddef>
 #include <vector>
 #include <numeric>
 

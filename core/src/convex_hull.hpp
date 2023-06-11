@@ -2,6 +2,7 @@
 #define MAQ_CONVEX_HULL_H
 
 #include <algorithm>
+#include <cstddef>
 #include <numeric>
 #include <vector>
 

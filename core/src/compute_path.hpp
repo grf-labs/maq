@@ -2,6 +2,7 @@
 #define MAQ_COMPUTE_PATH_H
 
 #include <cmath>
+#include <cstddef>
 #include <queue>
 #include <vector>
 
