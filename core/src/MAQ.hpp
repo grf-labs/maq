@@ -10,10 +10,10 @@
 #include <random>
 #include <vector>
 
-#include "compute_path.hpp"
 #include "Data.hpp"
-#include "CompleteData.hpp"
-#include "MeanData.hpp"
+#include "DataMean.hpp"
+#include "convex_hull.hpp"
+#include "compute_path.hpp"
 #include "Sampler.hpp"
 #include "MAQOptions.hpp"
 
@@ -27,10 +27,10 @@ namespace maq {
  * {unit index, arm index}.
  *
  */
-template <class T>
+template <class DataType>
 class MAQ {
   public:
-  MAQ(const T& data,
+  MAQ(const DataType& data,
       const MAQOptions& options) :
     data(data),
     options(options) {}
@@ -45,10 +45,10 @@ class MAQ {
     std::vector<std::vector<size_t>> R;
     solution_path path_hat;
     if (options.target_with_covariates) {
-      R = convex_hull(CompleteData<T>(data));
+      R = convex_hull(data);
       path_hat = compute_path(samples, R, data, options.budget, false);
     } else {
-      auto mean_data = MeanData<T>(data, samples);
+      auto mean_data = DataMean<DataType>(data, samples);
       R = convex_hull(mean_data);
       path_hat = compute_path(samples, R[0], mean_data, options.budget, false);
     }
@@ -63,7 +63,6 @@ class MAQ {
   private:
   std::vector<std::vector<double>> fit_paths(const solution_path& path_hat,
                                              const std::vector<std::vector<size_t>>& R) {
-    //o1nd
     std::vector<unsigned int> thread_ranges;
     split_sequence(thread_ranges, 0, static_cast<unsigned int>(options.num_bootstrap - 1), options.num_threads);
 
@@ -100,30 +99,28 @@ class MAQ {
                                                    size_t num_replicates,
                                                    const solution_path& path_hat,
                                                    const std::vector<std::vector<size_t>>& R) {
-    //ada
-      std::vector<std::vector<double>> predictions;
-      predictions.reserve(num_replicates);
+    std::vector<std::vector<double>> predictions;
+    predictions.reserve(num_replicates);
 
-      for (size_t b = 0; b < num_replicates; b++) {
-        std::vector<size_t> samples = Sampler<T>::sample(data, 0.5, options.random_seed + start + b);
-        solution_path path_b;
-        if (options.target_with_covariates) {
-          path_b = compute_path(samples, R, data, options.budget, true);
-        } else {
-          auto mean_data = MeanData<T>(data, samples);
-          auto R_mean = convex_hull(mean_data);
-          path_b = compute_path(samples, R_mean[0], mean_data, options.budget, true);
-        }
-        auto gain_b = interpolate_path(path_hat, path_b);
-        predictions.push_back(std::move(gain_b));
+    for (size_t b = 0; b < num_replicates; b++) {
+      std::vector<size_t> samples = Sampler<DataType>::sample(data, 0.5, options.random_seed + start + b);
+      solution_path path_b;
+      if (options.target_with_covariates) {
+        path_b = compute_path(samples, R, data, options.budget, true);
+      } else {
+        auto mean_data = DataMean<DataType>(data, samples);
+        auto R_mean = convex_hull(mean_data);
+        path_b = compute_path(samples, R_mean[0], mean_data, options.budget, true);
       }
+      auto gain_b = interpolate_path(path_hat, path_b);
+      predictions.push_back(std::move(gain_b));
+    }
 
-      return predictions;
+    return predictions;
   }
 
   std::vector<double> interpolate_path(const solution_path& path_hat,
                                        const solution_path& path_hat_b) {
-    //111
     // interpolate bootstrapped gain on \hat path's (monotonically increasing) spend grid.
     const std::vector<double>& grid = path_hat.first[0];
     std::vector<double> gain_b_interp;
@@ -164,7 +161,6 @@ class MAQ {
 
   void compute_std_err(solution_path& path_hat,
                        const std::vector<std::vector<double>>& gain_bs) {
-    //111
     size_t grid_len = path_hat.first[0].size();
     std::vector<double>& std_err = path_hat.first[2];
     std_err.resize(grid_len);
@@ -213,7 +209,6 @@ class MAQ {
                       unsigned int start,
                       unsigned int end,
                       unsigned int num_parts) {
-    //11
     result.reserve(num_parts + 1);
 
     // Return range if only 1 part
@@ -247,7 +242,7 @@ class MAQ {
     }
   }
 
-  const T& data;
+  const DataType& data;
   const MAQOptions& options;
 };
 

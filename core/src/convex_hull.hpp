@@ -18,11 +18,11 @@ proceeds by checking if point k should be replaced by or augmented by point l.
 
 namespace maq {
 
-template<class T>
+template<class DataType>
 inline bool is_dominated(const std::vector<size_t>& Ri,
                          size_t point_l,
                          size_t sample,
-                         const T& data) {
+                         const DataType& data) {
   if (Ri.size() < 1) {
     return false;
   }
@@ -47,8 +47,8 @@ inline bool is_dominated(const std::vector<size_t>& Ri,
   return (reward_l - reward_k) / (cost_l - cost_k) > (reward_k - reward_j) / (cost_k - cost_j);
 }
 
-template<class T>
-std::vector<std::vector<size_t>> convex_hull(const T& data) {
+template<class DataType>
+std::vector<std::vector<size_t>> convex_hull(const DataType& data) {
   std::vector<std::vector<size_t>> R(data.get_num_rows());
   std::vector<size_t> ordered_arms(data.get_num_cols());
   std::iota(ordered_arms.begin(), ordered_arms.end(), 0); // fill with 0, ..., K - 1

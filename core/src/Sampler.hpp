@@ -4,16 +4,17 @@
 #include <vector>
 #include <numeric>
 
-#include "Data.hpp"
 #include "random/random.hpp"
 #include "random/algorithm.hpp"
 
 namespace maq {
 
-template <class T>
+template <class DataType>
 class Sampler {
   public:
-  static std::vector<size_t> sample(const T& data, double sample_fraction, unsigned int seed) {
+  static std::vector<size_t> sample(const DataType& data,
+                                    double sample_fraction,
+                                    unsigned int seed) {
     std::mt19937_64 random_number_generator(seed);
     std::vector<size_t> samples;
 
@@ -34,7 +35,9 @@ class Sampler {
 
       // fill samples-vector with samples belonging to each drawn cluster.
       for (auto cluster : random_clusters) {
-        samples.insert(samples.end(), data.samples_by_cluster[cluster].begin(), data.samples_by_cluster[cluster].end());
+        samples.insert(
+          samples.end(), data.samples_by_cluster[cluster].begin(), data.samples_by_cluster[cluster].end()
+        );
       }
     }
 

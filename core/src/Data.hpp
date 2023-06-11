@@ -61,6 +61,14 @@ public:
     return data_cost[index(row, col)] * get_weight(row);
   }
 
+  size_t get_num_rows() const {
+    return num_rows;
+  }
+
+  size_t get_num_cols() const {
+    return num_cols;
+  }
+
   int get_tie_breaker(size_t row) const {
     if (tie_breaker == TieBreaker::Default) {
     // if (data_tie_breaker == nullptr) {
@@ -92,7 +100,6 @@ private:
       return row * num_cols + col;
     }
   }
-
 
   const double* data_reward;
   const double* data_reward_scores;

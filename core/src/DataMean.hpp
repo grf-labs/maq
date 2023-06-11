@@ -1,17 +1,15 @@
-#ifndef MAQ_MEANDATA_H
-#define MAQ_MEANDATA_H
+#ifndef MAQ_DATAMEAN_H
+#define MAQ_DATAMEAN_H
 
 #include <cstddef>
 #include <vector>
 
-#include "Data.hpp"
-
 namespace maq {
 
-template <class T>
-class MeanData {
+template <class DataType>
+class DataMean {
 public:
-  MeanData(const T& data, const std::vector<size_t>& samples) {
+  DataMean(const DataType& data, const std::vector<size_t>& samples) {
     std::vector<double> reward(data.num_cols);
     std::vector<double> reward_scores(data.num_cols);
     std::vector<double> cost(data.num_cols);
@@ -32,6 +30,10 @@ public:
     return reward[col] / num_rows;
   }
 
+  double get_reward_scores(size_t row, size_t col) const {
+    return reward_scores[col] / num_rows;
+  }
+
   double get_cost(size_t row, size_t col) const {
     return cost[col] / num_rows;
   }
@@ -44,10 +46,6 @@ public:
     return reward.size();
   }
 
-  double get_reward_scores(size_t row, size_t col) const {
-    return reward_scores[col] / num_rows;
-  }
-
 private:
   size_t num_rows;
   std::vector<double> reward;
@@ -57,4 +55,4 @@ private:
 
 } // namespace maq
 
-#endif // MAQ_MEANDATA_H
+#endif // MAQ_DATAMEAN_H

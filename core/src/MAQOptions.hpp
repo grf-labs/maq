@@ -3,8 +3,6 @@
 
 #include <thread>
 
-#include "Data.hpp"
-
 namespace maq {
 
 struct MAQOptions {

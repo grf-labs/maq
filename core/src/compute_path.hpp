@@ -1,14 +1,9 @@
 #ifndef MAQ_COMPUTE_PATH_H
 #define MAQ_COMPUTE_PATH_H
 
-#include <vector>
-#include "Data.hpp"
-
 #include <cmath>
 #include <queue>
 #include <vector>
-
-#include "convex_hull.hpp"
 
 namespace maq {
 
@@ -29,10 +24,10 @@ bool operator <(const QueueElement& lhs, const QueueElement& rhs) {
     || (lhs.priority == rhs.priority && lhs.tie_breaker > rhs.tie_breaker);
 }
 
-template <class T>
+template <class DataType>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<std::vector<size_t>>& R,
-                           const T& data,
+                           const DataType& data,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3); // 3rd entry: SEs
@@ -44,9 +39,9 @@ solution_path compute_path(const std::vector<size_t>& samples,
   for (auto sample : samples) {
     if (!R[sample].empty()) {
       size_t arm = R[sample][0];
-      int tie_b = data.get_tie_breaker(sample);
+      int tie_breaker = data.get_tie_breaker(sample);
       double priority = data.get_reward(sample, arm) / data.get_cost(sample, arm);
-      pqueue.emplace(sample, arm, tie_b, priority);
+      pqueue.emplace(sample, arm, tie_breaker, priority);
     }
   }
 
@@ -103,10 +98,10 @@ solution_path compute_path(const std::vector<size_t>& samples,
   return std::make_pair(std::move(spend_gain), std::move(i_k_path));
 }
 
-template<class T>
+template<class DataType>
 solution_path compute_path(const std::vector<size_t>& samples,
                            const std::vector<size_t>& R,
-                           const T& data,
+                           const DataType& data,
                            double budget,
                            bool bootstrap) {
   std::vector<std::vector<double>> spend_gain(3);
