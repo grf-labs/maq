@@ -37,8 +37,8 @@ class MAQ {
 
   std::pair<solution_path, std::vector<std::vector<double>>> fit() {
     std::vector<size_t> samples;
-    samples.reserve(data.num_rows);
-    for (size_t sample = 0; sample < data.num_rows; sample++) {
+    samples.reserve(data.get_num_rows());
+    for (size_t sample = 0; sample < data.get_num_rows(); sample++) {
       samples.push_back(sample);
     }
 

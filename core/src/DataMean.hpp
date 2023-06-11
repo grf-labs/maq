@@ -10,17 +10,17 @@ template <class DataType>
 class DataMean {
 public:
   DataMean(const DataType& data, const std::vector<size_t>& samples) {
-    std::vector<double> reward(data.num_cols);
-    std::vector<double> reward_scores(data.num_cols);
-    std::vector<double> cost(data.num_cols);
+    std::vector<double> reward(data.get_num_cols());
+    std::vector<double> reward_scores(data.get_num_cols());
+    std::vector<double> cost(data.get_num_cols());
     for (auto sample : samples) {
-      for (size_t col = 0; col < data.num_cols; col++) {
+      for (size_t col = 0; col < data.get_num_cols(); col++) {
         reward[col] += data.get_reward(sample, col);
         reward_scores[col] += data.get_reward_scores(sample, col);
         cost[col] += data.get_cost(sample, col);
       }
     }
-    this->num_rows = data.num_rows;
+    this->num_rows = data.get_num_rows();
     this->reward = reward;
     this->reward_scores = reward_scores;
     this->cost = cost;

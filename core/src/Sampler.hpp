@@ -19,8 +19,8 @@ class Sampler {
     std::vector<size_t> samples;
 
     if (data.samples_by_cluster.empty()) {
-      size_t subsample_size = static_cast<size_t>(data.num_rows * sample_fraction);
-      samples.resize(data.num_rows);
+      size_t subsample_size = static_cast<size_t>(data.get_num_rows() * sample_fraction);
+      samples.resize(data.get_num_rows());
       std::iota(samples.begin(), samples.end(), 0);
       nonstd::shuffle(samples.begin(), samples.end(), random_number_generator);
       samples.resize(subsample_size);

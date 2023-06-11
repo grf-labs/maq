@@ -29,11 +29,11 @@ public:
        const double* data_weight = nullptr,
        const int* data_tie_breaker = nullptr,
        const int* clusters = nullptr) :
-    num_rows(num_rows),
-    num_cols(num_cols),
     data_reward(data_reward),
     data_reward_scores(data_reward_scores),
     data_cost(data_cost),
+    num_rows(num_rows),
+    num_cols(num_cols),
     data_weight(data_weight),
     data_tie_breaker(data_tie_breaker) {
 
@@ -78,8 +78,6 @@ public:
     }
   }
 
-  size_t num_rows;
-  size_t num_cols;
   std::vector<std::vector<size_t>> samples_by_cluster;
 
 private:
@@ -104,6 +102,8 @@ private:
   const double* data_reward;
   const double* data_reward_scores;
   const double* data_cost;
+  size_t num_rows;
+  size_t num_cols;
   const double* data_weight;
   const int* data_tie_breaker;
 };
