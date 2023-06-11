@@ -10,4 +10,11 @@
 #include "SolverOptions.hpp"
 #include "Solver.hpp"
 
+namespace maq {
+
+template <class T> // TODO: not necesarry to have x be const T&?
+Solver<T> make_solver(T x, const SolverOptions& options) {return Solver<T>(x, options);}
+
+} // namespace maq
+
 #endif // MAQ_H
