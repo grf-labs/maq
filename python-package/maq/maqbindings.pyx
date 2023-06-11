@@ -17,7 +17,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
 
     cdef solution_path ret = run(
         &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], num_rows, num_cols,
-        budget, target_with_covariates, False, n_bootstrap, num_threads, seed
+        budget, target_with_covariates, n_bootstrap, num_threads, seed
     )
 
     res = dict()
