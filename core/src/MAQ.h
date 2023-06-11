@@ -11,7 +11,7 @@
 
 namespace maq {
 
-template <class T> // TODO: not necesarry to have x be const T&?
+template <class T>
 Solver<T> make_solver(const T& x, const SolverOptions& options) {return Solver<T>(x, options);}
 
 } // namespace maq
