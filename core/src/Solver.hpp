@@ -1,9 +1,9 @@
+#ifndef MAQ_SOLVER_H
+#define MAQ_SOLVER_H
+
 // Multi-Armed Qini (maq).
 // https://github.com/grf-labs/maq
 // Distributed under the MIT License.
-
-#ifndef MAQ_SOLVER_H
-#define MAQ_SOLVER_H
 
 #include <cmath>
 #include <future>
