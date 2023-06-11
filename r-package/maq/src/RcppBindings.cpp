@@ -20,12 +20,16 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
   const double* weights_ptr = nullptr;
+  bool weights = false;
   if (sample_weights.size() > 0) {
     weights_ptr = sample_weights.begin();
+    weights = true;
   }
   const int* tie_breaker_ptr = nullptr;
+  bool tb = false;
   if (tie_breaker.size() > 0) {
     tie_breaker_ptr = tie_breaker.begin();
+    tb = true;
   }
   const int* clusters_ptr = nullptr;
   if (clusters.size() > 0) {
@@ -34,19 +38,19 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   std::pair<solution_path, std::vector<std::vector<double>>> ret;
   SolverOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
 
-  if (weights_ptr == nullptr && tie_breaker_ptr == nullptr) {
+  if (!weights && !tb) {
     Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
       reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
       weights_ptr, tie_breaker_ptr, clusters_ptr);
     auto maq = make_solver(data, options);
     ret = maq.fit();
-  } else if (weights_ptr != nullptr && tie_breaker_ptr == nullptr) {
+  } else if (weights && !tb) {
     Data<Storage::ColMajor, SampleWeights::Provided, TieBreaker::Default> data(
       reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
       weights_ptr, tie_breaker_ptr, clusters_ptr);
     auto maq = make_solver(data, options);
     ret = maq.fit();
-  } else if (weights_ptr != nullptr && tie_breaker_ptr != nullptr) {
+  } else if (weights && tb) {
     Data<Storage::ColMajor, SampleWeights::Provided, TieBreaker::Provided> data(
       reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
       weights_ptr, tie_breaker_ptr, clusters_ptr);
