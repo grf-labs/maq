@@ -39,11 +39,17 @@ public:
 
     // If clusters are present, then fill samples_by_cluster with samples belonging to each cluster.
     if (clusters != nullptr) {
+      size_t num_clusters = 0;
       for (size_t sample = 0; sample < num_rows; sample++) {
         size_t cluster_id = clusters[sample];
-        if (cluster_id + 1 > samples_by_cluster.size()) {
-          samples_by_cluster.resize(cluster_id + 1);
+        if (num_clusters < cluster_id) {
+          num_clusters = cluster_id;
         }
+      }
+      samples_by_cluster.resize(num_clusters + 1);
+
+      for (size_t sample = 0; sample < num_rows; sample++) {
+        size_t cluster_id = clusters[sample];
         samples_by_cluster[cluster_id].push_back(sample);
       }
     }
