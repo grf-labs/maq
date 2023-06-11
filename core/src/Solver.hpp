@@ -29,9 +29,7 @@ template <class DataType>
 class Solver {
   public:
     Solver(const DataType& data,
-          const SolverOptions& options) :
-      data(data),
-      options(options) {}
+           const SolverOptions& options) : data(data), options(options) {}
 
     std::pair<solution_path, std::vector<std::vector<double>>> fit() {
       std::vector<size_t> samples;
