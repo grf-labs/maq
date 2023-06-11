@@ -2,20 +2,18 @@
 // https://github.com/grf-labs/maq
 // Distributed under the MIT License.
 
-#ifndef MAQ_H
-#define MAQ_H
+#ifndef MAQ_SOLVER_H
+#define MAQ_SOLVER_H
 
 #include <cmath>
 #include <future>
 #include <random>
 #include <vector>
 
-#include "Data.hpp"
-#include "DataMean.hpp"
 #include "convex_hull.hpp"
 #include "compute_path.hpp"
 #include "Sampler.hpp"
-#include "MAQOptions.hpp"
+#include "SolverOptions.hpp"
 
 namespace maq {
 
@@ -28,10 +26,10 @@ namespace maq {
  *
  */
 template <class DataType>
-class MAQ {
+class Solver {
   public:
-  MAQ(const DataType& data,
-      const MAQOptions& options) :
+  Solver(const DataType& data,
+         const SolverOptions& options) :
     data(data),
     options(options) {}
 
@@ -77,7 +75,7 @@ class MAQ {
       size_t num_replicates_batch = thread_ranges[i + 1] - start_index;
 
       futures.push_back(std::async(std::launch::async,
-                                  &MAQ::fit_paths_batch,
+                                  &Solver::fit_paths_batch,
                                   this,
                                   start_index,
                                   num_replicates_batch,
@@ -243,9 +241,9 @@ class MAQ {
   }
 
   const DataType& data;
-  const MAQOptions& options;
+  const SolverOptions& options;
 };
 
 } // namespace maq
 
-#endif // MAQ_H
+#endif // MAQ_SOLVER_H

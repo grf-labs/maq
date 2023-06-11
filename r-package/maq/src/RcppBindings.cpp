@@ -1,6 +1,6 @@
 #include <Rcpp.h>
 
-#include "MAQ.hpp"
+#include "MAQ.h"
 
 using namespace maq;
 
@@ -35,8 +35,8 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
   Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
     reward.begin(), reward_scores.begin(), cost.begin(), num_rows, num_cols,
     weights_ptr, tie_breaker_ptr, clusters_ptr);
-  MAQOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
-  MAQ<Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default>> maq(data, options);
+  SolverOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, seed);
+  Solver<Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default>> maq(data, options);
 
   auto ret = maq.fit();
   auto path = ret.first;
