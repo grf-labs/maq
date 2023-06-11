@@ -127,7 +127,7 @@ test_that("clustering works as expected", {
   est <- lapply(spends, function(s) average_gain(mq, s))
   est.clust <- lapply(spends, function(s) average_gain(mq.clust, s))
 
-  expect_equal(est, est.clust, tolerance = 0.075)
+  expect_equal(est, est.clust, tolerance = 0.01)
 })
 
 test_that("std errors works as expected", {
