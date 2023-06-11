@@ -2,10 +2,6 @@ import cython
 import numpy as np
 cimport numpy as np
 
-from libcpp cimport bool
-from libcpp.vector cimport vector
-from cython.operator cimport dereference as deref
-
 from maq.maqdefs cimport solution_path, run
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
