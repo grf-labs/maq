@@ -58,8 +58,7 @@ std::vector<std::vector<size_t>> convex_hull(const DataType& data) {
     std::vector<size_t>& Ri = R[sample];
 
     // Get sort order by increasing cost
-    // TODO: remove stable?
-    std::stable_sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
+    std::sort(ordered_arms.begin(), ordered_arms.end(), [&](const size_t lhs, const size_t rhs) {
       return data.get_cost(sample, lhs) < data.get_cost(sample, rhs);
     });
     // Push first positive reward point onto stack
