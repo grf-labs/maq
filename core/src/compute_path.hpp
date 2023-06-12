@@ -1,5 +1,5 @@
-#ifndef MAQ_COMPUTE_PATH_H
-#define MAQ_COMPUTE_PATH_H
+#ifndef MAQ_COMPUTE_PATH_HPP
+#define MAQ_COMPUTE_PATH_HPP
 
 #include <cmath>
 #include <cstddef>
@@ -151,4 +151,4 @@ solution_path compute_path(const std::vector<size_t>& samples,
 
 } // namespace maq
 
-#endif // MAQ_COMPUTE_PATH_H
+#endif // MAQ_COMPUTE_PATH_HPP

@@ -1,5 +1,5 @@
-#ifndef MAQ_CONVEX_HULL_H
-#define MAQ_CONVEX_HULL_H
+#ifndef MAQ_CONVEX_HULL_HPP
+#define MAQ_CONVEX_HULL_HPP
 
 #include <algorithm>
 #include <cstddef>
@@ -90,4 +90,4 @@ std::vector<std::vector<size_t>> convex_hull(const DataType& data) {
 
 } // namespace maq
 
-#endif // MAQ_CONVEX_HULL_H
+#endif // MAQ_CONVEX_HULL_HPP

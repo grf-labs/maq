@@ -1,5 +1,5 @@
-#ifndef MAQ_DATA_H
-#define MAQ_DATA_H
+#ifndef MAQ_DATA_HPP
+#define MAQ_DATA_HPP
 
 #include <cstddef>
 #include <vector>
@@ -113,4 +113,4 @@ private:
 
 } // namespace maq
 
-#endif // MAQ_DATA_H
+#endif // MAQ_DATA_HPP

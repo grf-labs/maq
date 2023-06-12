@@ -1,5 +1,5 @@
-#ifndef MAQ_DATAMEAN_H
-#define MAQ_DATAMEAN_H
+#ifndef MAQ_DATAMEAN_HPP
+#define MAQ_DATAMEAN_HPP
 
 #include <cstddef>
 #include <vector>
@@ -52,4 +52,4 @@ private:
 
 } // namespace maq
 
-#endif // MAQ_DATAMEAN_H
+#endif // MAQ_DATAMEAN_HPP

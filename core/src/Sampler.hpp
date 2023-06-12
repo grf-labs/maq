@@ -1,5 +1,5 @@
-#ifndef MAQ_SAMPLER_H
-#define MAQ_SAMPLER_H
+#ifndef MAQ_SAMPLER_HPP
+#define MAQ_SAMPLER_HPP
 
 #include <cstddef>
 #include <vector>
@@ -49,4 +49,4 @@ class Sampler {
 
 } // namespace maq
 
-#endif // MAQ_SAMPLER_H
+#endif // MAQ_SAMPLER_HPP

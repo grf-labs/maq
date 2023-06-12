@@ -1,5 +1,5 @@
-#ifndef MAQ_SOLVEROPTIONS_H
-#define MAQ_SOLVEROPTIONS_H
+#ifndef MAQ_SOLVEROPTIONS_HPP
+#define MAQ_SOLVEROPTIONS_HPP
 
 #include <thread>
 
@@ -33,4 +33,4 @@ struct SolverOptions {
 
 } // namespace maq
 
-#endif // MAQ_SOLVEROPTIONS_H
+#endif // MAQ_SOLVEROPTIONS_HPP

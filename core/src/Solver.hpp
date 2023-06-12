@@ -1,5 +1,5 @@
-#ifndef MAQ_SOLVER_H
-#define MAQ_SOLVER_H
+#ifndef MAQ_SOLVER_HPP
+#define MAQ_SOLVER_HPP
 
 // Multi-Armed Qini (maq).
 // https://github.com/grf-labs/maq
@@ -245,4 +245,4 @@ class Solver {
 
 } // namespace maq
 
-#endif // MAQ_SOLVER_H
+#endif // MAQ_SOLVER_HPP
