@@ -66,14 +66,14 @@ mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
 
 ### Details
 
-Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\tau(X_i)$ be a vector of treatment effects for unit $i$, i.e. the $k$-th element ($k > 0$) is $\mu_{ik} - \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive costs, i.e. the $k$-th element is the cost of assigning unit $i$ arm $k$.
+Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\hat \tau(X_i)$ be a vector of treatment effects estimates for unit $i$, i.e. the $k$-th element ($k > 0$) is $\hat \mu_{ik} - \hat \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $\widehat C(X_i)$ be a vector of positive costs estimates, i.e. the $k$-th element is the estimated cost of assigning unit $i$ arm $k$.
 
-The multi-armed Qini is defined as the value of the optimal cost-constrained treatment allocation $\pi_B(X_i) \in [0, 1]^K$ at any budget constraint $B$. `maq` delivers the path of these optimal allocations and confidence intervals for the optimal value (on a held out evaluation set) by efficiently solving the following series of linear programs:
+The multi-armed Qini is defined as the value of the optimal cost-constrained treatment allocation $\pi_B(X_i) \in [0, 1]^K$ at any budget constraint $B \in (0, B_{max}]$. `maq` delivers the path of these optimal allocations and confidence intervals for the estimated value (on a held out test set) by efficiently solving the following series of linear programs
 
 ```math
 \begin{aligned}
-\max_{\pi_B} \quad & \mathbb{E}[\langle \pi_B(X_i),~ \tau(X_i) \rangle] \\
-\textrm{s.t.} \quad & \mathbb{E}[\langle \pi_B(X_i),~ C(X_i) \rangle] \leq B \\
+\max_{\pi_B} \quad & \sum_{i=1}^{n} \langle \pi_B(X_i),~ \hat \tau(X_i) \rangle \\
+\textrm{s.t.} \quad & \sum_{i=1}^{n} \langle \pi_B(X_i),~ \widehat C(X_i) \rangle \leq B \\
 & \langle \pi_B(X_i),~ \mathbf{1} \rangle \leq 1 \\
 & \pi_B(X_i) \geq 0.
 \end{aligned}
