@@ -7,8 +7,6 @@
 namespace maq {
 
 enum class Storage {ColMajor, RowMajor};
-enum class SampleWeights {Default, Provided};
-enum class TieBreaker {Default, Provided};
 
 /**
  * Read-only data wrapper for column or row major storage.
@@ -18,7 +16,7 @@ enum class TieBreaker {Default, Provided};
  * Clusters, if present, should be labeled as consecutive integers 0, ..., num_clusters
  *
  */
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <Storage storage>
 class Data {
 public:
   Data(const double* data_reward,
@@ -76,7 +74,7 @@ public:
   }
 
   int get_tie_breaker(size_t row) const {
-    if (tie_breaker == TieBreaker::Default) {
+    if (data_tie_breaker == nullptr) {
       return row;
     } else {
       return data_tie_breaker[row];
@@ -87,7 +85,7 @@ public:
 
 private:
   double get_weight(size_t row) const {
-    if (sample_weights == SampleWeights::Default) {
+    if (data_weight == nullptr) {
       return 1.0 / num_rows;
       } else {
       return data_weight[row];
