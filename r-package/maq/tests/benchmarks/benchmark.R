@@ -85,39 +85,6 @@ print(b42, digits = 3)
 print(b5, digits = 3)
 print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
-
-#' @ Do weights/tie at runtime (#15) https://github.com/grf-labs/maq/pull/15
-# [[1]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 2.61 2.71 3.01   3.04 3.23 3.38    10
-#
-# [[2]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 4.42 4.72  5.3   5.27 5.74 6.22    10
-#
-# [[3]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 17.4 17.6 17.8   17.7 17.9 18.2     5
-#
-# [[4]]
-# Unit: seconds
-# expr  min   lq mean median   uq max neval
-# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 1.96 1.96 2.18   2.02 2.42 2.8    10
-#
-# [[5]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.5 31.5 32.1     32 32.3 33.2    10
-#
-# [[6]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 10.8 10.8 10.9   10.8 10.9 11.1     5
-
-
 #' @ Use plain std::sort
 # [[1]]
 # Unit: seconds
@@ -145,6 +112,7 @@ print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
 
 #' @ Add templates (#10) https://github.com/grf-labs/maq/pull/12
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
 # Unit: seconds
 #  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 2.09 2.11 2.17   2.16 2.2 2.3    10
@@ -171,6 +139,7 @@ print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
 
 #' @ add pibar (#10) https://github.com/grf-labs/maq/pull/10
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
@@ -203,6 +172,7 @@ print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
 
 #' @ 9edff55064ca75b7806b0532ec24f82096b22010
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
 # Unit: seconds
 # expr min   lq mean median   uq  max neval
@@ -235,6 +205,7 @@ print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
 
 #' @ ec1d19cb19b9001886ba468e638edaece4b40579
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
