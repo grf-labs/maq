@@ -33,33 +33,60 @@ std::pair<solution_path, std::vector<std::vector<double>>> run(
     unsigned int random_seed) {
   SolverOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, random_seed);
 
-  if (data_weight == nullptr && data_tie_breaker == nullptr) {
-    Data<storage, SampleWeights::Default, TieBreaker::Default> data(
-      data_reward, data_reward_scores, data_cost, num_rows, num_cols,
-      data_weight, data_tie_breaker, clusters);
-    auto maq = make_solver(data, options);
-    return maq.fit();
-  } else if (data_weight != nullptr && data_tie_breaker == nullptr) {
-    Data<storage, SampleWeights::Provided, TieBreaker::Default> data(
-      data_reward, data_reward_scores, data_cost, num_rows, num_cols,
-      data_weight, data_tie_breaker, clusters);
-    auto maq = make_solver(data, options);
-    return maq.fit();
-  } else if (data_weight != nullptr && data_tie_breaker != nullptr) {
-    Data<storage, SampleWeights::Provided, TieBreaker::Provided> data(
-      data_reward, data_reward_scores, data_cost, num_rows, num_cols,
-      data_weight, data_tie_breaker, clusters);
-    auto maq = make_solver(data, options);
-    return maq.fit();
+  if (cost_matrix) {
+    if (data_weight == nullptr && data_tie_breaker == nullptr) {
+      Data<storage, SampleWeights::Default, TieBreaker::Default, CostType::Matrix> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else if (data_weight != nullptr && data_tie_breaker == nullptr) {
+      Data<storage, SampleWeights::Provided, TieBreaker::Default, CostType::Matrix> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else if (data_weight != nullptr && data_tie_breaker != nullptr) {
+      Data<storage, SampleWeights::Provided, TieBreaker::Provided, CostType::Matrix> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else {
+      Data<storage, SampleWeights::Default, TieBreaker::Provided, CostType::Matrix> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    }
   } else {
-    Data<storage, SampleWeights::Default, TieBreaker::Provided> data(
-      data_reward, data_reward_scores, data_cost, num_rows, num_cols,
-      data_weight, data_tie_breaker, clusters);
-    auto maq = make_solver(data, options);
-    return maq.fit();
+    if (data_weight == nullptr && data_tie_breaker == nullptr) {
+      Data<storage, SampleWeights::Default, TieBreaker::Default, CostType::Vector> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else if (data_weight != nullptr && data_tie_breaker == nullptr) {
+      Data<storage, SampleWeights::Provided, TieBreaker::Default, CostType::Vector> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else if (data_weight != nullptr && data_tie_breaker != nullptr) {
+      Data<storage, SampleWeights::Provided, TieBreaker::Provided, CostType::Vector> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    } else {
+      Data<storage, SampleWeights::Default, TieBreaker::Provided, CostType::Vector> data(
+        data_reward, data_reward_scores, data_cost, num_rows, num_cols,
+        data_weight, data_tie_breaker, clusters);
+      auto maq = make_solver(data, options);
+      return maq.fit();
+    }
   }
 }
-
 
 } // namespace maq
 

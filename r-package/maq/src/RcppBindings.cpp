@@ -17,8 +17,6 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
                        unsigned int num_bootstrap,
                        unsigned int num_threads,
                        unsigned int seed) {
-  size_t num_rows = reward.rows();
-  size_t num_cols = reward.cols();
   const double* weights_ptr = nullptr;
   if (sample_weights.size() > 0) {
     weights_ptr = sample_weights.begin();
@@ -35,9 +33,9 @@ Rcpp::List solver_rcpp(const Rcpp::NumericMatrix& reward,
     reward.begin(),
     reward_scores.begin(),
     cost.begin(),
-    num_rows,
-    num_cols,
-    true,
+    reward.rows(),
+    reward.cols(),
+    cost.rows() > 1,
     weights_ptr,
     tie_breaker_ptr,
     clusters_ptr,
@@ -68,7 +66,7 @@ Rcpp::List convex_hull_rcpp(const Rcpp::NumericMatrix& reward,
                             const Rcpp::NumericMatrix& cost) {
   size_t num_rows = reward.rows();
   size_t num_cols = reward.cols();
-  Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default> data(
+  Data<Storage::ColMajor, SampleWeights::Default, TieBreaker::Default, CostType::Matrix> data(
     reward.begin(), reward.begin(), cost.begin(), num_rows, num_cols);
 
   return Rcpp::List::create(convex_hull(data));

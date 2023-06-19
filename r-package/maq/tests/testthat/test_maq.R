@@ -130,6 +130,22 @@ test_that("clustering works as expected", {
   expect_equal(est, est.clust, tolerance = 0.01)
 })
 
+test_that("maq with vector cost works as expected", {
+  budget <- 1000
+  n <- 500
+  K <- 5
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+
+  mq1 <- maq(reward[, 1], cost[1], budget, reward[, 1], R = 3)
+  mq2 <- maq(reward[, 1], rep(cost[1], n), budget, reward[, 1], R = 3)
+  expect_identical(mq1, mq2)
+
+  mq3 <- maq(reward, matrix(cost[1, ], n, K, byrow = TRUE), budget, reward, R = 3)
+  mq4 <- maq(reward, cost[1, ], budget, reward, R = 3)
+  expect_identical(mq3, mq4)
+})
+
 test_that("std errors works as expected", {
   # Get exact coverage of points on the curve
   budget <- 100

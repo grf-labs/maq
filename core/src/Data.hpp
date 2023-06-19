@@ -9,6 +9,7 @@ namespace maq {
 enum class Storage {ColMajor, RowMajor};
 enum class SampleWeights {Default, Provided};
 enum class TieBreaker {Default, Provided};
+enum class CostType {Matrix, Vector};
 
 /**
  * Read-only data wrapper for column or row major storage.
@@ -18,7 +19,7 @@ enum class TieBreaker {Default, Provided};
  * Clusters, if present, should be labeled as consecutive integers 0, ..., num_clusters
  *
  */
-template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker>
+template <Storage storage, SampleWeights sample_weights, TieBreaker tie_breaker, CostType cost_type>
 class Data {
 public:
   Data(const double* data_reward,
@@ -64,7 +65,11 @@ public:
   }
 
   double get_cost(size_t row, size_t col) const {
-    return data_cost[index(row, col)] * get_weight(row);
+    if (cost_type == CostType::Matrix) {
+      return data_cost[index(row, col)] * get_weight(row);
+    } else {
+      return data_cost[col] * get_weight(row);
+    }
   }
 
   size_t get_num_rows() const {
