@@ -12,7 +12,7 @@
 namespace maq {
 
 template <class T>
-Solver<T> make_solver(const T& x, const SolverOptions& options) {return Solver<T>(x, options);}
+Solver<T> make_solver(const T& data, const SolverOptions& options) {return Solver<T>(data, options);}
 
 template <Storage storage>
 std::pair<solution_path, std::vector<std::vector<double>>> run(
