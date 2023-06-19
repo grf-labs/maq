@@ -1,8 +1,9 @@
 import cython
 import numpy as np
 cimport numpy as np
+from libcpp cimport bool
 
-from maq.maqdefs cimport solution_path, run
+from maq.maqdefs cimport solution_path, fit
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] reward_scores,
@@ -15,10 +16,30 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
 
-    cdef solution_path ret = run(
-        &reward[0, 0], &reward_scores[0, 0], &cost[0, 0], num_rows, num_cols,
-        budget, target_with_covariates, n_bootstrap, num_threads, seed
-    )
+    # Ignore these options for now (TODO)
+    cdef bool paired_inference = False
+    cdef bool cost_matrix = True
+    cdef double* weights_ptr = NULL
+    cdef int* tie_breaker_ptr = NULL
+    cdef int* clusters_ptr = NULL
+
+    cdef solution_path ret = fit(
+        &reward[0, 0],
+        &reward_scores[0, 0],
+        &cost[0, 0],
+        num_rows,
+        num_cols,
+        cost_matrix,
+        weights_ptr,
+        tie_breaker_ptr,
+        clusters_ptr,
+        budget,
+        target_with_covariates,
+        paired_inference,
+        n_bootstrap,
+        num_threads,
+        seed
+    ).first
 
     res = dict()
     path_len = ret.first[0].size()
