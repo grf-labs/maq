@@ -15,21 +15,22 @@ template <class T>
 Solver<T> make_solver(const T& x, const SolverOptions& options) {return Solver<T>(x, options);}
 
 template <Storage storage>
-std::pair<solution_path, std::vector<std::vector<double>>> run(const double* data_reward,
-                                                               const double* data_reward_scores,
-                                                               const double* data_cost,
-                                                               size_t num_rows,
-                                                               size_t num_cols,
-                                                               bool cost_matrix,
-                                                               const double* data_weight,
-                                                               const int* data_tie_breaker,
-                                                               const int* clusters,
-                                                               double budget,
-                                                               bool target_with_covariates,
-                                                               bool paired_inference,
-                                                               unsigned int num_bootstrap,
-                                                               unsigned int num_threads,
-                                                               unsigned int random_seed) {
+std::pair<solution_path, std::vector<std::vector<double>>> run(
+    const double* data_reward,
+    const double* data_reward_scores,
+    const double* data_cost,
+    size_t num_rows,
+    size_t num_cols,
+    bool cost_matrix,
+    const double* data_weight,
+    const int* data_tie_breaker,
+    const int* clusters,
+    double budget,
+    bool target_with_covariates,
+    bool paired_inference,
+    unsigned int num_bootstrap,
+    unsigned int num_threads,
+    unsigned int random_seed) {
   SolverOptions options(budget, target_with_covariates, paired_inference, num_bootstrap, num_threads, random_seed);
 
   if (data_weight == nullptr && data_tie_breaker == nullptr) {
