@@ -123,14 +123,16 @@ maq <- function(reward,
                 tie.breaker = NULL,
                 num.threads = NULL,
                 seed = 42) {
-  if (is.vector(cost) && length(cost) == NCOL(DR.scores)) {
-    cost <- matrix(cost, NROW(DR.scores), NCOL(DR.scores), byrow = TRUE)
-  }
-
-  if (NROW(reward) != NROW(cost) || NCOL(reward) != NCOL(cost)
-        || NROW(reward) != NROW(DR.scores) || NCOL(reward) != NCOL(DR.scores)
+  if (NROW(reward) != NROW(DR.scores) || NCOL(reward) != NCOL(DR.scores)
         || anyNA(reward) || anyNA(cost) || anyNA(DR.scores)) {
-    stop("rewards and costs should be matrices of equal size with no missing values.")
+    stop("reward, costs, and evaluation scores should have conformable dimension, with no missing values.")
+  }
+  if (is.vector(cost) && length(cost) == NCOL(reward)) {
+    cost <- matrix(cost, 1, length(cost), byrow = TRUE)
+  } else {
+    if (NROW(cost) != NROW(reward) || NCOL(cost) != NCOL(reward)) {
+      stop("reward, costs, and evaluation scores should have conformable dimension, with no missing values.")
+    }
   }
 
   if (any(cost <= 0)) {
@@ -198,7 +200,7 @@ maq <- function(reward,
   output[["target.with.covariates"]] <- target.with.covariates
   output[["paired.inference"]] <- paired.inference
   output[["R"]] <- R
-  output[["dim"]] <- c(NROW(cost), NCOL(cost))
+  output[["dim"]] <- c(NROW(reward), NCOL(reward))
   output[["budget"]] <- budget
 
   output
