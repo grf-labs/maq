@@ -54,14 +54,14 @@ pi.mat <- predict(mq, spend = 0.2)
 
 # If the treatment randomization probabilities are known, then an alternative to
 # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
-W.hat.true <- rep(1/3, 3)
+W.hat <- rep(1/3, 3)
 observed.W <- match(W, levels(W))
-Y.k.mat <- matrix(0, length(W), nlevels(W))
-Y.k.mat[cbind(seq_along(observed.W), observed.W)] <- Y
-Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
-Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
+Y.mat <- matrix(0, length(W), nlevels(W))
+Y.mat[cbind(seq_along(observed.W), observed.W)] <- Y
+Y.ipw <- sweep(Y.mat, 2, W.hat, "/")
+Y.ipw.eval <- Y.ipw[eval, -1] - Y.ipw[eval, 1]
 
-mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval)
+mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.ipw.eval)
 ```
 
 ### Details
