@@ -18,6 +18,7 @@ std::pair<solution_path, std::vector<std::vector<double>>> fit(
   unsigned int num_bootstrap,
   unsigned int num_threads,
   unsigned int random_seed) {
+
   return run<Storage::RowMajor>(
     data_reward,
     data_reward_scores,
