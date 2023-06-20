@@ -18,30 +18,30 @@ Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-pa
 ```R
 library(maq)
 
-# Fit a CATE estimator (using GRF) on a training sample.
+# Fit a CATE estimator on a training sample.
 n <- 3000
 p <- 5
 X <- matrix(runif(n * p), n, p)
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
 Y <- X[, 1] + X[, 2] * (W == "B") + 1.5 * X[, 3] * (W == "C") + rnorm(n)
 train <- sample(1:n, n/2)
-eval <- -train
 
 tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 
 # Predict CATEs on held out evaluation data.
-tau.hat <- predict(tau.forest, X[eval, ], drop = TRUE)$predictions
+test <- -train
+tau.hat <- predict(tau.forest, X[test, ], drop = TRUE)$predictions
 
 # Form cost estimates - the following are a toy example.
-cost.hat <- cbind(X[eval, 4] / 4, X[eval, 5])
+cost.hat <- cbind(X[test, 4] / 4, X[test, 5])
 
-# Fit an evaluation forest to compute doubly robust evaluation set scores.
-eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
+# Fit an evaluation forest to compute doubly robust scores on the test set.
+eval.forest <- grf::multi_arm_causal_forest(X[test, ], Y[test], W[test])
 DR.scores <- grf::get_scores(eval.forest, drop = TRUE)
 
-# Fit a MAQ using evaluation set estimates.
+# Fit a MAQ on evaluation data (using 200 bootstrap replicates for SEs)
 max.budget <- 1
-mq <- maq(tau.hat, cost.hat, max.budget, DR.scores)
+mq <- maq(tau.hat, cost.hat, max.budget, DR.scores, R = 200)
 
 # Plot the MAQ curve.
 plot(mq)
@@ -59,9 +59,9 @@ observed.W <- match(W, levels(W))
 Y.mat <- matrix(0, length(W), nlevels(W))
 Y.mat[cbind(seq_along(observed.W), observed.W)] <- Y
 Y.ipw <- sweep(Y.mat, 2, W.hat, "/")
-Y.ipw.eval <- Y.ipw[eval, -1] - Y.ipw[eval, 1]
+Y.ipw.test <- Y.ipw[test, -1] - Y.ipw[test, 1]
 
-mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.ipw.eval)
+mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.ipw.test)
 ```
 
 ### Details
