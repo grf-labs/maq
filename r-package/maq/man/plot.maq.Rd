@@ -20,7 +20,7 @@
 
 \item{add}{Whether to add to an already existing plot. Default is FALSE.}
 
-\item{horizontal.line}{Whether to draw a horizontal line where the cost curve continues.
+\item{horizontal.line}{Whether to draw a horizontal line where the cost curve plateaus.
 Only applies if add = TRUE. Default is TRUE.}
 
 \item{ci.args}{A list of optional arguments to lines() for drawing 95 \% confidence bars.

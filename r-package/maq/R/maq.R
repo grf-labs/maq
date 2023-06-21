@@ -374,7 +374,7 @@ print.maq <- function(x,
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
-#' @param horizontal.line Whether to draw a horizontal line where the cost curve continues.
+#' @param horizontal.line Whether to draw a horizontal line where the cost curve plateaus.
 #'  Only applies if add = TRUE. Default is TRUE.
 #' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars.
 #'  Set to NULL to ignore CIs.
