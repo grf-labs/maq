@@ -12,7 +12,7 @@ generate_data = function(n, p, dgp = c("map")) {
     region = which(R, arr.ind = TRUE)
     region = region[order(region[, "row"]), "col"]
     region = region - 1
-    
+
     rewards = sapply(region, function(r) {
       actions <- 0:2
       if (r == 0) {
@@ -28,7 +28,7 @@ generate_data = function(n, p, dgp = c("map")) {
     realized.a = sample(0:2, n, TRUE)
     reward = rewards[cbind(1:n, realized.a + 1)]
     Y = rnorm(n, mean = reward, sd = sqrt(sigma2))
-    
+
     W = as.factor(realized.a)
     tau = rewards[, -1] - rewards[, 1]
     cost = cbind(X[, 1], 2 * X[, 2])
@@ -36,4 +36,3 @@ generate_data = function(n, p, dgp = c("map")) {
 
   list(X = X, Y = Y, W = W, cost = cost, tau = tau)
 }
-

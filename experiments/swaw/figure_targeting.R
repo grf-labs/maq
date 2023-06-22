@@ -109,4 +109,3 @@ legend("topleft",
        c("All arms", "Arm 1", "Arm 2", "Arm 3", "Arm 1,2", "Arm 1,3", "Arm 2,3"),
        col = c("red", "blue", "purple", "green", "brown", "black", " dark gray"), lty = 1, lwd = 2)
 dev.off()
-
