@@ -14,7 +14,7 @@ devtools::install_github("grf-labs/maq", subdir = "r-package/maq")
 ```
 (Installing from source requires a compiler that implements C++11 or later)
 
-`Python` bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
+Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
 
 ### Usage Example
 
