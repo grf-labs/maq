@@ -1,4 +1,7 @@
 # maq
+
+### Installation
+
 Python bindings for `maq` can be installed from source with
 
 ```
