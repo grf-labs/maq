@@ -2,9 +2,7 @@
 
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A package for evaluating multi-armed treatment rules via the Multi-Armed Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
-
-An introductory vignette: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
+A package for evaluating multi-armed treatment rules via the Multi-Armed Qini ("maq") - a generalization of the Qini to multiple costly treatment arms. An introductory vignette: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 
 ### Installation
 
