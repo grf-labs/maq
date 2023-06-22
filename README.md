@@ -4,14 +4,17 @@
 
 A package for evaluating multi-armed treatment rules via the Multi-Armed Qini ("maq") - a generalization of the Qini to multiple costly treatment arms.
 
-The development version (R package) can be installed by
+An introductory vignette: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
+
+### Installation
+The development version can be installed with
 
 ```R
 devtools::install_github("grf-labs/maq", subdir = "r-package/maq")
 ```
-(Installing from source requires a compiler that implements C++11 or later).
+(Installing from source requires a compiler that implements C++11 or later)
 
-Python bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
+`Python` bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
 
 ### Usage Example
 
