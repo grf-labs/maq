@@ -102,6 +102,3 @@ round(100*(est.avg.diff[1] + c(-1.96, 1.96)*est.avg.diff[2]), 1)
 # Fraction treated in non-targeting and targeting
 round(colMeans(predict(mq.avg, spend)), 2)
 round(colMeans(predict(mq, spend)), 2)
-
-
-
