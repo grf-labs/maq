@@ -4,8 +4,8 @@ from libcpp.vector cimport vector
 
 ctypedef pair[vector[vector[double]], vector[vector[size_t]]] solution_path
 
-cdef extern from 'wrapper.hpp':
-    pair[solution_path, vector[vector[double]]] fit(
+cdef extern from "MAQ.h":
+    pair[solution_path, vector[vector[double]]] run "maq::run<maq::Storage::RowMajor>"(
         const double* data_reward,
         const double* data_reward_scores,
         const double* data_cost,

@@ -3,7 +3,7 @@ import numpy as np
 cimport numpy as np
 from libcpp cimport bool
 
-from maq.maqdefs cimport solution_path, fit
+from maq.maqdefs cimport solution_path, run
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] reward_scores,
@@ -23,7 +23,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef int* tie_breaker_ptr = NULL
     cdef int* clusters_ptr = NULL
 
-    cdef solution_path ret = fit(
+    cdef solution_path ret = run(
         &reward[0, 0],
         &reward_scores[0, 0],
         &cost[0, 0],
