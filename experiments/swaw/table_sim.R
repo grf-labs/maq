@@ -11,7 +11,7 @@ p = 10
 # Generate "truth" test data
 dgp = "map"
 spends = c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5)
-data.truth = generate_data(100000, p, dgp = dgp) 
+data.truth = generate_data(100000, p, dgp = dgp)
 
 # Fix a tau function
 data.train = generate_data(10000, p, dgp = dgp)
@@ -31,7 +31,7 @@ for (n in c(1000, 2000, 5000, 10000)) {
   for (i in 1:1000) {
     data.eval = generate_data(n, p, dgp = dgp)
     tau.hat.eval = predict(cf.train, data.eval$X, drop = TRUE)$predictions
-    
+
     cf.eval = multi_arm_causal_forest(
       data.eval$X,
       data.eval$Y,
@@ -55,21 +55,3 @@ Res = do.call(rbind, res)
 res.df1 = aggregate(Res[, c(-1,-2)], by = list(n = Res$n, spend = Res$spend), FUN = mean)
 
 xtable(xtabs(coverage ~ n + spend, res.df1))
-# % latex table generated in R 3.5.1 by xtable 1.8-4 package
-# % Thu May 18 08:23:07 2023
-# \begin{table}[ht]
-# \centering
-# \begin{tabular}{rrrrrrrrrrr}
-# \hline
-# & 0.05 & 0.1 & 0.15 & 0.2 & 0.25 & 0.3 & 0.35 & 0.4 & 0.45 & 0.5 \\
-# \hline
-# 1000 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.94 \\
-# 2000 & 0.95 & 0.95 & 0.95 & 0.95 & 0.94 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 \\
-# 5000 & 0.95 & 0.95 & 0.96 & 0.96 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 & 0.95 \\
-# 10000 & 0.95 & 0.93 & 0.94 & 0.94 & 0.94 & 0.94 & 0.94 & 0.95 & 0.95 & 0.94 \\
-# \hline
-# \end{tabular}
-# \end{table}
-
-# xtable(xtabs(ci.length ~ n + spend, res.df1))
-
