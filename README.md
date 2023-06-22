@@ -80,3 +80,7 @@ The multi-armed Qini is defined as the value of the optimal cost-constrained tre
 ```
 
 ### References
+
+Erik Sverdrup, Han Wu, Susan Athey, and Stefan Wager.
+<b>Qini Curves for Multi-Armed Treatment Rules.</b> 2023.
+[<a href="https://arxiv.org/abs/2306.11979">arxiv</a>]
