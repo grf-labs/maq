@@ -61,7 +61,9 @@ is set to the maximum hardware concurrency.}
 A fit maq object.
 }
 \description{
-Fit a Multi-Armed Qini.
+Given estimated conditional average treatment effects (CATEs), and costs, fit a
+generalization of the Qini curve that can be used to assess (and compare) treatment
+allocation policies implied by the estimated CATEs and cost on a held-out evaluation set.
 }
 \examples{
 \donttest{
