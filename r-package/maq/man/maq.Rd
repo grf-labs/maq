@@ -30,17 +30,17 @@ be a ncol(reward)-length vector.}
 \item{DR.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 reward and cost estimates should be obtained independently from this evaluation data.}
 
-\item{target.with.covariates}{If TRUE, then the optimal policy takes covariates into
+\item{target.with.covariates}{If TRUE (Default), then the optimal policy takes covariates into
 account. If FALSE, then the optimal policy only takes the average reward and cost into account when
-allocating treatment. Default is TRUE.}
+allocating treatment.}
 
 \item{R}{Number of bootstrap replicates for computing standard errors. Default is 0
 (only point estimates are computed).}
 
-\item{paired.inference}{Whether to allow for paired tests with other cost curves. If TRUE (Default)
-then the path of bootstrap replicates are stored in order to perform paired comparisons.
-This takes memory on the order of O(RnK) and requires the comparison objects to be fit with the
-same seed and R values as well as the same number of samples.}
+\item{paired.inference}{Whether to allow for paired tests with other cost curves fit on the same
+evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
+paired comparisons. This takes memory on the order of O(RnK) and requires the comparison objects to be
+fit with the same seed and R values as well as the same number of samples.}
 
 \item{sample.weights}{Weights given to an observation in estimation.
 If NULL, each observation is given the same weight. Default is NULL.}
@@ -144,4 +144,9 @@ difference_gain(mq, mq.arm2, spend = 0.2)
 }
 }
 
+}
+\references{
+Sverdrup, Erik, Han Wu, Susan Athey, and Stefan Wager.
+"Qini Curves for Multi-Armed Treatment Rules".
+arXiv preprint arXiv:2306.11979, 2023.
 }

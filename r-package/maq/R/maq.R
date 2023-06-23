@@ -7,15 +7,15 @@
 #' @param budget The maximum spend per unit to fit the MAQ path on.
 #' @param DR.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 #'  reward and cost estimates should be obtained independently from this evaluation data.
-#' @param target.with.covariates If TRUE, then the optimal policy takes covariates into
+#' @param target.with.covariates If TRUE (Default), then the optimal policy takes covariates into
 #'  account. If FALSE, then the optimal policy only takes the average reward and cost into account when
-#'  allocating treatment. Default is TRUE.
+#'  allocating treatment.
 #' @param R Number of bootstrap replicates for computing standard errors. Default is 0
 #'  (only point estimates are computed).
-#' @param paired.inference Whether to allow for paired tests with other cost curves. If TRUE (Default)
-#'  then the path of bootstrap replicates are stored in order to perform paired comparisons.
-#'  This takes memory on the order of O(RnK) and requires the comparison objects to be fit with the
-#'  same seed and R values as well as the same number of samples.
+#' @param paired.inference Whether to allow for paired tests with other cost curves fit on the same
+#'  evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
+#'  paired comparisons. This takes memory on the order of O(RnK) and requires the comparison objects to be
+#'  fit with the same seed and R values as well as the same number of samples.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
 #' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to.
@@ -28,6 +28,10 @@
 #' @param seed The seed of the C++ random number generator. Default is 42.
 #'
 #' @return A fit maq object.
+#'
+#' @references Sverdrup, Erik, Han Wu, Susan Athey, and Stefan Wager.
+#'  "Qini Curves for Multi-Armed Treatment Rules".
+#'  arXiv preprint arXiv:2306.11979, 2023.
 #'
 #' @examples
 #' \donttest{
