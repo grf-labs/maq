@@ -39,8 +39,9 @@ allocating treatment.}
 
 \item{paired.inference}{Whether to allow for paired tests with other cost curves fit on the same
 evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
-paired comparisons. This takes memory on the order of O(RnK) and requires the comparison objects to be
-fit with the same seed and R values as well as the same number of samples.}
+paired comparisons that account for the correlation between curves evaluated on the same data. This
+takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
+and R values as well as the same number of samples.}
 
 \item{sample.weights}{Weights given to an observation in estimation.
 If NULL, each observation is given the same weight. Default is NULL.}
@@ -63,7 +64,7 @@ A fit maq object.
 \description{
 Given estimated conditional average treatment effects (CATEs), and costs, fit a
 generalization of the Qini curve that can be used to assess (and compare) treatment
-allocation policies implied by the estimated CATEs and cost on a held-out evaluation set.
+allocation policies implied by the estimated CATEs and costs on a held-out evaluation set.
 }
 \examples{
 \donttest{
