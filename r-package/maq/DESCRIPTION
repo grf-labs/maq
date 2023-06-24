@@ -7,7 +7,7 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment rules for costly and mutually exclusive treatment arms.
+Description: Evaluate treatment rules for costly and mutually exclusive treatment arms with Qini curves as proposed in Sverdrup, Wu, Athey, and Wager (2023) <arXiv:2306.11979>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
