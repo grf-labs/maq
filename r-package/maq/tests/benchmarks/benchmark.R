@@ -85,149 +85,34 @@ print(b42, digits = 3)
 print(b5, digits = 3)
 print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 
-#' @ Use plain std::sort
-# [[1]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 1.97 2.02 2.03   2.04 2.05 2.08    10
-#
-# [[2]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 3.79 3.8 3.81   3.81 3.82 3.83    10
-#
-# [[3]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 15.2 15.3 15.3   15.3 15.4 15.4     5
-#
-# [[4]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 1.96 1.97 1.99   1.98 1.99 2.05    10
-#
-# [[5]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.4 31.6 31.8   31.7 32.1 32.4    10
-#
-# [[6]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 10.2 10.2 10.3   10.2 10.5 10.5     5
-
-
-#' @ Add templates (#10) https://github.com/grf-labs/maq/pull/12
-# [[1]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 2.09 2.11 2.17   2.16 2.2 2.3    10
-#
-# [[2]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 4.82 4.85 4.89   4.88 4.92   5    10
-#
-# [[3]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 19.9 19.9   20   19.9 20 20.1     5
-#
-# [[4]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 1.93 1.94 1.97   1.96 1.98 2.05    10
-#
-# [[5]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.8 31.9 32.1     32 32.3 32.7    10
-#
-# [[6]]
-# Unit: seconds
-#  maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 16.6 16.6 16.7   16.7 16.7 16.7     5
-
-
-#' @ add pibar (#10) https://github.com/grf-labs/maq/pull/10
+# v0.1.0
+# > print(list(b1,b2,b3,b41,b42,b5), digits = 3)
 # [[1]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 1.98 2.03 2.06   2.06 2.07 2.13    10
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 1.93 1.97    2   1.99 2.02 2.12    10
 #
 # [[2]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 5.86 5.89 5.94   5.94 5.95 6.08    10
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 3.84 3.85 3.87   3.87 3.89 3.92    10
 #
 # [[3]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 35.2 35.3 35.3   35.3 35.4 35.4     5
-#
-# [[4]]
-# Unit: seconds
-# expr min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 2.3 2.31 2.34   2.33 2.34 2.42    10
-#
-# [[5]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.8 31.9 32.4   32.3 32.6 33.4    10
-#
-# [[6]]
-# Unit: seconds
-# expr min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE)  31 31.1   38   31.1 32.1 64.8     5
-
-
-#' @ 9edff55064ca75b7806b0532ec24f82096b22010
-# [[1]]
-# Unit: seconds
-# expr min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200) 1.9 1.91 1.93   1.92 1.94 1.96    10
-#
-# [[2]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200) 4.64 4.65 4.67   4.67 4.69 4.72    10
-#
-# [[3]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200) 22.2 22.2 22.3   22.3 22.3 22.5     5
-#
-# [[4]]
-# Unit: seconds
-# expr min lq mean median   uq max neval
-# maq(reward, cost, budget, reward, R = 0)   2  2 2.02   2.01 2.02 2.1    10
-#
-# [[5]]
-# Unit: seconds
-# expr  min lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 200) 31.7 32 32.1     32 32.1 32.4    10
-#
-# [[6]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, reward, R = 0) 18.2 18.2 18.2   18.3 18.3 18.3     5
-
-
-#' @ ec1d19cb19b9001886ba468e638edaece4b40579
-# [[1]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 200) 1.81 1.83 1.85   1.84 1.89 1.91    10
-#
-# [[2]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 200) 4.32 4.32 4.34   4.33 4.35 4.36    10
-#
-# [[3]]
-# Unit: seconds
-# expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 200) 21.4 21.5 21.5   21.5 21.6 21.7     5
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 15.3 15.3 15.4   15.3 15.3 15.8     5
 #
 # [[4]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 0) 1.95 1.98 1.99   1.99 2.01 2.04    10
+# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 1.91 1.92 1.94   1.93 1.95 2.01    10
 #
 # [[5]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 200) 29.5 29.6 29.9   29.7 30.1 31.4    10
+# maq(reward, cost, budget, reward, R = 200, paired.inference = FALSE) 31.7 31.8 32.9   32.1 32.4 40.7    10
 #
 # [[6]]
 # Unit: seconds
 # expr  min   lq mean median   uq  max neval
-# maq(reward, cost, budget, R = 0) 18.1 18.1 18.2   18.1 18.2 18.3     5
+# maq(reward, cost, budget, reward, R = 0, paired.inference = FALSE) 10.2 10.2 10.2   10.2 10.2 10.2     5
