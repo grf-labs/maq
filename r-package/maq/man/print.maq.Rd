@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments (currently ignored).}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Print a maq object.
 }
