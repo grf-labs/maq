@@ -416,7 +416,7 @@ plot.maq <- function(x,
   gain <- gain.grid[plot.grid]
   std.err <- std.err.grid[plot.grid]
   if (add && horizontal.line) {
-    if (object[["_path"]]$complete.path) {
+    if (x[["_path"]]$complete.path) {
       len <- length(spend)
       xmax <- graphics::par("usr")[2]
       spend <- c(spend, seq(spend[len], xmax, length.out = 100))
