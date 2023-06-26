@@ -23,9 +23,11 @@ maq(
 \item{reward}{A matrix of reward estimates.}
 
 \item{cost}{A matrix of cost estimates. If the costs are the same for each unit, then this can also
-be a ncol(reward)-length vector.}
+be a \code{ncol(reward)}-length vector.}
 
-\item{budget}{The maximum spend per unit to fit the MAQ path on.}
+\item{budget}{The maximum spend per unit to fit the MAQ path on.
+Setting this to some large number, such as \code{sum(cost)}, will fit the path up to a maximum spend per unit
+where each unit that is expected to benefit (that is, \code{reward} is positive) is treated.}
 
 \item{DR.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 reward and cost estimates should be obtained independently from this evaluation data.}
