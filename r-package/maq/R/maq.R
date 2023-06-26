@@ -119,6 +119,29 @@
 #'
 #' }
 #' }
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
 #'
 #' @export
 maq <- function(reward,
@@ -225,6 +248,32 @@ maq <- function(reward,
 #'
 #' @return A sparse matrix.
 #' @method predict maq
+#'
+#' @examples
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
+#'
 #' @export
 predict.maq <- function(object,
                         spend,
@@ -267,6 +316,30 @@ predict.maq <- function(object,
 #' @param spend The spend level.
 #'
 #' @return An estimate of average gain along with standard errors.
+#' @examples
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
 #' @export
 average_gain <- function(object,
                          spend) {
@@ -353,6 +426,30 @@ difference_gain <- function(object.lhs,
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A data.frame with the computed path.
+#' @examples
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
 #' @method summary maq
 #' @export
 summary.maq <- function(object,
@@ -372,6 +469,30 @@ summary.maq <- function(object,
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return No return value, called for side effects.
+#' @examples
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
 #'
 #' @method print maq
 #' @export
@@ -395,6 +516,30 @@ print.maq <- function(x,
 #'  max(floor(length(path.length) / 1000), 1).
 #'
 #' @return No return value, called for side effects.
+#' @examples
+#' # Fit a MAQ on toy data.
+#' n <- 1000
+#' K <- 5
+#' tau.hat <- matrix(1 + rnorm(n * K), n, K)
+#' cost <- 0.05 + matrix(runif(n * K), n, K)
+#' reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+#'
+#' max.budget <- sum(cost)
+#' mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+#' print(mq)
+#'
+#' # Plot the Qini curve.
+#' plot(mq)
+#'
+#' # Get an estimate of gain.
+#' average_gain(mq, spend = 0.2)
+#'
+#' # Get the underlying treatment allocation.
+#' pi.mat <- predict(mq, spend = 0.2)
+#'
+#' # Compare with another curve
+#' qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+#' difference_gain(mq, qini1, spend = 0.2)
 #'
 #' @method plot maq
 #' @export

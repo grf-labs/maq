@@ -37,3 +37,29 @@ No return value, called for side effects.
 \description{
 Plot the gain/spend curve.
 }
+\examples{
+# Fit a MAQ on toy data.
+n <- 1000
+K <- 5
+tau.hat <- matrix(1 + rnorm(n * K), n, K)
+cost <- 0.05 + matrix(runif(n * K), n, K)
+reward.eval <-  matrix(1 + rnorm(n * K), n, K)
+
+max.budget <- sum(cost)
+mq <- maq(tau.hat, cost, max.budget, reward.eval, R = 200)
+print(mq)
+
+# Plot the Qini curve.
+plot(mq)
+
+# Get an estimate of gain.
+average_gain(mq, spend = 0.2)
+
+# Get the underlying treatment allocation.
+pi.mat <- predict(mq, spend = 0.2)
+
+# Compare with another curve
+qini1 <- maq(tau.hat[, 1], cost[, 1], max.budget, reward.eval[, 1], R = 200)
+difference_gain(mq, qini1, spend = 0.2)
+
+}
