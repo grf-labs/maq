@@ -10,5 +10,6 @@ library(testthat)
 library(maq)
 
 # This treats warnings as errors
-options(warn = 2)
+old <- options(warn = 2)
 test_check("maq")
+options(old)
