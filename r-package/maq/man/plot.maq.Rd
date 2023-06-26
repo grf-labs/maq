@@ -21,7 +21,9 @@
 \item{add}{Whether to add to an already existing plot. Default is FALSE.}
 
 \item{horizontal.line}{Whether to draw a horizontal line where the cost curve plateaus.
-Only applies if add = TRUE. Default is TRUE.}
+Only applies if add = TRUE and the maq object is fit with a maximum \code{spend} that is sufficient
+to treat all units that are expected to benefit.
+Default is TRUE.}
 
 \item{ci.args}{A list of optional arguments to lines() for drawing 95 \% confidence bars.
 Set to NULL to ignore CIs.}

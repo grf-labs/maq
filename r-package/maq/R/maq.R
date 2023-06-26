@@ -6,8 +6,10 @@
 #'
 #' @param reward A matrix of reward estimates.
 #' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
-#'  be a ncol(reward)-length vector.
+#'  be a `ncol(reward)`-length vector.
 #' @param budget The maximum spend per unit to fit the MAQ path on.
+#'  Setting this to some large number, such as `sum(cost)`, will fit the path up to a maximum spend per unit
+#'  where each unit that is expected to benefit (that is, `reward` is positive) is treated.
 #' @param DR.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
 #'  reward and cost estimates should be obtained independently from this evaluation data.
 #' @param target.with.covariates If TRUE (Default), then the optimal policy takes covariates into
@@ -382,7 +384,9 @@ print.maq <- function(x,
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
 #' @param horizontal.line Whether to draw a horizontal line where the cost curve plateaus.
-#'  Only applies if add = TRUE. Default is TRUE.
+#'  Only applies if add = TRUE and the maq object is fit with a maximum `spend` that is sufficient
+#'  to treat all units that are expected to benefit.
+#'  Default is TRUE.
 #' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars.
 #'  Set to NULL to ignore CIs.
 #' @param grid.step The grid increment size to plot the curve on. Default is
@@ -412,11 +416,13 @@ plot.maq <- function(x,
   gain <- gain.grid[plot.grid]
   std.err <- std.err.grid[plot.grid]
   if (add && horizontal.line) {
-    len <- length(spend)
-    xmax <- graphics::par("usr")[2]
-    spend <- c(spend, seq(spend[len], xmax, length.out = 100))
-    gain <- c(gain, rep(gain[len], 100))
-    std.err <- c(std.err, rep(std.err[len], 100))
+    if (x[["_path"]]$complete.path) {
+      len <- length(spend)
+      xmax <- graphics::par("usr")[2]
+      spend <- c(spend, seq(spend[len], xmax, length.out = 100))
+      gain <- c(gain, rep(gain[len], 100))
+      std.err <- c(std.err, rep(std.err[len], 100))
+    }
   }
   lb <- gain - 1.96 * std.err
   ub <- gain + 1.96 * std.err
