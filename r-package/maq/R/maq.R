@@ -371,8 +371,6 @@ summary.maq <- function(object,
 #' @param x A maq object.
 #' @param ... Additional arguments (currently ignored).
 #'
-#' @return No return value, called for side effects.
-#'
 #' @method print maq
 #' @export
 print.maq <- function(x,
@@ -393,8 +391,6 @@ print.maq <- function(x,
 #'  Set to NULL to ignore CIs.
 #' @param grid.step The grid increment size to plot the curve on. Default is
 #'  max(floor(length(path.length) / 1000), 1).
-#'
-#' @return No return value, called for side effects.
 #'
 #' @method plot maq
 #' @export

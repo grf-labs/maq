@@ -31,9 +31,6 @@ Set to NULL to ignore CIs.}
 \item{grid.step}{The grid increment size to plot the curve on. Default is
 max(floor(length(path.length) / 1000), 1).}
 }
-\value{
-No return value, called for side effects.
-}
 \description{
 Plot the gain/spend curve.
 }
