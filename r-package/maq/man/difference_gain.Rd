@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{difference_gain}
 \alias{difference_gain}
-\title{Get estimate of difference in gain given a spend level.}
+\title{Get estimate of difference in gain given a spend level with paired standard errors.}
 \usage{
 difference_gain(object.lhs, object.rhs, spend)
 }
@@ -17,5 +17,5 @@ difference_gain(object.lhs, object.rhs, spend)
 An estimate of difference in gain along with standard errors.
 }
 \description{
-Get estimate of difference in gain given a spend level.
+Get estimate of difference in gain given a spend level with paired standard errors.
 }

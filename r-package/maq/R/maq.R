@@ -2,7 +2,7 @@
 #'
 #' Given estimated conditional average treatment effects (CATEs), and costs, fit a
 #' generalization of the Qini curve that can be used to assess (and compare) treatment
-#' allocation policies implied by the estimated CATEs and cost on a held-out evaluation set.
+#' allocation policies implied by the estimated CATEs and costs on a held-out evaluation set.
 #'
 #' @param reward A matrix of reward estimates.
 #' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
@@ -19,8 +19,9 @@
 #'  (only point estimates are computed).
 #' @param paired.inference Whether to allow for paired tests with other cost curves fit on the same
 #'  evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
-#'  paired comparisons. This takes memory on the order of O(RnK) and requires the comparison objects to be
-#'  fit with the same seed and R values as well as the same number of samples.
+#'  paired comparisons that account for the correlation between curves evaluated on the same data. This
+#'  takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
+#'  and R values as well as the same number of samples.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
 #' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to.
@@ -292,8 +293,7 @@ average_gain <- function(object,
   c(estimate = estimate, std.err = std.err)
 }
 
-#' Get estimate of difference in gain given a spend level.
-#'
+#' Get estimate of difference in gain given a spend level with paired standard errors.
 #'
 #' @param object.lhs A maq object to subtract from.
 #' @param object.rhs A maq object to subtract with.
