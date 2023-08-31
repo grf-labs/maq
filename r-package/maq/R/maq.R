@@ -17,7 +17,7 @@
 #'  allocating treatment.
 #' @param R Number of bootstrap replicates for computing standard errors. Default is 0
 #'  (only point estimates are computed).
-#' @param paired.inference Whether to allow for paired tests with other cost curves fit on the same
+#' @param paired.inference Whether to allow for paired tests with other Qini curves fit on the same
 #'  evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
 #'  paired comparisons that account for the correlation between curves evaluated on the same data. This
 #'  takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
@@ -383,8 +383,8 @@ print.maq <- function(x,
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
-#' @param horizontal.line Whether to draw a horizontal line where the cost curve plateaus.
-#'  Only applies if add = TRUE and the maq object is fit with a maximum `spend` that is sufficient
+#' @param horizontal.line Whether to draw a horizontal line where the Qini curve plateaus.
+#'  Only applies if add = TRUE and the maq object is fit with a maximum `budget` that is sufficient
 #'  to treat all units that are expected to benefit.
 #'  Default is TRUE.
 #' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars.
@@ -418,10 +418,13 @@ plot.maq <- function(x,
   if (add && horizontal.line) {
     if (x[["_path"]]$complete.path) {
       len <- length(spend)
-      xmax <- graphics::par("usr")[2]
-      spend <- c(spend, seq(spend[len], xmax, length.out = 100))
-      gain <- c(gain, rep(gain[len], 100))
-      std.err <- c(std.err, rep(std.err[len], 100))
+      # Retrieve the main plot's end point (R by default extends the xrange by 4 percent)
+      xmax <- graphics::par("usr")[2] / 1.04
+      if (xmax > spend[len]) {
+        spend <- c(spend, seq(spend[len], xmax, length.out = 100))
+        gain <- c(gain, rep(gain[len], 100))
+        std.err <- c(std.err, rep(std.err[len], 100))
+      }
     }
   }
   lb <- gain - 1.96 * std.err
