@@ -20,8 +20,8 @@
 
 \item{add}{Whether to add to an already existing plot. Default is FALSE.}
 
-\item{horizontal.line}{Whether to draw a horizontal line where the cost curve plateaus.
-Only applies if add = TRUE and the maq object is fit with a maximum \code{spend} that is sufficient
+\item{horizontal.line}{Whether to draw a horizontal line where the Qini curve plateaus.
+Only applies if add = TRUE and the maq object is fit with a maximum \code{budget} that is sufficient
 to treat all units that are expected to benefit.
 Default is TRUE.}
 

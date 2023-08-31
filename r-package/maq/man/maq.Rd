@@ -39,7 +39,7 @@ allocating treatment.}
 \item{R}{Number of bootstrap replicates for computing standard errors. Default is 0
 (only point estimates are computed).}
 
-\item{paired.inference}{Whether to allow for paired tests with other cost curves fit on the same
+\item{paired.inference}{Whether to allow for paired tests with other Qini curves fit on the same
 evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
 paired comparisons that account for the correlation between curves evaluated on the same data. This
 takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
