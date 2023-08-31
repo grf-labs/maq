@@ -418,7 +418,7 @@ plot.maq <- function(x,
   if (add && horizontal.line) {
     if (x[["_path"]]$complete.path) {
       len <- length(spend)
-      # Retrieve the current plot's end point (R by default extends the xrange by 4 percent)
+      # Retrieve the main plot's end point (R by default extends the xrange by 4 percent)
       xmax <- graphics::par("usr")[2] / 1.04
       if (xmax > spend[len]) {
         spend <- c(spend, seq(spend[len], xmax, length.out = 100))
