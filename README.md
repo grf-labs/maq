@@ -7,7 +7,7 @@ A package for evaluating multi-armed treatment rules via the Multi-Armed Qini ("
 
 * Introduction: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 
-* [Changelog](https://github.com/grf-labs/maq/tree/master/CHANGELOG.md)
+* [Changelog](https://github.com/grf-labs/maq/tree/master/CHANGELOG.md).
 
 ### Installation
 
