@@ -23,10 +23,10 @@ maq(
 \item{reward}{A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
 (Note: the estimated CATE function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)}
 
-\item{cost}{A matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k) measures the cost of
-assigning the i-th unit the k-th treatment arm. If the costs does not vary by unit, only by
-arm, this can also be a K-length vector. (Note: these costs need not be denominated on the same
-scale as the treatment effect estimates).}
+\item{cost}{A \eqn{n \cdot K} matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k)
+measures the cost of assigning the i-th unit the k-th treatment arm.
+If the costs does not vary by unit, only by arm, this can also be a K-length vector.
+(Note: these costs need not be denominated on the same scale as the treatment effect estimates).}
 
 \item{budget}{The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
 Setting this to some large number, such as \code{sum(cost)}, will fit the path up to a maximum spend per unit
