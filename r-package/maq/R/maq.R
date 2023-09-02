@@ -11,8 +11,7 @@
 #'    \item \eqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
 #' }
 #' which is the expected gain, at any budget constraint B, when assigning treatment in accordance
-#'  with the policy \eqn{\pi_B} implied by \eqn{\hat \tau(\cdot)} and the
-#'  costs \eqn{C(\cdot)}. \eqn{\pi_B} is the treatment allocation that optimally selects
+#'  to \eqn{\pi_B}, the treatment policy that optimally selects
 #'  which arm to assign to which unit while incurring a cost less than or equal to B in expectation
 #'  when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
 #' \itemize{
@@ -20,6 +19,10 @@
 #' }
 #' At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if it is optimal to assign
 #' the k-th arm to the i-th unit, and 0 otherwise.
+#' The Qini curve can thus be used to quantify the value, as measured by the expected gain over
+#'  assigning each unit the control arm, when using the estimated function
+#'  \eqn{\hat \tau(\cdot)} with cost structure \eqn{C(\cdot)} to allocate treatment,
+#'  as we vary the available budget \eqn{B}.
 #'
 #'
 #' @param reward A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
