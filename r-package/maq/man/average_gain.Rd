@@ -9,11 +9,11 @@ average_gain(object, spend)
 \arguments{
 \item{object}{A maq object.}
 
-\item{spend}{The spend level.}
+\item{spend}{The spend level B.}
 }
 \value{
-An estimate of average gain along with standard errors.
+An estimate of Q(B) along with standard errors.
 }
 \description{
-Get estimate of gain given a spend level.
+Get an estimate of Q(B).
 }

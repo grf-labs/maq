@@ -294,11 +294,12 @@ predict.maq <- function(object,
 
 #' Get estimate of gain given a spend level.
 #'
+#' Get an estimate of Q(B).
 #'
 #' @param object A maq object.
-#' @param spend The spend level.
+#' @param spend The spend level B.
 #'
-#' @return An estimate of average gain along with standard errors.
+#' @return An estimate of Q(B) along with standard errors.
 #' @export
 average_gain <- function(object,
                          spend) {
@@ -327,9 +328,12 @@ average_gain <- function(object,
 
 #' Get estimate of difference in gain given a spend level with paired standard errors.
 #'
-#' @param object.lhs A maq object to subtract from.
-#' @param object.rhs A maq object to subtract with.
-#' @param spend The spend level.
+#' Given two Qini curves, \eqn{Q_a} and \eqn{Q_b}, get an estimate of the difference
+#' \eqn{Q_a(B) - Q_b(B)}, at a spend level B.
+#'
+#' @param object.lhs A maq object \eqn{Q_a} to subtract from.
+#' @param object.rhs A maq object \eqn{Q_b} to subtract with.
+#' @param spend The spend level B.
 #'
 #' @return An estimate of difference in gain along with standard errors.
 #' @export
