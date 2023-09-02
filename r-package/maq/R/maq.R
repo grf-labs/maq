@@ -250,9 +250,13 @@ maq <- function(reward,
 
 #' Predict optimal treatment allocation.
 #'
+#' Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
+#' If there is not sufficient budget B to assign an arm to the j-th unit,
+#' then \eqn{\pi_B(X_j)} takes on a fractional value.
+#'
 #'
 #' @param object A maq object.
-#' @param spend The spend level.
+#' @param spend The spend level B.
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A sparse matrix.
