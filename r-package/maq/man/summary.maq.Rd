@@ -12,8 +12,9 @@
 \item{...}{Additional arguments (currently ignored).}
 }
 \value{
-A data.frame with the computed path.
+A data.frame making up the elements of the estimated Qini curve.
 }
 \description{
-MAQ Summary.
+Get a data.frame with columns equal to [B, Q(B), std.err(Q(B)), i, k], where
+i is the unit and k the treatment arm it is optimal to assign at a spend level B.
 }
