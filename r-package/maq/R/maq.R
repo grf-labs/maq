@@ -402,7 +402,7 @@ summary.maq <- function(object,
     spend = object[["_path"]]$spend,
     gain = object[["_path"]]$gain,
     std.err = object[["_path"]]$std.err,
-    unit.allocation = object[["_path"]]$ipath + 1,
+    unit.allocation = object[["_path"]]$ipath + 1, # +1: C++ index.
     arm.allocation = object[["_path"]]$kpath + 1
   )
 }
@@ -419,7 +419,11 @@ print.maq <- function(x,
   cat("MAQ object fit on", x$dim[1], "units and", x$dim[2], "arms with max budget", x$budget)
 }
 
-#' Plot the gain/spend curve.
+#' Plot the estimated Qini curve.
+#'
+#' Plot the estimated curve \eqn{Q(B), B \in (0, B_{max}]}. If the underlying estimated policy
+#' \eqn{\pi_B} entails treating zero units, then this function returns an empty value.
+#'
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
@@ -427,10 +431,11 @@ print.maq <- function(x,
 #'  Only applies if add = TRUE and the maq object is fit with a maximum `budget` that is sufficient
 #'  to treat all units that are expected to benefit.
 #'  Default is TRUE.
-#' @param ci.args A list of optional arguments to lines() for drawing 95 % confidence bars.
+#' @param ci.args A list of optional arguments to `lines()` for drawing 95 % confidence bars.
 #'  Set to NULL to ignore CIs.
-#' @param grid.step The grid increment size to plot the curve on. Default is
-#'  max(floor(length(path.length) / 1000), 1).
+#' @param grid.step The spend grid increment size to plot the curve on. Default is
+#'  `max(floor(length(path.length) / 1000), 1)` where path.length is the size of the
+#'  grid underlying the estimated Qini curve.
 #'
 #' @method plot maq
 #' @export
