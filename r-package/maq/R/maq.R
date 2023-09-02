@@ -17,10 +17,10 @@
 #' \itemize{
 #'  \item \eqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
 #' }
-#' At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if it is optimal to assign
-#' the k-th arm to the i-th unit, and 0 otherwise.
+#' At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if assigning the k-th arm
+#' to the i-th unit is optimal, and 0 otherwise.
 #' The Qini curve can thus be used to quantify the value, as measured by the expected gain over
-#'  assigning each unit the control arm, when using the estimated function
+#'  assigning each unit the control arm when using the estimated function
 #'  \eqn{\hat \tau(\cdot)} with cost structure \eqn{C(\cdot)} to allocate treatment,
 #'  as we vary the available budget \eqn{B}.
 #'
