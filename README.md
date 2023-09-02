@@ -80,9 +80,9 @@ mq.ipw <- maq(tau.hat, cost, max.budget, Y.ipw.test)
 
 ### Details
 
-Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\hat \tau(X_i)$ be a vector of treatment effects estimates for unit $i$, i.e. the $k$-th element ($k > 0$) is $\hat \mu_{ik} - \hat \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive cost, i.e. the $k$-th element measures the cost of assigning unit $i$ arm $k$.
+Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\hat \tau(X_i)$ be a vector of treatment effect estimates for unit $i$, i.e. the $k$-th element ($k > 0$) is $\hat \mu_{ik} - \hat \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive cost, i.e. the $k$-th element measures the cost of assigning unit $i$ arm $k$.
 
-Given the functions $\hat \tau(X_i)$ and $C(\cdot)$, `maq` delivers a Qini curve that can quantify the value of optimally assigning treatment while satisfying a budget constraint $B$. The policies underlying this treatment allocation are a solution to a series of linear programs, which `maq` solves efficiently.
+Given the functions $\hat \tau(X_i)$ and $C(\cdot)$, `maq` delivers a Qini curve that quantifies the value of optimally assigning treatment while satisfying a budget constraint $B$. The policies underlying this treatment allocation are a solution to a series of linear programs, which `maq` solves efficiently.
 
 ### References
 
