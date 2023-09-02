@@ -1,30 +1,59 @@
 #' Fit a Multi-Armed Qini.
 #'
-#' Given estimated conditional average treatment effects (CATEs), and costs, fit a
-#' generalization of the Qini curve that can be used to assess (and compare) treatment
-#' allocation policies implied by the estimated CATEs and costs on a held-out evaluation set.
+#' Consider \eqn{k = 1 \ldots K} mutually exclusive and costly treatment arms,
+#'  where k = 0 is a zero-cost control arm. Let \eqn{\hat \tau(\cdot)} be an _estimated_
+#'  multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
+#'  (where the k-th element of these vectors measures \eqn{E[Y_i(k) - Y_i(0) | X_i]} and
+#'  \eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
+#'  to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
+#'  and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
+#' \itemize{
+#'    \item \eqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
+#' }
+#' which is the expected gain, at any budget constraint B, when assigning treatment in accordance
+#'  with the policy \eqn{\pi_B} implied by \eqn{\hat \tau(\cdot)} and the
+#'  costs \eqn{C(\cdot)}. \eqn{\pi_B} is the treatment allocation that optimally selects
+#'  which arm to assign to which unit while incurring a cost less than or equal to B in expectation
+#'  when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
+#' \itemize{
+#'  \item \eqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
+#' }
+#' At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if it is optimal to assign
+#' the k-th arm to the i-th unit, and 0 otherwise.
 #'
-#' @param reward A matrix of reward estimates.
-#' @param cost A matrix of cost estimates. If the costs are the same for each unit, then this can also
-#'  be a `ncol(reward)`-length vector.
-#' @param budget The maximum spend per unit to fit the MAQ path on.
+#'
+#' @param reward A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
+#' (Note: the estimated CATE function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)
+#' @param cost A matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k) measures the cost of
+#' assigning the i-th unit the k-th treatment arm. If the costs does not vary by unit, only by
+#' arm, this can also be a K-length vector. (Note: these costs need not be denominated on the same
+#' scale as the treatment effect estimates).
+#' @param budget The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
 #'  Setting this to some large number, such as `sum(cost)`, will fit the path up to a maximum spend per unit
-#'  where each unit that is expected to benefit (that is, `reward` is positive) is treated.
-#' @param DR.scores A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
-#'  reward and cost estimates should be obtained independently from this evaluation data.
-#' @param target.with.covariates If TRUE (Default), then the optimal policy takes covariates into
-#'  account. If FALSE, then the optimal policy only takes the average reward and cost into account when
-#'  allocating treatment.
+#'  where each unit that is expected to benefit (that is, \eqn{\hat \tau(X_i)>0}) is treated.
+#' @param DR.scores An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
+#'  Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
+#'  these can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
+#'  \eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}}.
+#'  In observational settings where \eqn{P[W_i|X_i]} has to be estimated,
+#'  then an alternative is to construct these scores via
+#'  augmented inverse-propensity weighting (AIPW) - for details we refer to the paper.
+#' @param target.with.covariates If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
+#'  \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
+#'  \eqn{\bar \tau = E[\hat \tau(X_i)]} and average costs \eqn{\bar C = E[C(X_i)]} into account when
+#'  allocating treatment. This can be used to construct a baseline Qini curve to assess the value
+#'  of treatment targeting based on covariates.
 #' @param R Number of bootstrap replicates for computing standard errors. Default is 0
 #'  (only point estimates are computed).
 #' @param paired.inference Whether to allow for paired tests with other Qini curves fit on the same
 #'  evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
 #'  paired comparisons that account for the correlation between curves evaluated on the same data. This
-#'  takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
-#'  and R values as well as the same number of samples.
+#'  takes memory on the order of \eqn{O(RnK)} and requires the comparison objects to be fit with
+#'  the same seed and R values as well as the same number of samples.
 #' @param sample.weights Weights given to an observation in estimation.
 #'  If NULL, each observation is given the same weight. Default is NULL.
-#' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to.
+#' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to,
+#'  which are used to construct clustered standard errors.
 #'  Default is NULL (ignored).
 #' @param tie.breaker An optional permutation of the the integers 1 to nrow(rewards) used to
 #'  break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
