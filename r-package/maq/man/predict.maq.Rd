@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{A maq object.}
 
-\item{spend}{The spend level.}
+\item{spend}{The spend level B.}
 
 \item{...}{Additional arguments (currently ignored).}
 }
@@ -17,5 +17,7 @@
 A sparse matrix.
 }
 \description{
-Predict optimal treatment allocation.
+Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
+If there is not sufficient budget B to assign an arm to the j-th unit,
+then \eqn{\pi_B(X_j)} takes on a fractional value.
 }

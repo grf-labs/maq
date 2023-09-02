@@ -20,21 +20,31 @@ maq(
 )
 }
 \arguments{
-\item{reward}{A matrix of reward estimates.}
+\item{reward}{A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
+(Note: the estimated CATE function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)}
 
-\item{cost}{A matrix of cost estimates. If the costs are the same for each unit, then this can also
-be a \code{ncol(reward)}-length vector.}
+\item{cost}{A \eqn{n \cdot K} matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k)
+measures the cost of assigning the i-th unit the k-th treatment arm.
+If the costs does not vary by unit, only by arm, this can also be a K-length vector.
+(Note: these costs need not be denominated on the same scale as the treatment effect estimates).}
 
-\item{budget}{The maximum spend per unit to fit the MAQ path on.
+\item{budget}{The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
 Setting this to some large number, such as \code{sum(cost)}, will fit the path up to a maximum spend per unit
-where each unit that is expected to benefit (that is, \code{reward} is positive) is treated.}
+where each unit that is expected to benefit (that is, \eqn{\hat \tau(X_i)>0}) is treated.}
 
-\item{DR.scores}{A matrix of rewards to evaluate the MAQ on. For valid statistical inference, the
-reward and cost estimates should be obtained independently from this evaluation data.}
+\item{DR.scores}{An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
+Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
+these can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
+\eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}}.
+In observational settings where \eqn{P[W_i|X_i]} has to be estimated,
+then an alternative is to construct these scores via
+augmented inverse-propensity weighting (AIPW) - for details we refer to the paper.}
 
-\item{target.with.covariates}{If TRUE (Default), then the optimal policy takes covariates into
-account. If FALSE, then the optimal policy only takes the average reward and cost into account when
-allocating treatment.}
+\item{target.with.covariates}{If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
+\eqn{X_i} into account. If FALSE, then the policy only takes the average reward
+\eqn{\bar \tau = E[\hat \tau(X_i)]} and average costs \eqn{\bar C = E[C(X_i)]} into account when
+allocating treatment. This can be used to construct a baseline Qini curve to assess the value
+of treatment targeting based on covariates.}
 
 \item{R}{Number of bootstrap replicates for computing standard errors. Default is 0
 (only point estimates are computed).}
@@ -42,13 +52,14 @@ allocating treatment.}
 \item{paired.inference}{Whether to allow for paired tests with other Qini curves fit on the same
 evaluation data. If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
 paired comparisons that account for the correlation between curves evaluated on the same data. This
-takes memory on the order of O(RnK) and requires the comparison objects to be fit with the same seed
-and R values as well as the same number of samples.}
+takes memory on the order of \eqn{O(RnK)} and requires the comparison objects to be fit with
+the same seed and R values as well as the same number of samples.}
 
 \item{sample.weights}{Weights given to an observation in estimation.
 If NULL, each observation is given the same weight. Default is NULL.}
 
-\item{clusters}{Vector of integers or factors specifying which cluster each observation corresponds to.
+\item{clusters}{Vector of integers or factors specifying which cluster each observation corresponds to,
+which are used to construct clustered standard errors.
 Default is NULL (ignored).}
 
 \item{tie.breaker}{An optional permutation of the the integers 1 to nrow(rewards) used to
@@ -64,9 +75,29 @@ is set to the maximum hardware concurrency.}
 A fit maq object.
 }
 \description{
-Given estimated conditional average treatment effects (CATEs), and costs, fit a
-generalization of the Qini curve that can be used to assess (and compare) treatment
-allocation policies implied by the estimated CATEs and costs on a held-out evaluation set.
+Consider \eqn{k = 1 \ldots K} mutually exclusive and costly treatment arms,
+where k = 0 is a zero-cost control arm. Let \eqn{\hat \tau(\cdot)} be an \emph{estimated}
+multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
+(where the k-th element of these vectors measures \eqn{E[Y_i(k) - Y_i(0) | X_i]} and
+\eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
+to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
+and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
+\itemize{
+\item \eqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
+}
+which is the expected gain, at any budget constraint B, when assigning treatment in accordance
+to \eqn{\pi_B}, the treatment policy that optimally selects
+which arm to assign to which unit while incurring a cost less than or equal to B in expectation
+when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
+\itemize{
+\item \eqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
+}
+At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if assigning the k-th arm
+to the i-th unit is optimal, and 0 otherwise.
+The Qini curve can thus be used to quantify the value, as measured by the expected gain over
+assigning each unit the control arm when using the estimated function
+\eqn{\hat \tau(\cdot)} with cost structure \eqn{C(\cdot)} to allocate treatment,
+as we vary the available budget \eqn{B}.
 }
 \examples{
 \donttest{
@@ -76,8 +107,8 @@ if (require("grf", quietly = TRUE)) {
 n <- 3000
 p <- 5
 X <- matrix(runif(n * p), n, p)
-W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
-Y <- X[, 1] + X[, 2] * (W == "B") + 1.5 * X[, 3] * (W == "C") + rnorm(n)
+W <- as.factor(sample(c("0", "1", "2"), n, replace = TRUE))
+Y <- X[, 1] + X[, 2] * (W == "1") + 1.5 * X[, 3] * (W == "2") + rnorm(n)
 train <- sample(1:n, n/2)
 
 tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
@@ -86,26 +117,26 @@ tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 test <- -train
 tau.hat <- predict(tau.forest, X[test, ], drop = TRUE)$predictions
 
-# Form cost estimates - the following are a toy example.
-cost.hat <- cbind(X[test, 4] / 4, X[test, 5])
+# Assume costs equal a unit's pre-treatment covariate - the following are a toy example.
+cost <- cbind(X[test, 4] / 4, X[test, 5])
 
 # Fit an evaluation forest to compute doubly robust scores on the test set.
 eval.forest <- grf::multi_arm_causal_forest(X[test, ], Y[test], W[test])
 DR.scores <- grf::get_scores(eval.forest, drop = TRUE)
 
-# Fit a MAQ on evaluation data, using 200 bootstrap replicates for confidence intervals.
+# Fit a Qini curve on evaluation data, using 200 bootstrap replicates for confidence intervals.
 max.budget <- 1
-mq <- maq(tau.hat, cost.hat, max.budget, DR.scores, R = 200)
+ma.qini <- maq(tau.hat, cost, max.budget, DR.scores, R = 200)
 
-# Plot the MAQ curve.
-plot(mq)
+# Plot the Qini curve.
+plot(ma.qini)
 legend("topleft", c("All arms", "95\% CI"), lty = c(1, 3))
 
-# Get an estimate of optimal reward at a given spend per unit along with standard errors.
-average_gain(mq, spend = 0.2)
+# Get an estimate of gain at a given spend per unit along with standard errors.
+average_gain(ma.qini, spend = 0.2)
 
-# Get the optimal treatment allocation matrix at a given spend per unit.
-pi.mat <- predict(mq, spend = 0.2)
+# Get the treatment allocation matrix at a given spend per unit.
+pi.mat <- predict(ma.qini, spend = 0.2)
 
 # If the treatment randomization probabilities are known, then an alternative to
 # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
@@ -116,35 +147,35 @@ Y.mat[cbind(seq_along(observed.W), observed.W)] <- Y
 Y.ipw <- sweep(Y.mat, 2, W.hat, "/")
 Y.ipw.test <- Y.ipw[test, -1] - Y.ipw[test, 1]
 
-mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.ipw.test)
+mq.ipw <- maq(tau.hat, cost, max.budget, Y.ipw.test)
 plot(mq.ipw, add = TRUE, col = 2)
 legend("topleft", c("All arms", "95\% CI", "All arms (IPW)"), col = c(1, 1, 2), lty = c(1, 3, 1))
 
 # Estimate some baseline policies.
-# a) A policy that ignores covariates and only only takes the average reward/cost into account.
-mq.avg <- maq(tau.hat, cost.hat, max.budget, DR.scores, target.with.covariates = FALSE, R = 200)
+# a) A policy that ignores covariates and only takes the average reward/cost into account.
+qini.avg <- maq(tau.hat, cost, max.budget, DR.scores, target.with.covariates = FALSE, R = 200)
 
 # b) A policy that only use arm 1.
-mq.arm1 <- maq(tau.hat[, 1], cost.hat[, 1], max.budget, DR.scores[, 1], R = 200)
+qini.arm1 <- maq(tau.hat[, 1], cost[, 1], max.budget, DR.scores[, 1], R = 200)
 
 # c) A policy that only use arm 2.
-mq.arm2 <- maq(tau.hat[, 2], cost.hat[, 2], max.budget, DR.scores[, 2], R = 200)
+qini.arm2 <- maq(tau.hat[, 2], cost[, 2], max.budget, DR.scores[, 2], R = 200)
 
-plot(mq, ci.args = NULL)
-plot(mq.avg, col = 2, add = TRUE, ci.args = NULL)
-plot(mq.arm1, col = 3, add = TRUE, ci.args = NULL)
-plot(mq.arm2, col = 4, add = TRUE, ci.args = NULL)
+plot(ma.qini, ci.args = NULL)
+plot(qini.avg, col = 2, add = TRUE, ci.args = NULL)
+plot(qini.arm1, col = 3, add = TRUE, ci.args = NULL)
+plot(qini.arm2, col = 4, add = TRUE, ci.args = NULL)
 legend("topleft", c("All arms (targeting)", "All arms (without targeting)", "Arm 1", "Arm 2"),
        col = 1:4, lty = 1)
 
 # Estimate the value of employing all arms over a random allocation.
-difference_gain(mq, mq.avg, spend = 0.2)
+difference_gain(ma.qini, qini.avg, spend = 0.2)
 
-# Estimate the value of adding arm 1 to the optimal policy mix.
-difference_gain(mq, mq.arm1, spend = 0.2)
+# Estimate the value of targeting with both arms as opposed to targeting with only arm 1.
+difference_gain(ma.qini, qini.arm1, spend = 0.2)
 
-# Estimate the value of adding arm 2 to the optimal policy mix.
-difference_gain(mq, mq.arm2, spend = 0.2)
+# Estimate the value of targeting with both arms as opposed to targeting with only arm 2.
+difference_gain(ma.qini, qini.arm2, spend = 0.2)
 
 }
 }

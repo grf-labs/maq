@@ -7,15 +7,16 @@
 difference_gain(object.lhs, object.rhs, spend)
 }
 \arguments{
-\item{object.lhs}{A maq object to subtract from.}
+\item{object.lhs}{A maq object \eqn{Q_a} to subtract from.}
 
-\item{object.rhs}{A maq object to subtract with.}
+\item{object.rhs}{A maq object \eqn{Q_b} to subtract with.}
 
-\item{spend}{The spend level.}
+\item{spend}{The spend level B.}
 }
 \value{
 An estimate of difference in gain along with standard errors.
 }
 \description{
-Get estimate of difference in gain given a spend level with paired standard errors.
+Given two Qini curves, \eqn{Q_a} and \eqn{Q_b}, get an estimate of the difference
+\eqn{Q_a(B) - Q_b(B)}, at a spend level B.
 }
