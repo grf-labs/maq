@@ -23,7 +23,8 @@ and the same for each arm.}
 An \eqn{n \cdot K} matrix of evaluation scores.
 }
 \description{
-Construct an evaluation score matrix via IPW, where entry (i, k) equals
+A simple convenience function to
+construct an evaluation score matrix via IPW, where entry (i, k) equals
 \itemize{
 \item \eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}},
 }
