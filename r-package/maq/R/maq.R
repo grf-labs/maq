@@ -113,13 +113,9 @@
 #' # If the treatment randomization probabilities are known, then an alternative to
 #' # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
 #' W.hat <- rep(1/3, 3)
-#' observed.W <- match(W, levels(W))
-#' Y.mat <- matrix(0, length(W), nlevels(W))
-#' Y.mat[cbind(seq_along(observed.W), observed.W)] <- Y
-#' Y.ipw <- sweep(Y.mat, 2, W.hat, "/")
-#' Y.ipw.test <- Y.ipw[test, -1] - Y.ipw[test, 1]
+#' IPW.scores <- get_ipw_scores(Y[test], W[test], W.hat)
+#' mq.ipw <- maq(tau.hat, cost, max.budget, IPW.scores)
 #'
-#' mq.ipw <- maq(tau.hat, cost, max.budget, Y.ipw.test)
 #' plot(mq.ipw, add = TRUE, col = 2)
 #' legend("topleft", c("All arms", "95% CI", "All arms (IPW)"), col = c(1, 1, 2), lty = c(1, 3, 1))
 #'
