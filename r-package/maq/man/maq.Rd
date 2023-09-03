@@ -94,7 +94,7 @@ when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
 }
 At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if assigning the k-th arm
 to the i-th unit is optimal, and 0 otherwise.
-The Qini curve can thus be used to quantify the value, as measured by the expected gain over
+The Qini curve can be used to quantify the value, as measured by the expected gain over
 assigning each unit the control arm when using the estimated function
 \eqn{\hat \tau(\cdot)} with cost structure \eqn{C(\cdot)} to allocate treatment,
 as we vary the available budget \eqn{B}.
