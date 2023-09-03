@@ -13,7 +13,7 @@ get_ipw_scores(Y, W, W.hat = NULL)
 where the first factor level is the control arm).}
 
 \item{W.hat}{Optional treatment propensities. If these vary by unit and arm, then
-this should be a matrix where with the treatment assignment
+this should be a matrix with the treatment assignment
 probability of units to arms, with columns corresponding to the levels of \code{W}.
 If these only vary by arm, a vector can also be supplied.
 If W.hat is NULL (Default), then the assignment probabilities are assumed to be uniform
@@ -38,7 +38,7 @@ n <- 5000
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
 Y <- 42 * (W == "B") - 42 * (W == "C") + rnorm(n)
 IPW.scores <- get_ipw_scores(Y, W)
-# Should be ~ 42 and -42.
+# An estimate of E[Y(B) - Y(A)] and E[Y(C) - Y(A)]. Should be approx 42 and -42.
 colMeans(IPW.scores)
 
 # Draw non-uniformly from the different arms.
@@ -46,7 +46,7 @@ W.hat <- c(0.2, 0.2, 0.6)
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE, prob = W.hat))
 Y <- 42 * (W == "B") - 42 * (W == "C") + rnorm(n)
 IPW.scores <- get_ipw_scores(Y, W, W.hat = W.hat)
-# Should still be ~ 42 and -42.
+# Should still be approx 42 and -42.
 colMeans(IPW.scores)
 }
 
