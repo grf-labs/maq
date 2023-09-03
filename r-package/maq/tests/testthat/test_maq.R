@@ -443,3 +443,33 @@ test_that("avg maq works as expected", {
   expect_equal(mean(res[, "cov1"]), 0.95, tolerance = 0.04)
   expect_equal(mean(res[, "cov3"]), 0.95, tolerance = 0.04)
 })
+
+test_that("predict type works as expected", {
+  n <- 500
+  K <- 10
+  reward <- matrix(rnorm(n * K), n, K)
+  cost <- matrix(runif(n * K), n, K)
+  DR.scores <- reward + rnorm(n)
+  mq <- maq(reward, cost, 1, DR.scores)
+
+  pi.mat <- predict(mq, 0.1)
+  pi.vec <- predict(mq, 0.1, type = "vector")
+
+  expect_lte(
+    sum(cost[cbind(1:n, pi.vec)]) / n,
+    sum(cost * pi.mat) / n
+  )
+
+  data.path <- summary(mq)
+  some.value <- sample(nrow(data.path), 1)
+  spend <- data.path$spend[some.value]
+
+  pi.mat.int <- predict(mq, spend)
+  pi.vec.int <- predict(mq, spend, type = "vector")
+
+  expect_equal(
+    sum(cost[cbind(1:n, pi.vec.int)]) / n,
+    sum(cost * pi.mat.int) / n
+  )
+  expect_equal(predict(mq, -10, type = "vector"), rep(0, n))
+})

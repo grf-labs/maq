@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{summary.maq}
 \alias{summary.maq}
-\title{MAQ Summary.}
+\title{Qini curve summary.}
 \usage{
 \method{summary}{maq}(object, ...)
 }
@@ -16,5 +16,5 @@ A data.frame making up the elements of the estimated Qini curve.
 }
 \description{
 Get a data.frame with columns equal to [B, Q(B), std.err(Q(B)), i, k], where
-i is the unit and k the treatment arm it is optimal to assign at a spend level B.
+i is the unit and k the treatment arm that is optimal to assign at a spend level B.
 }
