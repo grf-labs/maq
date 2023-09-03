@@ -21,7 +21,7 @@ maq(
 }
 \arguments{
 \item{reward}{A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
-(Note: the estimated CATE function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)}
+(Note: the estimated function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)}
 
 \item{cost}{A \eqn{n \cdot K} matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k)
 measures the cost of assigning the i-th unit the k-th treatment arm.
@@ -75,7 +75,7 @@ is set to the maximum hardware concurrency.}
 A fit maq object.
 }
 \description{
-Consider \eqn{k = 1 \ldots K} mutually exclusive and costly treatment arms,
+Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
 where k = 0 is a zero-cost control arm. Let \eqn{\hat \tau(\cdot)} be an \emph{estimated}
 multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
 (where the k-th element of these vectors measures \eqn{E[Y_i(k) - Y_i(0) | X_i]} and
