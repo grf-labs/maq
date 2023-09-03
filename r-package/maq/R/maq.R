@@ -244,40 +244,104 @@ maq <- function(reward,
   output
 }
 
-#' Predict optimal treatment allocation.
+#' Predict treatment allocation.
 #'
 #' Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
-#' If there is not sufficient budget B to assign an arm to the final j-th unit,
-#' then \eqn{\pi_B(X_j)} takes on a fractional value.
+#'  \eqn{\pi_B(X_i)} is a K-dimensional vector where the k-th element is 1 if assigning the k-th
+#'  arm to unit i is optimal at a given spend B, and 0 otherwise (with all entries 0 if the
+#'  control arm is assigned).
+#'  Depending on the value of B, \eqn{\pi_B(X_j)} might not be integer valued for some final unit j.
+#'  There are two such cases - the first one is when there is not sufficient budget left to assign j an
+#'  initial arm. The second is if there is not sufficient budget to upgrade unit j from arm k to k'.
+#'  In these cases \eqn{\pi_B(X_j)} takes on one, or two fractional values, respectively,
+#'  representing an assignment probability of a given arm.
 #'
 #'
 #' @param object A maq object.
 #' @param spend The spend level B.
+#' @param type If "sparse.matrix" (Default), then return a matrix where the i-th entry equals
+#'  \eqn{\pi_B(X_i)} as described above.
+#'  If "vector", then \eqn{\pi_B(X_i)} is instead encoded taking values in the set \{0, 1, ..., K\}.
+#'  If the allocation is fractional at the given B, this option returns the policy corresponding
+#'  to the previous/lower value of the spend path, at which point the policy is integer-valued, but not
+#'  exactly equal to B in expectation.
+#'
 #' @param ... Additional arguments (currently ignored).
 #'
-#' @return A sparse matrix.
+#' @return A sparse matrix with row i equal to \eqn{\pi_B(X_i)}. If `type = "vector"` then an
+#' n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
+#'
+#' @examples
+#' \donttest{
+#' # Generate some toy data and fit a solution path.
+#' n <- 10
+#' K <- 4
+#' reward <- matrix(rnorm(n * K), n, K)
+#' cost <- matrix(runif(n * K), n, K)
+#' DR.scores <- reward + rnorm(n)
+#' path <- maq(reward, cost, 1, DR.scores)
+#'
+#' # Get the treatment allocation matrix
+#' pi.mat <- predict(path, 0.1)
+#' pi.mat
+#' # pi.mat might have fractional entries for a single unit but satisfies
+#' # the budget in expectation exactly.
+#' sum(cost * pi.mat) / n
+#'
+#' # Get the treatment allocation instead encoded in the set \{0, 1, ..., K\}.
+#' pi.vec <- predict(path, 0.1, type = "vector")
+#' pi.vec
+#' # If a unit has a fractional entry, then pi.vec will incur a cost slightly
+#' # lower than 0.1.
+#' sum(cost[cbind(1:n, pi.vec)]) / n
+#'
+#' # Retrieve the underlying solution path.
+#' data.path <- summary(path)
+#' # If we predict at a spend level on this grid, say entry 5,
+#' # then the policy is integer-valued:
+#' spend <- data.path$spend[5]
+#' predict(path, spend)
+#' predict(path, spend, type = "vector")
+#' }
+#'
 #' @method predict maq
 #' @export
 predict.maq <- function(object,
                         spend,
+                        type = c("sparse.matrix", "vector"),
                         ...) {
+  type <- match.arg(type)
   if (!object[["_path"]]$complete.path && spend > object$budget) {
     stop("maq path is not fit beyond given spend level.")
   }
+
   spend.grid <- object[["_path"]]$spend
   path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
   if (path.idx == 0) {
-    return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
+    if (type == "sparse.matrix") {
+      return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
+    } else {
+      return (rep(0, object[["dim"]][1]))
+    }
   }
 
   ipath <- object[["_path"]]$ipath[1:path.idx] + 1 # +1: R index.
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
   ix <- !duplicated(ipath, fromLast = TRUE)
-  pi.mat <- Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
+
+  if (type == "sparse.matrix") {
+    pi.mat <- Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
+  } else {
+    pi.vec <- rep(0, object[["dim"]][1])
+    pi.vec[ipath[ix]] <- kpath[ix]
+    return (pi.vec)
+  }
+
   if (path.idx == length(spend.grid)) {
     return (pi.mat)
   }
-  # fractional adjustment?
+
+  # fractional adjustment? (only done when return type is a matrix)
   spend.diff <- spend - spend.grid[path.idx]
   next.unit <- object[["_path"]]$ipath[path.idx + 1] + 1
   next.arm <- object[["_path"]]$kpath[path.idx + 1] + 1
