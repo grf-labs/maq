@@ -247,7 +247,7 @@ maq <- function(reward,
 #' Predict optimal treatment allocation.
 #'
 #' Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
-#' If there is not sufficient budget B to assign an arm to the j-th unit,
+#' If there is not sufficient budget B to assign an arm to the final j-th unit,
 #' then \eqn{\pi_B(X_j)} takes on a fractional value.
 #'
 #'
@@ -387,7 +387,7 @@ difference_gain <- function(object.lhs,
 #' MAQ Summary.
 #'
 #' Get a data.frame with columns equal to \[B, Q(B), std.err(Q(B)), i, k\], where
-#' i is the unit and k the treatment arm it is optimal to assign at a spend level B.
+#' i is the unit and k the treatment arm that is optimal to assign at a spend level B.
 #'
 #' @param object A maq object.
 #' @param ... Additional arguments (currently ignored).

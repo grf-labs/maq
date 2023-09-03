@@ -18,6 +18,6 @@ A sparse matrix.
 }
 \description{
 Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
-If there is not sufficient budget B to assign an arm to the j-th unit,
+If there is not sufficient budget B to assign an arm to the final j-th unit,
 then \eqn{\pi_B(X_j)} takes on a fractional value.
 }
