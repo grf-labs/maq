@@ -14,7 +14,7 @@ test_that("maq works as expected", {
   expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
 
   mq <- maq(reward[, 1], cost[, 1], budget, reward[, 1], R = 100)
-  Matrix::which(predict(mq, 10) > 0)
+  which(predict(mq, 10) > 0)
 
   # scale invariances
   mq <- maq(reward, cost, budget, reward, seed = 42, R = 100)

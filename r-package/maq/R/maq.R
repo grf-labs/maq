@@ -259,16 +259,16 @@ maq <- function(reward,
 #'
 #' @param object A maq object.
 #' @param spend The spend level B.
-#' @param type If "sparse.matrix" (Default), then return a matrix where the i-th entry equals
+#' @param type If "matrix" (Default), then return a matrix where the i-th entry equals
 #'  \eqn{\pi_B(X_i)} as described above.
 #'  If "vector", then \eqn{\pi_B(X_i)} is instead encoded taking values in the set \{0, 1, ..., K\}.
 #'  If the allocation is fractional at the given B, this option returns the policy corresponding
-#'  to the previous/lower value of the spend path, at which point the policy is integer-valued, but not
-#'  exactly equal to B in expectation.
+#'  to the previous/lower value of the spend path, at which point the policy is integer-valued, but
+#'  incurs a cost less than B in expectation.
 #'
 #' @param ... Additional arguments (currently ignored).
 #'
-#' @return A sparse matrix with row i equal to \eqn{\pi_B(X_i)}. If `type = "vector"` then an
+#' @return A matrix with row i equal to \eqn{\pi_B(X_i)}. If `type = "vector"` then an
 #' n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
 #'
 #' @examples
@@ -308,7 +308,7 @@ maq <- function(reward,
 #' @export
 predict.maq <- function(object,
                         spend,
-                        type = c("sparse.matrix", "vector"),
+                        type = c("matrix", "vector"),
                         ...) {
   type <- match.arg(type)
   if (!object[["_path"]]$complete.path && spend > object$budget) {
@@ -318,8 +318,8 @@ predict.maq <- function(object,
   spend.grid <- object[["_path"]]$spend
   path.idx <- findInterval(spend, spend.grid) # nearest path index (lower bound)
   if (path.idx == 0) {
-    if (type == "sparse.matrix") {
-      return (Matrix::sparseMatrix(i = NULL, j = NULL, x = 0, dims = object[["dim"]]))
+    if (type == "matrix") {
+      return (matrix(0, object[["dim"]][1], object[["dim"]][2]))
     } else {
       return (rep(0, object[["dim"]][1]))
     }
@@ -329,8 +329,9 @@ predict.maq <- function(object,
   kpath <- object[["_path"]]$kpath[1:path.idx] + 1
   ix <- !duplicated(ipath, fromLast = TRUE)
 
-  if (type == "sparse.matrix") {
-    pi.mat <- Matrix::sparseMatrix(ipath[ix], kpath[ix], x = 1, dims = object[["dim"]])
+  if (type == "matrix") {
+    pi.mat <- matrix(0, object[["dim"]][1], object[["dim"]][2])
+    pi.mat[cbind(ipath[ix], kpath[ix])] <- 1
   } else {
     pi.vec <- rep(0, object[["dim"]][1])
     pi.vec[ipath[ix]] <- kpath[ix]
@@ -343,11 +344,12 @@ predict.maq <- function(object,
 
   # fractional adjustment? (only done when return type is a matrix)
   spend.diff <- spend - spend.grid[path.idx]
+  fraction <- spend.diff / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+
   next.unit <- object[["_path"]]$ipath[path.idx + 1] + 1
   next.arm <- object[["_path"]]$kpath[path.idx + 1] + 1
-  prev.arm <- Matrix::which(pi.mat[next.unit, ] == 1) # already assigned?
+  prev.arm <- which(pi.mat[next.unit, ] == 1) # already assigned an arm?
 
-  fraction <- spend.diff / (spend.grid[path.idx + 1] - spend.grid[path.idx])
   pi.mat[next.unit, next.arm] <- fraction
   if (length(prev.arm) > 0) {
     pi.mat[next.unit, prev.arm] <- 1 - fraction
