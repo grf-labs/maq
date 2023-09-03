@@ -344,11 +344,12 @@ predict.maq <- function(object,
 
   # fractional adjustment? (only done when return type is a matrix)
   spend.diff <- spend - spend.grid[path.idx]
+  fraction <- spend.diff / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+
   next.unit <- object[["_path"]]$ipath[path.idx + 1] + 1
   next.arm <- object[["_path"]]$kpath[path.idx + 1] + 1
-  prev.arm <- which(pi.mat[next.unit, ] == 1) # already assigned?
+  prev.arm <- which(pi.mat[next.unit, ] == 1) # already assigned an arm?
 
-  fraction <- spend.diff / (spend.grid[path.idx + 1] - spend.grid[path.idx])
   pi.mat[next.unit, next.arm] <- fraction
   if (length(prev.arm) > 0) {
     pi.mat[next.unit, prev.arm] <- 1 - fraction
