@@ -4,24 +4,24 @@
 \alias{predict.maq}
 \title{Predict treatment allocation.}
 \usage{
-\method{predict}{maq}(object, spend, type = c("sparse.matrix", "vector"), ...)
+\method{predict}{maq}(object, spend, type = c("matrix", "vector"), ...)
 }
 \arguments{
 \item{object}{A maq object.}
 
 \item{spend}{The spend level B.}
 
-\item{type}{If "sparse.matrix" (Default), then return a matrix where the i-th entry equals
+\item{type}{If "matrix" (Default), then return a matrix where the i-th entry equals
 \eqn{\pi_B(X_i)} as described above.
 If "vector", then \eqn{\pi_B(X_i)} is instead encoded taking values in the set \{0, 1, ..., K\}.
 If the allocation is fractional at the given B, this option returns the policy corresponding
-to the previous/lower value of the spend path, at which point the policy is integer-valued, but not
-exactly equal to B in expectation.}
+to the previous/lower value of the spend path, at which point the policy is integer-valued, but
+incurs a cost less than B in expectation.}
 
 \item{...}{Additional arguments (currently ignored).}
 }
 \value{
-A sparse matrix with row i equal to \eqn{\pi_B(X_i)}. If \code{type = "vector"} then an
+A matrix with row i equal to \eqn{\pi_B(X_i)}. If \code{type = "vector"} then an
 n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
 }
 \description{

@@ -17,8 +17,7 @@ LinkingTo:
 Imports:
     Rcpp
 Depends:
-    R (>= 3.5.0),
-    Matrix
+    R (>= 3.5.0)
 Suggests:
     grf (>= 2.3.0),
     testthat (>= 3.0.0)
