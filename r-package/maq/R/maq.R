@@ -221,9 +221,7 @@ maq <- function(reward,
     stop("tie.breaker should have length=nrow(reward).")
   }
 
-  if (is.null(num.threads)) {
-    num.threads <- 0
-  } else if (num.threads < 0) {
+  if (num.threads < 0) {
     stop("num.threads should be a non-negative integer.")
   }
 
