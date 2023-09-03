@@ -33,7 +33,6 @@ where \eqn{W_i} is the treatment assignment of unit i and \eqn{Y_i} the observed
 }
 \examples{
 \donttest{
-
 # Draw some equally likely samples from control arm A and treatment arms B and C.
 n <- 5000
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))

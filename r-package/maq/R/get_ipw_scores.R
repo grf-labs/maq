@@ -23,7 +23,6 @@
 #'
 #' @examples
 #' \donttest{
-#'
 #' # Draw some equally likely samples from control arm A and treatment arms B and C.
 #' n <- 5000
 #' W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
