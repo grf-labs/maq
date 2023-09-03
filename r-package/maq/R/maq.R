@@ -384,7 +384,7 @@ difference_gain <- function(object.lhs,
   c(estimate = estimate, std.err = std.err)
 }
 
-#' MAQ Summary.
+#' Qini curve summary.
 #'
 #' Get a data.frame with columns equal to \[B, Q(B), std.err(Q(B)), i, k\], where
 #' i is the unit and k the treatment arm that is optimal to assign at a spend level B.

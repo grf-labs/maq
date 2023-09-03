@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{summary.maq}
 \alias{summary.maq}
-\title{MAQ Summary.}
+\title{Qini curve summary.}
 \usage{
 \method{summary}{maq}(object, ...)
 }
