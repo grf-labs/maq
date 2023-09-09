@@ -31,9 +31,6 @@
 #'  measures the cost of assigning the i-th unit the k-th treatment arm.
 #'  If the costs does not vary by unit, only by arm, this can also be a K-length vector.
 #'  (Note: these costs need not be denominated on the same scale as the treatment effect estimates).
-#' @param budget The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
-#'  Setting this to some large number, such as `sum(cost)`, will fit the path up to a maximum spend per unit
-#'  where each unit that is expected to benefit (that is, \eqn{\hat \tau(X_i)>0}) is treated.
 #' @param DR.scores An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
 #'  Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
 #'  these scores can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
@@ -41,6 +38,9 @@
 #'  In observational settings where \eqn{P[W_i|X_i]} has to be estimated, then an alternative is to
 #'  construct these scores via augmented inverse-propensity weighting (AIPW) - yielding a doubly
 #'  robust estimate of the Qini curve (for details, see the paper).
+#' @param budget The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
+#'  Setting this to NULL (Default), will fit the path up to a maximum spend per unit
+#'  where each unit that is expected to benefit (that is, \eqn{\hat \tau_k(X_i)>0}) is treated.
 #' @param target.with.covariates If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
 #'  \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
 #'  \eqn{\bar \tau = E[\hat \tau(X_i)]} and average costs \eqn{\bar C = E[C(X_i)]} into account when
@@ -99,8 +99,7 @@
 #' DR.scores <- grf::get_scores(eval.forest, drop = TRUE)
 #'
 #' # Fit a Qini curve on evaluation data, using 200 bootstrap replicates for confidence intervals.
-#' max.budget <- 1
-#' ma.qini <- maq(tau.hat, cost, max.budget, DR.scores, R = 200)
+#' ma.qini <- maq(tau.hat, cost, DR.scores, R = 200)
 #'
 #' # Plot the Qini curve.
 #' plot(ma.qini)
@@ -116,20 +115,20 @@
 #' # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
 #' W.hat <- rep(1/3, 3)
 #' IPW.scores <- get_ipw_scores(Y[test], W[test], W.hat)
-#' mq.ipw <- maq(tau.hat, cost, max.budget, IPW.scores)
+#' mq.ipw <- maq(tau.hat, cost, IPW.scores)
 #'
 #' plot(mq.ipw, add = TRUE, col = 2)
 #' legend("topleft", c("All arms", "95% CI", "All arms (IPW)"), col = c(1, 1, 2), lty = c(1, 3, 1))
 #'
 #' # Estimate some baseline policies.
 #' # a) A policy that ignores covariates and only takes the average reward/cost into account.
-#' qini.avg <- maq(tau.hat, cost, max.budget, DR.scores, target.with.covariates = FALSE, R = 200)
+#' qini.avg <- maq(tau.hat, cost, DR.scores, target.with.covariates = FALSE, R = 200)
 #'
 #' # b) A policy that only use arm 1.
-#' qini.arm1 <- maq(tau.hat[, 1], cost[, 1], max.budget, DR.scores[, 1], R = 200)
+#' qini.arm1 <- maq(tau.hat[, 1], cost[, 1], DR.scores[, 1], R = 200)
 #'
 #' # c) A policy that only use arm 2.
-#' qini.arm2 <- maq(tau.hat[, 2], cost[, 2], max.budget, DR.scores[, 2], R = 200)
+#' qini.arm2 <- maq(tau.hat[, 2], cost[, 2], DR.scores[, 2], R = 200)
 #'
 #' plot(ma.qini, ci.args = NULL)
 #' plot(qini.avg, col = 2, add = TRUE, ci.args = NULL)
@@ -152,8 +151,8 @@
 #' @export
 maq <- function(reward,
                 cost,
-                budget,
                 DR.scores,
+                budget = NULL,
                 target.with.covariates = TRUE,
                 R = 0,
                 paired.inference = TRUE,
@@ -176,6 +175,12 @@ maq <- function(reward,
 
   if (any(cost <= 0)) {
     stop("Costs should be > 0.")
+  }
+
+  if (is.null(budget)) {
+    max.budget <- .Machine$double.xmax
+  } else {
+    max.budget <- budget
   }
 
   if (R < 0) {
@@ -230,7 +235,7 @@ maq <- function(reward,
 
   ret <- solver_rcpp(as.matrix(reward), as.matrix(DR.scores), as.matrix(cost),
                      sample.weights, tie.breaker, clusters,
-                     budget, target.with.covariates, paired.inference, R, num.threads, seed)
+                     max.budget, target.with.covariates, paired.inference, R, num.threads, seed)
 
   output <- list()
   class(output) <- "maq"
@@ -240,7 +245,11 @@ maq <- function(reward,
   output[["paired.inference"]] <- paired.inference
   output[["R"]] <- R
   output[["dim"]] <- c(NROW(reward), NCOL(reward))
-  output[["budget"]] <- budget
+  output[["budget"]] <- if (is.null(budget)) {
+    max(ret$spend[length(ret$spend)], 0)
+  } else {
+    budget
+  }
 
   output
 }
@@ -283,7 +292,7 @@ maq <- function(reward,
 #' reward <- matrix(rnorm(n * K), n, K)
 #' cost <- matrix(runif(n * K), n, K)
 #' DR.scores <- reward + rnorm(n)
-#' path <- maq(reward, cost, 1, DR.scores)
+#' path <- maq(reward, cost, DR.scores)
 #'
 #' # Get the treatment allocation matrix
 #' pi.mat <- predict(path, 0.1)
