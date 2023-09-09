@@ -52,14 +52,13 @@ Y.k.ipw.eval = Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 
 # Fit cost curves
 cost = c(1, 15, 30, 45)
-max.budget = 100
-mq = maq(tau.hat.eval, cost, max.budget, Y.k.ipw.eval, clusters = cluster[eval], R = 200)
-mq.civic = maq(tau.hat.eval[, 1], cost[1], max.budget, Y.k.ipw.eval[, 1], clusters = cluster[eval], R = 200)
-mq.hawthorne = maq(tau.hat.eval[, 2], cost[2], max.budget, Y.k.ipw.eval[, 2], clusters = cluster[eval], R = 200)
-mq.self = maq(tau.hat.eval[, 3], cost[3], max.budget, Y.k.ipw.eval[, 3], clusters = cluster[eval], R = 200)
-mq.neighbors = maq(tau.hat.eval[, 4], cost[4], max.budget, Y.k.ipw.eval[, 4], clusters = cluster[eval], R = 200)
+mq = maq(tau.hat.eval, cost, Y.k.ipw.eval, clusters = cluster[eval], R = 200)
+mq.civic = maq(tau.hat.eval[, 1], cost[1], Y.k.ipw.eval[, 1], clusters = cluster[eval], R = 200)
+mq.hawthorne = maq(tau.hat.eval[, 2], cost[2], Y.k.ipw.eval[, 2], clusters = cluster[eval], R = 200)
+mq.self = maq(tau.hat.eval[, 3], cost[3], Y.k.ipw.eval[, 3], clusters = cluster[eval], R = 200)
+mq.neighbors = maq(tau.hat.eval[, 4], cost[4], Y.k.ipw.eval[, 4], clusters = cluster[eval], R = 200)
 # Non-targeting baseline
-mq.avg = maq(tau.hat.eval, cost, max.budget, Y.k.ipw.eval, clusters = cluster[eval], R = 200, target.with.covariates = FALSE)
+mq.avg = maq(tau.hat.eval, cost, Y.k.ipw.eval, clusters = cluster[eval], R = 200, target.with.covariates = FALSE)
 
 
 spend = 5

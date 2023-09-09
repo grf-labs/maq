@@ -5,7 +5,6 @@ library(maq)
 library(grf)
 library(xtable)
 
-max.budget = 100
 p = 10
 
 # Generate "truth" test data
@@ -23,7 +22,7 @@ cf.train = multi_arm_causal_forest(
 # "population" quantities
 tau.true = predict(cf.train, data.truth$X, drop = TRUE)$predictions
 cost.true = data.truth$cost
-mq.true = maq(tau.true, cost.true, max.budget, data.truth$tau)
+mq.true = maq(tau.true, cost.true, data.truth$tau)
 gain.true = unlist(lapply(spends, function(s) average_gain(mq.true, s)[["estimate"]]))
 
 res = list()
@@ -39,7 +38,7 @@ for (n in c(1000, 2000, 5000, 10000)) {
     )
     dr.eval = get_scores(cf.eval, drop = TRUE)
     cost.eval = data.eval$cost
-    mq = maq(tau.hat.eval, cost.eval, max.budget, dr.eval, R = 200)
+    mq = maq(tau.hat.eval, cost.eval, dr.eval, R = 200)
 
     est = unlist(lapply(spends, function(s) average_gain(mq, s)[["estimate"]]))
     se = unlist(lapply(spends, function(s) average_gain(mq, s)[["std.err"]]))

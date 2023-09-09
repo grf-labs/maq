@@ -53,8 +53,7 @@ eval.forest <- grf::multi_arm_causal_forest(X[test, ], Y[test], W[test])
 DR.scores <- grf::get_scores(eval.forest, drop = TRUE)
 
 # Fit a Qini curve on evaluation data, using 200 bootstrap replicates for confidence intervals.
-max.budget <- 1
-ma.qini <- maq(tau.hat, cost, max.budget, DR.scores, R = 200)
+ma.qini <- maq(tau.hat, cost, DR.scores, R = 200)
 
 # Plot the Qini curve.
 plot(ma.qini)
@@ -70,7 +69,7 @@ pi.mat <- predict(ma.qini, spend = 0.2)
 # evaluation via AIPW scores is to use inverse-propensity weighting (IPW).
 W.hat <- rep(1/3, 3)
 IPW.scores <- get_ipw_scores(Y[test], W[test], W.hat)
-mq.ipw <- maq(tau.hat, cost, max.budget, IPW.scores)
+mq.ipw <- maq(tau.hat, cost, IPW.scores)
 ```
 
 ### Details

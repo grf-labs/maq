@@ -5,7 +5,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, reward, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.198695462698774, 0.312563012893381, 0.388774733803937)
@@ -17,7 +17,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, reward, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.198695462698774, 0.312563012893381, 0.331135893435333,
@@ -30,7 +30,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, reward, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     numeric(0)
@@ -42,7 +42,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, reward, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.0011490908050312, 0.00203930403690631, 0.00334682530653467,
@@ -372,7 +372,7 @@ test_that("interpolated SEs work as expected", {
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
-  mqini <- maq(reward, cost, budget, reward, R = 150, num.threads = 1, seed = 42)
+  mqini <- maq(reward, cost, reward, budget, R = 150, num.threads = 1, seed = 42)
   expect_equal(
     mqini$`_path`$std.err,
     c(0, 0.00047330342265862, 0.00151505540370292, 0.00277547146075833,

@@ -4,7 +4,6 @@ source("generate_data.R")
 library(maq)
 library(grf)
 
-max.budget = 100
 n = 5000
 p = 10
 data.train = generate_data(n, p)
@@ -25,10 +24,10 @@ cf.eval = multi_arm_causal_forest(
 dr.eval = get_scores(cf.eval, drop = TRUE)
 cost.eval = data.eval$cost
 
-mq = maq(tau.hat.eval, cost.eval, max.budget, dr.eval, R = 200)
-mq.1 = maq(tau.hat.eval[, 1], cost.eval[, 1], max.budget, dr.eval[, 1], R = 200)
-mq.2 = maq(tau.hat.eval[, 2], cost.eval[, 2], max.budget, dr.eval[, 2], R = 200)
-mq.r = maq(tau.hat.eval, cost.eval, max.budget, dr.eval, target.with.covariates = FALSE, R = 200)
+mq = maq(tau.hat.eval, cost.eval, dr.eval, R = 200)
+mq.1 = maq(tau.hat.eval[, 1], cost.eval[, 1], dr.eval[, 1], R = 200)
+mq.2 = maq(tau.hat.eval[, 2], cost.eval[, 2], dr.eval[, 2], R = 200)
+mq.r = maq(tau.hat.eval, cost.eval, dr.eval, target.with.covariates = FALSE, R = 200)
 
 pdf("figure_1.pdf")
 plot(mq, lwd = 2, ci.args = NULL)

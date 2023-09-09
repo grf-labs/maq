@@ -36,7 +36,7 @@ test_that("gain solution path is same as LP solution (small problem)", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget, reward)
+  mqini <- maq(reward, cost, reward, budget)
   gain <- mqini[["_path"]]$gain
 
   lp.gain <- c()
@@ -55,7 +55,7 @@ test_that("solution is same as LP solution (fixed medium problem)", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget, reward)
+  mqini <- maq(reward, cost, reward, budget)
 
   ix <- length(mqini[["_path"]]$spend) - 1
   spend <- mqini[["_path"]]$spend[ix]
@@ -71,7 +71,7 @@ test_that("pi matrix is consistent with gain path", {
   reward <- matrix(1 + 2 * runif(n * K), n, K);
   cost <- matrix(runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget, reward)
+  mqini <- maq(reward, cost, reward, budget)
   gain <- mqini[["_path"]]$gain
 
   pi.gain <- c()
@@ -90,7 +90,7 @@ test_that("arbitrary points off gain path is same as LP", {
   reward <- matrix(0.1 + rnorm(n * K), n, K);
   cost <- matrix(0.05 + runif(n * K), n, K);
 
-  mqini <- maq(reward, cost, budget, reward)
+  mqini <- maq(reward, cost, reward, budget)
   spend.rng <- range(mqini[["_path"]]$spend)
   spends <- runif(25, spend.rng[1], spend.rng[2])
 
@@ -120,8 +120,8 @@ test_that("non-unique solution works as expected", {
   cost <- matrix(sample(c(1, 2), n * K, TRUE), n, K)
   spend <- 1
 
-  mq1 <- maq(reward, cost, budget, reward, R = 0)
-  mq2 <- maq(reward, cost, budget, reward, R = 0, tie.breaker = sample(1:n))
+  mq1 <- maq(reward, cost, reward, budget, R = 0)
+  mq2 <- maq(reward, cost, reward, budget, R = 0, tie.breaker = sample(1:n))
   lp <- lp_solver(reward, cost, spend)
   lp.reward <- sum(lp$alloc.mat * reward) / n
 
@@ -136,7 +136,7 @@ test_that("SEs capture LP re-solved", {
   reward <- matrix(rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
   R <- 500
-  mq <- maq(reward, cost, budget, reward, R = R)
+  mq <- maq(reward, cost, reward, budget, R = R)
 
   # pick an arbitrary spend point except the initial grid point
   sp <- sample(mq[["_path"]]$spend[-(1:3)], 1)
@@ -155,7 +155,7 @@ test_that("SEs capture LP re-solved", {
 
   # same, with clusters
   clusters <- rep(1:10, 10)
-  mq.cl <- maq(reward, cost, 100, reward, R = R, clusters = clusters)
+  mq.cl <- maq(reward, cost, reward, budget, R = R, clusters = clusters)
   mq.se.cl <- average_gain(mq.cl, sp)[[2]]
 
   samples.by.cluster <- split(seq_along(clusters), clusters)

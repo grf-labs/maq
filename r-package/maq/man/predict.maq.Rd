@@ -46,7 +46,7 @@ K <- 4
 reward <- matrix(rnorm(n * K), n, K)
 cost <- matrix(runif(n * K), n, K)
 DR.scores <- reward + rnorm(n)
-path <- maq(reward, cost, 1, DR.scores)
+path <- maq(reward, cost, DR.scores)
 
 # Get the treatment allocation matrix
 pi.mat <- predict(path, 0.1)
