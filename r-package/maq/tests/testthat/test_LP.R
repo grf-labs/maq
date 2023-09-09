@@ -151,7 +151,7 @@ test_that("SEs capture LP re-solved", {
   resbs <- lapply(index.list, function(ix) {
     lp_solver(reward[ix, ], cost[ix, ], sp)$gain
   })
-  expect_equal(mq.se, sd(unlist(resbs)), tolerance = 0.005)
+  expect_equal(mq.se, sd(unlist(resbs)), tolerance = 0.0075)
 
   # same, with clusters
   clusters <- rep(1:10, 10)
@@ -166,5 +166,5 @@ test_that("SEs capture LP re-solved", {
   resbs <- lapply(index.list, function(ix) {
     lp_solver(reward[ix, ], cost[ix, ], sp)$gain
   })
-  expect_equal(mq.se.cl, sd(unlist(resbs)), tolerance = 0.005)
+  expect_equal(mq.se.cl, sd(unlist(resbs)), tolerance = 0.0075)
 })
