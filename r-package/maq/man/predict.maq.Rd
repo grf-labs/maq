@@ -22,14 +22,17 @@ incurs a cost less than B in expectation.}
 }
 \value{
 A matrix with row i equal to \eqn{\pi_B(X_i)}. If \code{type = "vector"} then an
-n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
+n-length vector with elements equal to the arm (from 0 to K) that is assigned at the given spend B
+(note: if the treatment allocation contains a fractional entry at the given B, then the returned
+vector is the policy at the nearest spend B' in the solution path where the allocation is
+integer-valued but incurs a cost B' < B).
 }
 \description{
 Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
 \eqn{\pi_B(X_i)} is a K-dimensional vector where the k-th element is 1 if assigning the k-th
 arm to unit i is optimal at a given spend B, and 0 otherwise (with all entries 0 if the
 control arm is assigned).
-Depending on the value of B, \eqn{\pi_B(X_j)} might not be integer valued for some final unit j.
+Depending on the value of B, \eqn{\pi_B(X_j)} might be fractional for at most one unit j.
 There are two such cases - the first one is when there is not sufficient budget left to assign j an
 initial arm. The second is if there is not sufficient budget to upgrade unit j from arm k to k'.
 In these cases \eqn{\pi_B(X_j)} takes on one, or two fractional values, respectively,

@@ -36,11 +36,11 @@
 #'  where each unit that is expected to benefit (that is, \eqn{\hat \tau(X_i)>0}) is treated.
 #' @param DR.scores An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
 #'  Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
-#'  these can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
+#'  these scores can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
 #'  \eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}}.
-#'  In observational settings where \eqn{P[W_i|X_i]} has to be estimated,
-#'  then an alternative is to construct these scores via
-#'  augmented inverse-propensity weighting (AIPW) - for details we refer to the paper.
+#'  In observational settings where \eqn{P[W_i|X_i]} has to be estimated, then an alternative is to
+#'  construct these scores via augmented inverse-propensity weighting (AIPW) - yielding a doubly
+#'  robust estimate of the Qini curve (for details, see the paper).
 #' @param target.with.covariates If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
 #'  \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
 #'  \eqn{\bar \tau = E[\hat \tau(X_i)]} and average costs \eqn{\bar C = E[C(X_i)]} into account when
@@ -58,9 +58,12 @@
 #' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to,
 #'  which are used to construct clustered standard errors.
 #'  Default is NULL (ignored).
-#' @param tie.breaker An optional permutation of the the integers 1 to nrow(rewards) used to
-#'  break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
-#'  the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.
+#' @param tie.breaker An optional permutation of the integers 1 to n used to
+#'  break potential ties in the optimal treatment allocation
+#'  (only relevant if \eqn{\hat \tau(X)} takes on the same values for different samples
+#'  \eqn{X_i} and \eqn{X_j}).
+#'  If NULL, the ties are broken by the lowest sample id (i.e. the sample appearing first in the data).
+#'  Default is NULL.
 #' @param num.threads Number of threads used in bootstrap replicates. By default, the number of threads
 #'  is set to the maximum hardware concurrency.
 #' @param seed The seed of the C++ random number generator. Default is 42.
@@ -248,7 +251,7 @@ maq <- function(reward,
 #'  \eqn{\pi_B(X_i)} is a K-dimensional vector where the k-th element is 1 if assigning the k-th
 #'  arm to unit i is optimal at a given spend B, and 0 otherwise (with all entries 0 if the
 #'  control arm is assigned).
-#'  Depending on the value of B, \eqn{\pi_B(X_j)} might not be integer valued for some final unit j.
+#'  Depending on the value of B, \eqn{\pi_B(X_j)} might be fractional for at most one unit j.
 #'  There are two such cases - the first one is when there is not sufficient budget left to assign j an
 #'  initial arm. The second is if there is not sufficient budget to upgrade unit j from arm k to k'.
 #'  In these cases \eqn{\pi_B(X_j)} takes on one, or two fractional values, respectively,
@@ -267,7 +270,10 @@ maq <- function(reward,
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A matrix with row i equal to \eqn{\pi_B(X_i)}. If `type = "vector"` then an
-#' n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
+#'  n-length vector with elements equal to the arm (from 0 to K) that is assigned at the given spend B
+#'  (note: if the treatment allocation contains a fractional entry at the given B, then the returned
+#'  vector is the policy at the nearest spend B' in the solution path where the allocation is
+#'  integer-valued but incurs a cost B' < B).
 #'
 #' @examples
 #' \donttest{
