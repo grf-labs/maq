@@ -270,7 +270,10 @@ maq <- function(reward,
 #' @param ... Additional arguments (currently ignored).
 #'
 #' @return A matrix with row i equal to \eqn{\pi_B(X_i)}. If `type = "vector"` then an
-#' n-length vector with elements equal to the arm (0 to K) that is assigned at the given spend B.
+#'  n-length vector with elements equal to the arm (from 0 to K) that is assigned at the given spend B
+#'  (note: if the treatment allocation contains a fractional entry at the given B, then the returned
+#'  vector is the policy at the nearest spend B' in the solution path where the allocation is
+#'  integer-valued but incurs a cost B' < B).
 #'
 #' @examples
 #' \donttest{
