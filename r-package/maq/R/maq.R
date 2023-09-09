@@ -58,9 +58,12 @@
 #' @param clusters Vector of integers or factors specifying which cluster each observation corresponds to,
 #'  which are used to construct clustered standard errors.
 #'  Default is NULL (ignored).
-#' @param tie.breaker An optional permutation of the the integers 1 to nrow(rewards) used to
-#'  break potential ties in the optimal treatment allocation. If NULL, the ties are broken by
-#'  the lowest sample id (i.e. the sample appearing first in the data). Default is NULL.
+#' @param tie.breaker An optional permutation of the integers 1 to n used to
+#'  break potential ties in the optimal treatment allocation
+#'  (only relevant if \eqn{\hat \tau(X)} takes on the same values for different samples
+#'  \eqn{X_i} and \eqn{X_j}).
+#'  If NULL, the ties are broken by the lowest sample id (i.e. the sample appearing first in the data).
+#'  Default is NULL.
 #' @param num.threads Number of threads used in bootstrap replicates. By default, the number of threads
 #'  is set to the maximum hardware concurrency.
 #' @param seed The seed of the C++ random number generator. Default is 42.
