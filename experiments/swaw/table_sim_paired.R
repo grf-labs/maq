@@ -5,7 +5,6 @@ library(maq)
 library(grf)
 library(xtable)
 
-max.budget = 100
 p = 10
 
 # Generate "truth" test data
@@ -23,10 +22,10 @@ cf.train = multi_arm_causal_forest(
 # "population" quantities
 cost.true = data.truth$cost
 tau.true = predict(cf.train, data.truth$X, drop = TRUE)$predictions
-mq.true = maq(tau.true, cost.true, max.budget, data.truth$tau)
-mq1.true = maq(tau.true[, 1], cost.true[, 1], max.budget, data.truth$tau[, 1])
-mq2.true = maq(tau.true[, 2], cost.true[, 2], max.budget, data.truth$tau[, 2])
-mqr.true = maq(tau.true, cost.true, max.budget, data.truth$tau, target.with.covariates = FALSE)
+mq.true = maq(tau.true, cost.true, data.truth$tau)
+mq1.true = maq(tau.true[, 1], cost.true[, 1], data.truth$tau[, 1])
+mq2.true = maq(tau.true[, 2], cost.true[, 2], data.truth$tau[, 2])
+mqr.true = maq(tau.true, cost.true, data.truth$tau, target.with.covariates = FALSE)
 
 gain.true = unlist(lapply(spends, function(s) average_gain(mq.true, s)[["estimate"]]))
 gain1.true = unlist(lapply(spends, function(s) average_gain(mq1.true, s)[["estimate"]]))
@@ -50,10 +49,10 @@ for (n in c(1000, 2000, 5000, 10000)) {
 
     # fit maq
     cost.eval = data.eval$cost
-    mq = maq(tau.hat.eval, cost.eval, max.budget, dr.eval, R = 200)
-    mq1 = maq(tau.hat.eval[, 1], cost.eval[, 1], max.budget, dr.eval[, 1], R = 200)
-    mq2 = maq(tau.hat.eval[, 2], cost.eval[, 2], max.budget, dr.eval[, 2], R = 200)
-    mqr = maq(tau.hat.eval, cost.eval, max.budget, dr.eval, R = 200, target.with.covariates = FALSE)
+    mq = maq(tau.hat.eval, cost.eval, dr.eval, R = 200)
+    mq1 = maq(tau.hat.eval[, 1], cost.eval[, 1], dr.eval[, 1], R = 200)
+    mq2 = maq(tau.hat.eval[, 2], cost.eval[, 2], dr.eval[, 2], R = 200)
+    mqr = maq(tau.hat.eval, cost.eval, dr.eval, R = 200, target.with.covariates = FALSE)
 
     est.all.r = unlist(lapply(spends, function(s) difference_gain(mq, mqr, s)[["estimate"]]))
     se.all.r = unlist(lapply(spends, function(s) difference_gain(mq, mqr, s)[["std.err"]]))

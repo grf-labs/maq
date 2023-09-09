@@ -10,7 +10,7 @@ reward.eval = matrix(runif(n * K), n, K)
 cost = 0.05 + matrix(runif(n * K), n, K)
 
 print(microbenchmark(
-  mq <- maq(reward, cost, 1e5, cost, R = 0),
+  mq <- maq(reward, cost, cost, R = 0),
   times = 100,
   unit = "seconds"
 ), digits = 2)

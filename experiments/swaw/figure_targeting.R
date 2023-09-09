@@ -58,7 +58,6 @@ generate_data = function(n) {
   list(X = X, Y = Y, W = W, cost = cost, cost.oracle = cost_oracle, tau = tau)
 }
 
-max.budget = 10
 n_eval = 1500
 data.eval = generate_data(n_eval)
 cf.eval = multi_arm_causal_forest(
@@ -71,17 +70,17 @@ dr.eval = get_scores(cf.eval, drop = TRUE)
 data.eval$tau = matrix(rnorm(n_eval*3,0,1.2),n_eval, 3) + data.eval$tau
 data.eval$cost.oracle = pmax(matrix(0.001, n_eval,3), matrix(rnorm(n_eval*3,0,1.2),n_eval, 3) + data.eval$cost.oracle)
 
-mq = maq(data.eval$tau, data.eval$cost.oracle, max.budget, dr.eval)
-mq.1 = maq(data.eval$tau[, 1], data.eval$cost.oracle[,1], max.budget, dr.eval[, 1])
-mq.2 = maq(data.eval$tau[, 2], data.eval$cost.oracle[,2], max.budget, dr.eval[, 2])
-mq.3 = maq(data.eval$tau[, 3], data.eval$cost.oracle[,3], max.budget, dr.eval[, 3])
-mq.12 = maq(data.eval$tau[, c(1,2)], data.eval$cost.oracle[,c(1,2)], max.budget, dr.eval[, c(1,2)])
-mq.13 = maq(data.eval$tau[, c(1,3)], data.eval$cost.oracle[,c(1,3)], max.budget, dr.eval[, c(1,3)])
-mq.23 = maq(data.eval$tau[, c(2,3)], data.eval$cost.oracle[,c(2,3)], max.budget, dr.eval[, c(2,3)])
-mq.random = maq(data.eval$tau, data.eval$cost.oracle, max.budget, dr.eval, target.with.covariates = FALSE)
-mq.random1 = maq(data.eval$tau[, 1], data.eval$cost.oracle[, 1], max.budget, dr.eval[,1], target.with.covariates = FALSE)
-mq.random2 = maq(data.eval$tau[, 2], data.eval$cost.oracle[, 2], max.budget, dr.eval[,2], target.with.covariates = FALSE)
-mq.random3 = maq(data.eval$tau[, 3], data.eval$cost.oracle[, 3], max.budget, dr.eval[,3], target.with.covariates = FALSE)
+mq = maq(data.eval$tau, data.eval$cost.oracle, dr.eval)
+mq.1 = maq(data.eval$tau[, 1], data.eval$cost.oracle[,1], dr.eval[, 1])
+mq.2 = maq(data.eval$tau[, 2], data.eval$cost.oracle[,2], dr.eval[, 2])
+mq.3 = maq(data.eval$tau[, 3], data.eval$cost.oracle[,3], dr.eval[, 3])
+mq.12 = maq(data.eval$tau[, c(1,2)], data.eval$cost.oracle[,c(1,2)], dr.eval[, c(1,2)])
+mq.13 = maq(data.eval$tau[, c(1,3)], data.eval$cost.oracle[,c(1,3)], dr.eval[, c(1,3)])
+mq.23 = maq(data.eval$tau[, c(2,3)], data.eval$cost.oracle[,c(2,3)], dr.eval[, c(2,3)])
+mq.random = maq(data.eval$tau, data.eval$cost.oracle, dr.eval, target.with.covariates = FALSE)
+mq.random1 = maq(data.eval$tau[, 1], data.eval$cost.oracle[, 1], dr.eval[,1], target.with.covariates = FALSE)
+mq.random2 = maq(data.eval$tau[, 2], data.eval$cost.oracle[, 2], dr.eval[,2], target.with.covariates = FALSE)
+mq.random3 = maq(data.eval$tau[, 3], data.eval$cost.oracle[, 3], dr.eval[,3], target.with.covariates = FALSE)
 
 
 # Panel A
