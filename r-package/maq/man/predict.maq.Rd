@@ -29,7 +29,7 @@ Get an estimate of the policy \eqn{\pi_B(X_i)} at a spend level B.
 \eqn{\pi_B(X_i)} is a K-dimensional vector where the k-th element is 1 if assigning the k-th
 arm to unit i is optimal at a given spend B, and 0 otherwise (with all entries 0 if the
 control arm is assigned).
-Depending on the value of B, \eqn{\pi_B(X_j)} might not be integer valued for some final unit j.
+Depending on the value of B, \eqn{\pi_B(X_j)} might be fractional for at most one unit j.
 There are two such cases - the first one is when there is not sufficient budget left to assign j an
 initial arm. The second is if there is not sufficient budget to upgrade unit j from arm k to k'.
 In these cases \eqn{\pi_B(X_j)} takes on one, or two fractional values, respectively,
