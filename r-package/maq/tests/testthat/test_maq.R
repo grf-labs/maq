@@ -1,11 +1,10 @@
 test_that("maq works as expected", {
-  budget <- 1000
   n <- 500
   K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
-  mq <- maq(-abs(reward), cost, budget, reward, R = 150)
+  mq <- maq(-abs(reward), cost, reward, R = 150)
   plot(mq)
   summary(mq)
   print(mq)
@@ -13,12 +12,12 @@ test_that("maq works as expected", {
   expect_true(all(predict(mq, 10) == 0))
   expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
 
-  mq <- maq(reward[, 1], cost[, 1], budget, reward[, 1], R = 100)
+  mq <- maq(reward[, 1], cost[, 1], reward[, 1], R = 100)
   which(predict(mq, 10) > 0)
 
   # scale invariances
-  mq <- maq(reward, cost, budget, reward, seed = 42, R = 100)
-  mq.scale <- maq(reward * 1000, cost * 1000, budget, 1000 * reward, seed = 42, R = 100)
+  mq <- maq(reward, cost, reward, seed = 42, R = 100)
+  mq.scale <- maq(reward * 1000, cost * 1000, 1000 * reward, seed = 42, R = 100)
 
   expect_equal(mq[["_path"]]$spend, mq.scale[["_path"]]$spend / 1000, tolerance = 1e-12)
   expect_equal(mq[["_path"]]$gain, mq.scale[["_path"]]$gain / 1000, tolerance = 1e-12)
@@ -27,7 +26,7 @@ test_that("maq works as expected", {
   expect_equal(mq[["_path"]]$kpath, mq.scale[["_path"]]$kpath)
 
   # cost scale does not matter
-  mq.scalecost <- maq(reward, cost * 1000, budget, reward, seed = 42, R = 100)
+  mq.scalecost <- maq(reward, cost * 1000, reward, seed = 42, R = 100)
   expect_equal(mq[["_path"]]$spend, mq.scalecost[["_path"]]$spend / 1000, tolerance = 1e-12)
   expect_equal(mq[["_path"]]$gain, mq.scalecost[["_path"]]$gain, tolerance = 1e-12)
   expect_equal(mq[["_path"]]$std.err, mq.scalecost[["_path"]]$std.err, tolerance = 1e-12)
@@ -36,32 +35,31 @@ test_that("maq works as expected", {
 
   # incomplete path
   sp <- mq[["_path"]]$spend[100]
-  mq.sp <- maq(reward, cost, sp, reward, seed = 42, R = 100)
+  mq.sp <- maq(reward, cost, reward, sp, seed = 42, R = 100)
   len <- length(mq.sp[["_path"]]$spend)
   expect_equal(mq.sp[["_path"]]$spend[len], sp)
   expect_equal(mq[["_path"]]$gain[1:100], mq.sp[["_path"]]$gain)
   expect_equal(mq[["_path"]]$std.err[1:100], mq.sp[["_path"]]$std.err)
 
   # num.threads don't affect SEs
-  mq.1 <- maq(reward, cost, budget, reward, seed = 42, num.threads = 1, R = 100)
-  mq.5 <- maq(reward, cost, budget, reward, seed = 42, num.threads = 5, R = 100)
+  mq.1 <- maq(reward, cost, reward, seed = 42, num.threads = 1, R = 100)
+  mq.5 <- maq(reward, cost, reward, seed = 42, num.threads = 5, R = 100)
   expect_equal(mq.1[["_path"]]$std.err, mq.5[["_path"]]$std.err)
 
   # clusters = 1:n
-  mq.nocl <- maq(reward, cost, budget, reward, seed = 42, R = 100)
-  mq.cl <- maq(reward, cost, budget, reward, seed = 42, clusters = 1:n, R = 100)
+  mq.nocl <- maq(reward, cost, reward, seed = 42, R = 100)
+  mq.cl <- maq(reward, cost, reward, seed = 42, clusters = 1:n, R = 100)
   expect_equal(mq.nocl[["_path"]]$std.err, mq.cl[["_path"]]$std.err)
 })
 
 test_that("basic invariances hold", {
-  budget <- 25
   n <- 100
   K <- 10
   reward <- matrix(1 + 2 * runif(n * K), n, K)
   cost <- matrix(runif(n * K), n, K)
   reward.eval <- matrix(1 + 2 * runif(n * K), n, K)
 
-  mqini <- maq(reward, cost, budget, reward.eval, seed = 42, R = 200)
+  mqini <- maq(reward, cost, reward.eval, seed = 42, R = 200)
   spend <- seq(0.05, 0.7, length.out = 20)
 
   pi.gain <- c()
@@ -73,7 +71,7 @@ test_that("basic invariances hold", {
   }
   expect_equal(pi.gain, gain, tolerance = 1e-12)
 
-  mq.scale <- maq(reward, cost, budget, reward.eval / 10, seed = 42, R = 200)
+  mq.scale <- maq(reward, cost, reward.eval / 10, seed = 42, R = 200)
   expect_equal(mqini[["_path"]]$spend, mq.scale[["_path"]]$spend, tolerance = 1e-12)
   expect_equal(mqini[["_path"]]$gain, mq.scale[["_path"]]$gain * 10, tolerance = 1e-12)
   expect_equal(mqini[["_path"]]$std.err, mq.scale[["_path"]]$std.err * 10, tolerance = 1e-12)
@@ -82,7 +80,6 @@ test_that("basic invariances hold", {
 })
 
 test_that("sample weighting works as expected", {
-  budget <- 1000
   n <- 200
   K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
@@ -95,8 +92,8 @@ test_that("sample weighting works as expected", {
   wts <- rep(1, n)
   wts[dupe] <- 2
 
-  mq <- maq(reward, cost, budget, reward, sample.weights = wts, seed = 42, R = 200)
-  mq.dupe <- maq(reward.dupe, cost.dupe, budget, reward.dupe, R = 200)
+  mq <- maq(reward, cost, reward, sample.weights = wts, seed = 42, R = 200)
+  mq.dupe <- maq(reward.dupe, cost.dupe, reward.dupe, R = 200)
 
   spends <- c(0.1, 0.25, 0.3, 0.35, 0.4, 0.5)
   est <- lapply(spends, function(s) average_gain(mq, s)[[1]])
@@ -105,12 +102,11 @@ test_that("sample weighting works as expected", {
   expect_equal(est, est.dupe, tolerance = 1e-12)
 
   # weight scaling invariance
-  mq.scale <- maq(reward, cost, budget, reward, sample.weights = wts * runif(1), seed = 42, R = 200)
+  mq.scale <- maq(reward, cost, reward, sample.weights = wts * runif(1), seed = 42, R = 200)
   expect_equal(mq[["_path"]], mq.scale[["_path"]], tolerance = 1e-12)
 })
 
 test_that("clustering works as expected", {
-  budget <- 1000
   n <- 100
   K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
@@ -120,8 +116,8 @@ test_that("clustering works as expected", {
   costc <- rbind(cost, cost, cost, cost, cost)
   clust <- rep(1:n, 5)
 
-  mq <- maq(reward, cost, budget, reward, R = 200)
-  mq.clust <- maq(rewardc, costc, budget, rewardc, clusters = clust, R = 200)
+  mq <- maq(reward, cost, reward, R = 200)
+  mq.clust <- maq(rewardc, costc, rewardc, clusters = clust, R = 200)
 
   spends <- c(0.1, 0.25, 0.3, 0.35, 0.4, 0.5)
   est <- lapply(spends, function(s) average_gain(mq, s))
@@ -131,29 +127,27 @@ test_that("clustering works as expected", {
 })
 
 test_that("maq with vector cost works as expected", {
-  budget <- 1000
   n <- 500
   K <- 5
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 0.05 + matrix(runif(n * K), n, K)
 
-  mq1 <- maq(reward[, 1], cost[1], budget, reward[, 1], R = 3)
-  mq2 <- maq(reward[, 1], rep(cost[1], n), budget, reward[, 1], R = 3)
+  mq1 <- maq(reward[, 1], cost[1], reward[, 1], R = 3)
+  mq2 <- maq(reward[, 1], rep(cost[1], n), reward[, 1], R = 3)
   expect_identical(mq1, mq2)
 
-  mq3 <- maq(reward, matrix(cost[1, ], n, K, byrow = TRUE), budget, reward, R = 3)
-  mq4 <- maq(reward, cost[1, ], budget, reward, R = 3)
+  mq3 <- maq(reward, matrix(cost[1, ], n, K, byrow = TRUE), reward, R = 3)
+  mq4 <- maq(reward, cost[1, ], reward, R = 3)
   expect_identical(mq3, mq4)
 })
 
 test_that("std errors works as expected", {
   # Get exact coverage of points on the curve
-  budget <- 100
   ntrue <- 100000
   K <- 5
   reward <- matrix(0.1 + rnorm(ntrue * K), ntrue, K)
   cost <- 0.05 + matrix(runif(ntrue * K), ntrue, K)
-  mqt <- maq(reward, cost, budget, reward, R = 0)
+  mqt <- maq(reward, cost, reward, R = 0)
 
   spend1 <- 0.1
   spend2 <- 0.25
@@ -166,7 +160,7 @@ test_that("std errors works as expected", {
   res <- t(replicate(500, {
     reward <- matrix(0.1 + rnorm(n * K), n, K)
     cost <- 0.05 + matrix(runif(n * K), n, K)
-    mq <- maq(reward, cost, budget, reward, R = 150)
+    mq <- maq(reward, cost, reward, R = 150)
 
     pp1 <- average_gain(mq, spend1)
     pp2 <- average_gain(mq, spend2)
@@ -206,7 +200,6 @@ test_that("std errors works as expected", {
 test_that("paired std errors works as expected", {
   n <- 1000
   K <- 3
-  budget <- 1000
   spend <- 0.15
 
   res <- t(replicate(500, {
@@ -214,8 +207,8 @@ test_that("paired std errors works as expected", {
     reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
     cost <- 0.05 + matrix(runif(n * K), n, K)
 
-    mq <- maq(reward, cost, budget, reward.eval, R = 200)
-    mq2 <- maq(reward + matrix(0.1 * rnorm(n * K), n, K), cost, budget, reward.eval, R = 200)
+    mq <- maq(reward, cost, reward.eval, R = 200)
+    mq2 <- maq(reward + matrix(0.1 * rnorm(n * K), n, K), cost, reward.eval, R = 200)
 
     est.diff <- difference_gain(mq, mq2, spend = spend)
 
@@ -238,7 +231,6 @@ test_that("paired std errors works as expected", {
 })
 
 test_that("null effect std errors works as expected", {
-  budget <- 100
   n <- 1000
   K <- 10
   s.grid <- seq(0.05, 0.7, length.out = 10)
@@ -247,7 +239,7 @@ test_that("null effect std errors works as expected", {
     reward <- matrix(rnorm(n * K), n, K)
     cost <- 0.05 + matrix(runif(n * K), n, K)
     reward.eval <- matrix(rnorm(n * K), n, K)
-    mq <- maq(reward, cost, budget, reward.eval, R = 200)
+    mq <- maq(reward, cost, reward.eval, R = 200)
 
     est <- lapply(s.grid, function(s) average_gain(mq, s))
     df.est <- do.call(rbind, est)
@@ -290,10 +282,9 @@ test_that("A grf workflow works as expected", {
   W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
   Y <- X[, 1] + X[, 2] * (W == "B") + X[, 3] * (W == "C") + rnorm(n)
 
-  max.budget <- 1
   spend <- 0.3
   tau.true <- cbind(X[,2], X[,3])
-  mq.true <- maq(tau.true, X[, 4:5], max.budget, tau.true)
+  mq.true <- maq(tau.true, X[, 4:5], tau.true)
   est.true <- average_gain(mq.true, spend = spend)[[1]]
 
   train <- sample(1:n, n/2)
@@ -305,7 +296,7 @@ test_that("A grf workflow works as expected", {
   # A MAQ evaluated via DR scores
   eval.forest <- grf::multi_arm_causal_forest(X[eval, ], Y[eval], W[eval])
   DR.scores <- grf::get_scores(eval.forest)[,,]
-  mq.aipw <- maq(tau.hat, cost.hat, max.budget, DR.scores, R = 200)
+  mq.aipw <- maq(tau.hat, cost.hat, DR.scores, R = 200)
   est.aipw <- average_gain(mq.aipw, spend = spend)
 
   # A MAQ evaluated via IPW
@@ -316,7 +307,7 @@ test_that("A grf workflow works as expected", {
   Y.k.ipw <- sweep(Y.k.mat, 2, W.hat.true, "/")
   Y.k.ipw.eval <- Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
 
-  mq.ipw <- maq(tau.hat, cost.hat, max.budget, Y.k.ipw.eval, R = 200)
+  mq.ipw <- maq(tau.hat, cost.hat, Y.k.ipw.eval, R = 200)
   est.ipw <- average_gain(mq.ipw, spend = spend)
 
   expect_equal(est.aipw[[1]], est.ipw[[1]], tolerance = 0.15)
@@ -325,41 +316,37 @@ test_that("A grf workflow works as expected", {
 })
 
 test_that("tie handling works as expected", {
-  budget <- 100
   n <- 500
   K <- 3
   reward <- matrix(sample(c(1, 10), n * K, TRUE), n, K)
   cost <- matrix(sample(c(1, 2), n * K, TRUE), n, K)
 
-  mq1 <- maq(reward, cost, budget, reward, R = 0)
-  mq2 <- maq(reward, cost, budget, reward, tie.breaker = rev(1:n), R = 0)
+  mq1 <- maq(reward, cost, reward, R = 0)
+  mq2 <- maq(reward, cost, reward, tie.breaker = rev(1:n), R = 0)
 
   expect_true(all(mq1[["_path"]]$ipath[1:20] < mq2[["_path"]]$ipath[1:20]))
 })
 
 test_that("avg maq works as expected", {
   # Same point estimates as "duplicated" maq-approach
-  budget <- 1e9
   n <- 1000
   K <- 15
   reward <- matrix(0.1 + rnorm(n * K), n, K)
   reward.eval <- matrix(0.1 + rnorm(n * K), n, K)
   cost <- 1:K
 
-  mqr <- maq(reward, cost, budget, reward.eval, target.with.covariates = FALSE)
+  mqr <- maq(reward, cost, reward.eval, target.with.covariates = FALSE)
   mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
             matrix(cost, n, K, byrow = TRUE),
-            budget,
             matrix(colMeans(reward.eval), n, K, byrow = TRUE))
   expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
   expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
 
   # < 0
   reward <- matrix(-10 + rnorm(n * K), n, K)
-  mqr <- maq(reward, cost, budget, reward.eval, target.with.covariates = FALSE)
+  mqr <- maq(reward, cost, reward.eval, target.with.covariates = FALSE)
   mq <- maq(matrix(colMeans(reward), n, K, byrow = TRUE),
             matrix(cost, n, K, byrow = TRUE),
-            budget,
             matrix(colMeans(reward.eval), n, K, byrow = TRUE))
   expect_equal(mqr[["_path"]]$spend, mq[["_path"]]$spend)
   expect_equal(mqr[["_path"]]$gain, mq[["_path"]]$gain)
@@ -369,7 +356,7 @@ test_that("avg maq works as expected", {
   K <- 5
   rewardt <- cbind(runif(ntrue), matrix(-0.1 + rnorm(ntrue * K), ntrue, K))
   cost <- c(0.1, rep(1, K))
-  mqt <- maq(rewardt, cost, budget, rewardt, target.with.covariates = FALSE)
+  mqt <- maq(rewardt, cost, rewardt, target.with.covariates = FALSE)
 
   spend1 <- 0.02
   true1 <- average_gain(mqt, spend1)[[1]]
@@ -379,7 +366,7 @@ test_that("avg maq works as expected", {
   n <- 500
   res <- t(replicate(250, {
     reward <- rewardt[sample(ntrue, n), ]
-    mq <- maq(reward, cost, budget, reward, target.with.covariates = FALSE, R = 200)
+    mq <- maq(reward, cost, reward, target.with.covariates = FALSE, R = 200)
 
     est1 <- average_gain(mq, spend1)
     est2 <- average_gain(mq, spend2)
@@ -403,7 +390,7 @@ test_that("avg maq works as expected", {
   # std.errors works as expected (larger avg hull)
   rewardt <- cbind(runif(ntrue), 2 * runif(ntrue), 3 * runif(ntrue), -1 * runif(ntrue))
   cost <- c(0.001, 0.02, 0.06, 1)
-  mqt <- maq(rewardt, cost, budget, rewardt, target.with.covariates = FALSE)
+  mqt <- maq(rewardt, cost, rewardt, target.with.covariates = FALSE)
 
   spend1 <- 0.002
   true1 <- average_gain(mqt, spend1)[[1]]
@@ -415,7 +402,7 @@ test_that("avg maq works as expected", {
   n <- 500
   res <- t(replicate(250, {
     reward <- rewardt[sample(ntrue, n), ]
-    mq <- maq(reward, cost, budget, reward, target.with.covariates = FALSE, R = 200)
+    mq <- maq(reward, cost, reward, target.with.covariates = FALSE, R = 200)
 
     est1 <- average_gain(mq, spend1)
     est2 <- average_gain(mq, spend2)
@@ -450,7 +437,7 @@ test_that("predict type works as expected", {
   reward <- matrix(rnorm(n * K), n, K)
   cost <- matrix(runif(n * K), n, K)
   DR.scores <- reward + rnorm(n)
-  mq <- maq(reward, cost, 1, DR.scores)
+  mq <- maq(reward, cost, DR.scores)
 
   pi.mat <- predict(mq, 0.1)
   pi.vec <- predict(mq, 0.1, type = "vector")
