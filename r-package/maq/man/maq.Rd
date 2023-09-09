@@ -102,7 +102,6 @@ as we vary the available budget \eqn{B}.
 \examples{
 \donttest{
 if (require("grf", quietly = TRUE)) {
-
 # Fit a CATE estimator on a training sample.
 n <- 3000
 p <- 5
@@ -172,7 +171,6 @@ difference_gain(ma.qini, qini.arm1, spend = 0.2)
 
 # Estimate the value of targeting with both arms as opposed to targeting with only arm 2.
 difference_gain(ma.qini, qini.arm2, spend = 0.2)
-
 }
 }
 
