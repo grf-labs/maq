@@ -34,11 +34,11 @@ where each unit that is expected to benefit (that is, \eqn{\hat \tau(X_i)>0}) is
 
 \item{DR.scores}{An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
 Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
-these can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
+these scores can be constructed via inverse-propensity weighting, i.e, with entry (i, k) equal to
 \eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}}.
-In observational settings where \eqn{P[W_i|X_i]} has to be estimated,
-then an alternative is to construct these scores via
-augmented inverse-propensity weighting (AIPW) - for details we refer to the paper.}
+In observational settings where \eqn{P[W_i|X_i]} has to be estimated, then an alternative is to
+construct these scores via augmented inverse-propensity weighting (AIPW) - yielding a doubly
+robust estimate of the Qini curve (for details, see the paper).}
 
 \item{target.with.covariates}{If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
 \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
