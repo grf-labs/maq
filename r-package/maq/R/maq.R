@@ -438,7 +438,7 @@ difference_gain <- function(object.lhs,
                "as well as with the same random seed, bootstrap replicates, and data"))
   }
 
-  estimate <- average_gain(object.lhs, spend)[[1]] - average_gain(object.rhs, spend)[[1]]
+  point.estimate <- average_gain(object.lhs, spend)[[1]] - average_gain(object.rhs, spend)[[1]]
   # Compute paired std.errors
   .get_estimates <- function(object) {
     gain.bs <- object[["_path"]]$gain.bs
@@ -464,7 +464,7 @@ difference_gain <- function(object.lhs,
     std.err <- 0
   }
 
-  c(estimate = estimate, std.err = std.err)
+  c(estimate = point.estimate, std.err = std.err)
 }
 
 #' Get estimate of area between two Qini curves with paired standard errors.
