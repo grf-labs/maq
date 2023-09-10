@@ -173,6 +173,10 @@ difference_gain(ma.qini, qini.arm1, spend = 0.2)
 
 # Estimate the value of targeting with both arms as opposed to targeting with only arm 2.
 difference_gain(ma.qini, qini.arm2, spend = 0.2)
+
+# Compare targeting strategies over a range of budget values by estimating an area between
+# two curves up to a given spend point.
+integrated_difference(ma.qini, qini.arm1, spend = 0.3)
 }
 }
 

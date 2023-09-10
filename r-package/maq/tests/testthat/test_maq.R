@@ -9,6 +9,9 @@ test_that("maq works as expected", {
   summary(mq)
   print(mq)
   plot(mq, add = TRUE, col = 3, ci.args = NULL)
+  average_gain(mq, 1)
+  difference_gain(mq, mq, 1)
+  integrated_difference(mq, mq, 1)
   expect_true(all(predict(mq, 10) == 0))
   expect_equal(average_gain(mq, 10), c(estimate = 0, std.err = 0))
 
@@ -459,4 +462,47 @@ test_that("predict type works as expected", {
     sum(cost * pi.mat.int) / n
   )
   expect_equal(predict(mq, -10, type = "vector"), rep(0, n))
+})
+
+test_that("integrated_difference works as expected", {
+  # these should be identical
+  n <- 1000
+  DR.scores <- rnorm(n)
+  tau.hat <- runif(n) # > 0 for this to be an invariance between MAQ and RATE
+  cost <- 1
+
+  mq <- maq(tau.hat, cost, DR.scores, R = 200)
+  mqr <- maq(tau.hat, cost, DR.scores, target.with.covariates = FALSE, R = 200)
+  auc <- integrated_difference(mq, mqr, 1)
+  rate <- grf::rank_average_treatment_effect.fit(DR.scores, tau.hat, target = "QINI", R = 200)
+
+  expect_equal(auc[[1]], rate[[1]], tolerance = 1e-15)
+  expect_equal(auc[[2]], rate[[2]], tolerance = 0.005)
+
+  # cost scale invariance
+  cost <- 2
+  mq2 <- maq(tau.hat, cost, DR.scores)
+  mqr2 <- maq(tau.hat, cost, DR.scores, target.with.covariates = FALSE)
+  auc2 <- integrated_difference(mq, mqr, 1)
+  expect_equal(auc[[1]], auc2[[1]], tolerance = 1e-15)
+
+  # simple example
+  n <- 5000
+  K <- 5
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  reward.scores <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
+
+  R <- 200
+  mq1 <- maq(reward, cost, reward.scores, R = R)
+  mq2 <- maq(reward + 0.1 * runif(n), cost, reward.scores, R = R)
+
+  spend <- 0.2
+  est <- integrated_difference(mq1, mq2, spend)
+  expect_equal(est[[1]], 0, tolerance = 3.5 * est[[2]])
+
+  s <- seq(0, spend, length.out = 5000)
+  auc.naive <- mean(unlist(lapply(s, function(x) average_gain(mq1, x)[[1]]))) -
+    mean(unlist(lapply(s, function(x) average_gain(mq2, x)[[1]])))
+  expect_equal(est[[1]], auc.naive, tolerance = 0.005)
 })

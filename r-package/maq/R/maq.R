@@ -145,6 +145,10 @@
 #'
 #' # Estimate the value of targeting with both arms as opposed to targeting with only arm 2.
 #' difference_gain(ma.qini, qini.arm2, spend = 0.2)
+#'
+#' # Compare targeting strategies over a range of budget values by estimating an area between
+#' # two curves up to a given spend point.
+#' integrated_difference(ma.qini, qini.arm1, spend = 0.3)
 #' }
 #' }
 #'
@@ -434,7 +438,7 @@ difference_gain <- function(object.lhs,
                "as well as with the same random seed, bootstrap replicates, and data"))
   }
 
-  estimate <- average_gain(object.lhs, spend)[[1]] - average_gain(object.rhs, spend)[[1]]
+  point.estimate <- average_gain(object.lhs, spend)[[1]] - average_gain(object.rhs, spend)[[1]]
   # Compute paired std.errors
   .get_estimates <- function(object) {
     gain.bs <- object[["_path"]]$gain.bs
@@ -460,5 +464,83 @@ difference_gain <- function(object.lhs,
     std.err <- 0
   }
 
-  c(estimate = estimate, std.err = std.err)
+  c(estimate = point.estimate, std.err = std.err)
+}
+
+#' Get estimate of the area between two Qini curves with paired standard errors.
+#'
+#' Given two Qini curves, \eqn{Q_a} and \eqn{Q_b}, and a maximum spend \eqn{\bar B},
+#'  get an estimate of the integrated difference
+#'  \eqn{\int_{0}^{\bar B} (Q_a(B) - Q_b(B))dB}.
+#'
+#' @param object.lhs A maq object \eqn{Q_a} to subtract from.
+#' @param object.rhs A maq object \eqn{Q_b} to subtract with.
+#' @param spend The spend level \eqn{\bar B}.
+#'
+#' @return An estimate of the area between the two curves along with standard errors.
+#' @export
+integrated_difference <- function(object.lhs,
+                                  object.rhs,
+                                  spend) {
+  if (!object.lhs[["_path"]]$complete.path && spend > object.lhs$budget) {
+    stop("lhs maq path is not fit beyond given spend level.")
+  }
+  if (!object.rhs[["_path"]]$complete.path && spend > object.rhs$budget) {
+    stop("rhs maq path is not fit beyond given spend level.")
+  }
+  if (object.lhs[["seed"]] != object.rhs[["seed"]] ||
+      object.lhs[["R"]] != object.rhs[["R"]] ||
+      object.lhs[["dim"]][[1]] != object.rhs[["dim"]][[1]] ||
+      !object.lhs[["paired.inference"]] ||
+      !object.rhs[["paired.inference"]]) {
+    stop(paste("Paired comparisons require maq objects to be fit with paired.inference=TRUE",
+               "as well as with the same random seed, bootstrap replicates, and data"))
+  }
+  R <- object.lhs[["R"]]
+
+  # Estimate an AUC via estimating the difference \int_{0}^{\bar B} Q_a(B)dB - \int_{0}^{\bar B} Q_b(B)dB.
+  .get_estimate <- function(gain.path, spend.grid, path.idx) {
+    if (path.idx == 0) {
+      estimate <- 0
+    } else if (abs(spend.grid[length(spend.grid)] - spend) < 1e-10 || path.idx == length(spend.grid)) {
+      area.offset <- 0
+      # Are we summing beyond the point at which the curve plateaus?
+      if (spend > spend.grid[path.idx]) {
+        spend.delta <- spend - spend.grid[path.idx]
+        area.offset <- spend.grid[path.idx] * spend.delta
+      }
+      estimate <- mean(gain.path, na.rm = TRUE) + area.offset
+    } else {
+      interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
+      estimate <- mean(gain.path[1:path.idx], na.rm = TRUE) +
+       (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+    }
+
+    estimate
+  }
+
+  gain.path.lhs <- object.lhs[["_path"]]$gain
+  spend.grid.lhs <- object.lhs[["_path"]]$spend
+  path.idx.lhs <- findInterval(spend, spend.grid.lhs)
+
+  gain.path.rhs <- object.rhs[["_path"]]$gain
+  spend.grid.rhs <- object.rhs[["_path"]]$spend
+  path.idx.rhs <- findInterval(spend, spend.grid.rhs)
+
+  point.estimate <- .get_estimate(gain.path.lhs, spend.grid.lhs, path.idx.lhs) -
+    .get_estimate(gain.path.rhs, spend.grid.rhs, path.idx.rhs)
+
+  # Compute paired std.errors
+  estimates.lhs <- unlist(lapply(seq_len(R), function(bs) {
+    .get_estimate(object.lhs[["_path"]]$gain.bs[[bs]], spend.grid.lhs, path.idx.lhs)
+  }))
+  estimates.rhs <- unlist(lapply(seq_len(R), function(bs) {
+    .get_estimate(object.rhs[["_path"]]$gain.bs[[bs]], spend.grid.rhs, path.idx.rhs)
+  }))
+  std.err <- stats::sd(estimates.lhs - estimates.rhs, na.rm = TRUE)
+  if (is.na(std.err)) {
+    std.err <- 0
+  }
+
+  c(estimate = point.estimate, std.err = std.err)
 }
