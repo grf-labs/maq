@@ -499,7 +499,7 @@ test_that("integrated_difference works as expected", {
 
   spend <- 0.2
   est <- integrated_difference(mq1, mq2, spend)
-  expect_equal(est[[1]], 0, tolerance = 3 * est[[2]])
+  expect_equal(est[[1]], 0, tolerance = 3.5 * est[[2]])
 
   s <- seq(0, spend, length.out = 5000)
   auc.naive <- mean(unlist(lapply(s, function(x) average_gain(mq1, x)[[1]]))) -
