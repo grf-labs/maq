@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{integrated_difference}
 \alias{integrated_difference}
-\title{Get estimate of area the between two Qini curves with paired standard errors.}
+\title{Get estimate of the area between two Qini curves with paired standard errors.}
 \usage{
 integrated_difference(object.lhs, object.rhs, spend)
 }

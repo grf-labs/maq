@@ -467,7 +467,7 @@ difference_gain <- function(object.lhs,
   c(estimate = point.estimate, std.err = std.err)
 }
 
-#' Get estimate of area the between two Qini curves with paired standard errors.
+#' Get estimate of the area between two Qini curves with paired standard errors.
 #'
 #' Given two Qini curves, \eqn{Q_a} and \eqn{Q_b}, and a maximum spend \eqn{\bar B},
 #'  get an estimate of the integrated difference
