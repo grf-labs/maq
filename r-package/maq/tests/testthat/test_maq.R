@@ -465,7 +465,7 @@ test_that("predict type works as expected", {
 })
 
 test_that("integrated_difference works as expected", {
-  # These should be identical
+  # these should be identical
   n <- 1000
   DR.scores <- rnorm(n)
   tau.hat <- runif(n) # > 0 for this to be an invariance between MAQ and RATE
@@ -486,7 +486,23 @@ test_that("integrated_difference works as expected", {
   auc2 <- integrated_difference(mq, mqr, 1)
   expect_equal(auc[[1]], auc2[[1]], tolerance = 1e-15)
 
+  # simple example
+  n <- 5000
+  K <- 5
+  reward <- matrix(0.1 + rnorm(n * K), n, K)
+  reward.scores <- matrix(0.1 + rnorm(n * K), n, K)
+  cost <- 0.05 + matrix(runif(n * K), n, K)
 
+  R <- 200
+  mq1 <- maq(reward, cost, reward.scores, R = R)
+  mq2 <- maq(reward + 0.1 * runif(n), cost, reward.scores, R = R)
 
+  spend <- 0.2
+  est <- integrated_difference(mq1, mq2, spend)
+  expect_equal(est[[1]], 0, tolerance = 3 * est[[2]])
 
+  s <- seq(0, spend, length.out = 5000)
+  auc.naive <- mean(unlist(lapply(s, function(x) average_gain(mq1, x)[[1]]))) -
+    mean(unlist(lapply(s, function(x) average_gain(mq2, x)[[1]])))
+  expect_equal(est[[1]], auc.naive, tolerance = 0.005)
 })
