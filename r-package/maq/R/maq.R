@@ -60,8 +60,7 @@
 #'  Default is NULL (ignored).
 #' @param tie.breaker An optional permutation of the integers 1 to n used to
 #'  break potential ties in the optimal treatment allocation
-#'  (only relevant if \eqn{\hat \tau(X)} takes on the same values for different samples
-#'  \eqn{X_i} and \eqn{X_j}).
+#'  (only relevant if the predictions \eqn{\hat \tau(X)} are not continuous).
 #'  If NULL, the ties are broken by the lowest sample id (i.e. the sample appearing first in the data).
 #'  Default is NULL.
 #' @param num.threads Number of threads used in bootstrap replicates. By default, the number of threads
