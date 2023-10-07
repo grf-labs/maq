@@ -502,7 +502,7 @@ integrated_difference <- function(object.lhs,
   .get_estimate <- function(gain.path, spend.grid, path.idx) {
     if (path.idx == 0) {
       estimate <- 0
-    } else if (abs(spend.grid[length(spend.grid)] - spend) < 1e-10 || path.idx == length(spend.grid)) {
+    } else if (path.idx == length(spend.grid)) {
       area.offset <- 0
       # Are we summing beyond the point at which the curve plateaus?
       if (spend > spend.grid[path.idx]) {
@@ -512,8 +512,9 @@ integrated_difference <- function(object.lhs,
       estimate <- mean(gain.path, na.rm = TRUE) + area.offset
     } else {
       interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
-      estimate <- mean(gain.path[1:path.idx], na.rm = TRUE) +
-       (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+      estimate <- (sum(gain.path[1:path.idx], na.rm = TRUE) +
+          gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio) /
+            (path.idx + 1)
     }
 
     estimate
