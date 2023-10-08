@@ -3,6 +3,75 @@ import numpy as np
 from maq.ext import solver_cpp
 
 
+def get_ipw_scores(Y, W, W_hat=None):
+    """Construct evaluation scores via inverse-propensity weighting.
+
+    Parameters
+    ----------
+    Y : ndarray
+        A vector of test set outcomes.
+
+    W : ndarray
+        A vector of test set treatment assignments encoded as integers 0,...,K where
+        k=0 is the control arm and k=1,..,K one of K treatment arms.
+
+    W_hat : ndarray, default=None
+        Optional num_samples * (K + 1) array of treatment propensities where the k-th column
+        contains the propensity scores for the k-th arm. If None (Default), then the assignment
+        probabilities are assumed to be uniform and the same for each arm.
+
+    Returns
+    -------
+    ndarray
+        An array of scores.
+
+    Examples
+    --------
+    Generate some synthetic data from K=2 treatment arms with equal assignment probabilities.
+
+    >>> import numpy as np
+    >>> np.random.seed(42)
+    >>> n = 2000
+    >>> W = np.random.choice([0, 1, 2], n)
+    >>> Y = 42 * (W == 1) - 42 * (W == 2) + np.random.rand(n)
+    >>> IPW_scores = get_ipw_scores(Y, W)
+
+    An IPW estimate of E[Y(1) - Y(0)] and E[Y(2) - Y(0)] ~ 42 and -42.
+
+    >>> IPW_scores.mean(axis=0)
+    array([ 41.51013928, -41.09905001])
+
+    Draw non-uniformly from the different arms.
+
+    >>> p = np.array([0.2, 0.2, 0.6])
+    >>> W = np.random.choice([0, 1, 2], n, p = p)
+    >>> Y = 42 * (W == 1) - 42 * (W == 2) + np.random.rand(n)
+    >>> # Construct a matrix of treatment assignment probabilities.
+    >>> W_hat = np.repeat(p[None,:], n, axis=0)
+    >>> IPW_scores = get_ipw_scores(Y, W, W_hat)
+    >>> IPW_scores.mean(axis=0)
+    array([ 43.06614088, -41.60718507])
+    """
+    if Y.ndim > 1 and Y.shape != W.shape:
+        raise ValueError("Y and W should be equal length vectors.")
+    K = max(W)
+    if not isinstance(K, np.integer) or K <= 0 or not np.array_equal(np.unique(W), np.array(range(K + 1))):
+        raise ValueError("W should be a vector of integers (0, 1, ..., K).")
+
+    if W_hat is None:
+        W_hat = 1.0 / (K + 1)
+    elif W_hat.shape != (len(W), K + 1):
+            raise ValueError("W_hat should be a matrix of propensities.")
+    elif np.any(W_hat <= 0) or np.any(W_hat >= 1) or np.any(abs(W_hat.sum(axis=1) - 1) > 1e-6):
+            raise ValueError("W_hat entries should be in (0, 1) and sum to 1.")
+
+    Y_mat = np.zeros((len(W), K + 1))
+    Y_mat[range(len(W)), W] = Y
+    Y_ipw = Y_mat / W_hat
+
+    return Y_ipw[:, 1:] - Y_ipw[:, 0][:, None]
+
+
 class MAQ:
     """Fit a Multi-Armed Qini.
 
