@@ -248,4 +248,8 @@ class MAQ:
         return self._path["kpath"]
 
     def __repr__(self):
-        return "MAQ object."
+        if self._is_fit:
+            return "MAQ object with {} units and {} arms.".format(
+                self._dim[0], self._dim[1])
+        else:
+            return "MAQ object (not fit)."
