@@ -174,7 +174,7 @@ class MAQ:
         self._is_fit = False
 
     def fit(self, reward, cost, DR_scores):
-        """Fit the MAQ curve up to a maximum spend/user.
+        """Fit a Qini curve.
 
         Parameters
         ----------
