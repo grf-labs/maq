@@ -8,8 +8,10 @@ class MAQ:
 
     Parameters
     ----------
-    budget : scalar
-        The maximum spend per unit to fit the MAQ path on.
+    budget : scalar, default=None
+        The maximum spend per unit to fit the Qini curve on.
+        Setting this to None (Default), will fit the path up to a maximum spend per unit
+        where each unit that is expected to benefit (that is hat tau_k(X_i) > 0) is treated.
 
     target_with_covariates : bool, default=True
         If TRUE, then the optimal policy takes covariates into account. If FALSE, then the optimal policy
@@ -50,9 +52,8 @@ class MAQ:
     >>> reward = np.random.randn(n, K)
     >>> cost = np.random.rand(n, K)
     >>> reward_eval = np.random.randn(n, K)
-    >>> max_budget = np.mean(cost)
 
-    >>> mq = MAQ(budget = max_budget, n_bootstrap=200)
+    >>> mq = MAQ(n_bootstrap=200)
     >>> mq.fit(reward, cost, reward_eval)
     MAQ object.
 
@@ -90,7 +91,9 @@ class MAQ:
     >>> plt.show() # doctest: +SKIP
     """
 
-    def __init__(self, budget, target_with_covariates=True, n_bootstrap=0, n_threads=0, seed=42):
+    def __init__(self, budget=None, target_with_covariates=True, n_bootstrap=0, n_threads=0, seed=42):
+        if budget is None:
+            budget = np.finfo(np.float64).max
         assert np.isscalar(budget), "budget should be a scalar."
         assert n_threads >= 0, "n_threads should be >=0."
         assert n_bootstrap >= 0, "n_bootstrap should be >=0."
