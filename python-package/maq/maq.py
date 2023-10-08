@@ -55,7 +55,7 @@ class MAQ:
 
     >>> mq = MAQ(n_bootstrap=200)
     >>> mq.fit(reward, cost, reward_eval)
-    MAQ object.
+    MAQ object with 1000 units and 5 arms.
 
     Get an estimate of optimal gain at a given spend along with standard errors.
 
