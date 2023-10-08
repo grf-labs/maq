@@ -4,6 +4,11 @@ All notable changes to `maq` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2023-10-08
+
+### Fixed
+- Fix a bug in `integrated_difference` where the AUC measure is wrong if \bar B exceeds the point at which the curve plateaus. [#44](https://github.com/grf-labs/maq/pull/44)
+
 ## [0.3.0] - 2023-09-10
 
 ### Changed (breaking)
