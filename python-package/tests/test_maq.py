@@ -102,3 +102,24 @@ def test_MAQ():
         np.nonzero(mq.predict(budget)),
         np.where(reward2 > 0)
     )
+
+def test_cost_arg():
+    n = 1000
+    K = 2
+    reward = 1 + np.random.randn(n, K)
+    cost_vec = np.array([1, 2])
+    cost = np.repeat(cost_vec[None,:], n, axis=0)
+
+    mq = MAQ().fit(reward, cost, reward)
+    mq2 = MAQ().fit(reward, cost_vec, reward)
+    mq3 = MAQ().fit(reward, [1, 2], reward)
+
+    nt.assert_equal(mq._path, mq2._path)
+    nt.assert_equal(mq._path, mq3._path)
+
+    mq4 = MAQ().fit(reward[:, 0], cost[:, 0], reward[:, 0])
+    mq5 = MAQ().fit(reward[:, 0], cost_vec[0], reward[:, 0])
+    mq6 = MAQ().fit(reward[:, 0], 1, reward[:, 0])
+
+    nt.assert_equal(mq4._path, mq5._path)
+    nt.assert_equal(mq4._path, mq6._path)

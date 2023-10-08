@@ -179,27 +179,37 @@ class MAQ:
         Parameters
         ----------
         reward : ndarray
-            A matrix of reward estimates.
+            A matrix of reward estimates with rows corresponding to units and columns containing
+            the treatment effect estimates for the K different arms.
 
-        costs : ndarray
-            A matrix of cost estimates.
+        cost : ndarray
+            A matrix of costs. If the costs only vary by arm and not by unit, then this
+            can also be a K-vector of costs for each arm.
 
         DR_scores : ndarray
             A matrix of evaluation scores to estimate the Qini curve on.
         """
+        # ensure dims are (n, K)
+        reward = np.reshape(reward, (reward.shape[0], -1))
+        DR_scores = np.reshape(DR_scores, (DR_scores.shape[0], -1))
+        # if costs are the same for each unit/arm, they can have dim (1, K)
+        if len(np.atleast_1d(cost)) == reward.shape[1]:
+            cost = np.atleast_2d(cost).astype(float)
+        else:
+            cost = np.reshape(cost, (cost.shape[0], -1)).astype(float)
 
-        reward = np.atleast_2d(reward)
-        cost = np.atleast_2d(cost)
-        DR_scores = np.atleast_2d(DR_scores)
-        assert reward.shape == cost.shape, "reward and cost should have equal dims."
-        assert reward.shape == DR_scores.shape, "reward and reward scores should have equal dims."
-        assert (cost > 0).all(), "cost should be > 0."
-        assert not np.isnan(reward).any(), "reward contains nans."
-        assert not np.isnan(DR_scores).any(), "reward scores contains nans."
-        assert not np.isnan(cost).any(), "cost contains nans."
+        if reward.shape != DR_scores.shape or cost.shape[1] != reward.shape[1]:
+            raise ValueError("reward, costs, and evaluation scores should have conformable dimensions.")
+        if cost.shape[0] > 1 and cost.shape[0] != reward.shape[0]:
+            raise ValueError("reward, costs, and evaluation scores should have conformable dimensions.")
+        if np.any(cost <= 0):
+            raise ValueError("cost should be > 0.")
+
+        if np.isnan(reward).any() or np.isnan(DR_scores).any() or np.isnan(cost).any():
+            raise ValueError("reward, costs, and evaluation scores should have no missing values.")
 
         self._path = solver_cpp(
-            reward, DR_scores, cost,
+            np.ascontiguousarray(reward), np.ascontiguousarray(DR_scores), np.ascontiguousarray(cost),
             self.budget, self.target_with_covariates, self.n_bootstrap, self.n_threads, self.seed
         )
 

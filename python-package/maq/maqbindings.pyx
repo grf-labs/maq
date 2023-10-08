@@ -15,10 +15,12 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  unsigned int seed):
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
     cdef size_t num_cols = np.PyArray_DIMS(reward)[1]
+    cdef bool cost_matrix = True
+    if cost.shape[0] == 1:
+        cost_matrix = False
 
     # Ignore these options for now (TODO)
     cdef bool paired_inference = False
-    cdef bool cost_matrix = True
     cdef double* weights_ptr = NULL
     cdef int* tie_breaker_ptr = NULL
     cdef int* clusters_ptr = NULL
