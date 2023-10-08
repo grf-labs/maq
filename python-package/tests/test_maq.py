@@ -123,3 +123,29 @@ def test_cost_arg():
 
     nt.assert_equal(mq4._path, mq5._path)
     nt.assert_equal(mq4._path, mq6._path)
+
+def test_prediction_type():
+    n = 1000
+    K = 10
+    reward = 1 + np.random.randn(n, K)
+    cost = 0.05 + np.random.rand(n, K)
+
+    mq = MAQ().fit(reward, cost, reward)
+    sp = mq.path_spend_[50]
+    pi_mat = mq.predict(sp)
+    nt.assert_almost_equal(
+        np.sum(pi_mat * cost) / n,
+        sp,
+        decimal=10
+    )
+    pi_vec = mq.predict(sp, prediction_type="vector")
+    csum = 0
+    for (i, k) in enumerate(pi_vec):
+        if k == 0:
+            continue
+        csum = csum + cost[i, k-1]
+    nt.assert_almost_equal(
+        csum / n,
+        sp,
+        decimal=10
+    )

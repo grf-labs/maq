@@ -75,6 +75,10 @@ def get_ipw_scores(Y, W, W_hat=None):
 class MAQ:
     """Fit a Multi-Armed Qini.
 
+    Given n test set samples and K treatment arms, construct a Qini curve Q(B) that quantifies the
+    value of assigning treatment in accordance with an estimated treatment effect function
+    while satisfying a budget constraint s.t. the given costs are at most equal to B on average.
+
     Parameters
     ----------
     budget : scalar, default=None
@@ -217,18 +221,30 @@ class MAQ:
         self._dim = reward.shape
         return self
 
-    def predict(self, spend):
-        """Predict the optimal treatment allocation matrix.
+    def predict(self, spend, prediction_type="matrix"):
+        """Predict treatment allocation.
 
         Parameters
         ----------
         spend : scalar
             The budget constraint level to predict at.
 
+        type : str
+            If "matrix", then represent the underlying treatment allocation as a num_samples * K
+            matrix, where for row i, the k-th element is 1 if assigning the k-th arm to unit i is
+            optimal at a given spend, and 0 otherwise (with all entries 0 if the control arm is assigned).
+            If "vector" then represent the underlying treatment allocation as a num_samples-length
+            vector where entries take values in the set k=(0, 1, ..., K) where k=0 represents the
+            control arm. If at a given spend, the treatment allocation is fractional (i.e., for a
+            single unit i there is not sufficient budget left to assign the i-th unit an initial arm,
+            or upgrade to the next costlier arm), then the returned vector is the treatment
+            allocation in the solution path where the allocation is integer-valued but incurs a cost
+            (slightly) less than 'spend'.
+
         Returns
         -------
         pi_mat : ndarray
-            The optimal treatment allocation.
+            The treatment allocation at a given spend per unit.
         """
 
         assert np.isscalar(spend), "spend should be a scalar."
@@ -238,13 +254,22 @@ class MAQ:
 
         spend_grid = self._path["spend"]
         path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
-        pi_mat = np.zeros(self._dim, dtype="double")
         if path_idx < 0:
-            return pi_mat
+            if prediction_type == "matrix":
+                return np.zeros(self._dim, dtype="double")
+            else:
+                return np.zeros(self._dim[0], dtype="int")
 
         ipath = self._path["ipath"][:path_idx + 1]
         kpath = self._path["kpath"][:path_idx + 1]
         ix = np.unique(ipath[::-1], return_index=True)[1]
+
+        if prediction_type == "vector":
+            pi_vec = np.zeros(self._dim[0], dtype="int")
+            pi_vec[ipath[::-1][ix]] = kpath[::-1][ix] + 1
+            return pi_vec
+
+        pi_mat = np.zeros(self._dim, dtype="double")
         pi_mat[ipath[::-1][ix], kpath[::-1][ix]] = 1
 
         if path_idx == spend_grid.shape[0] - 1:
