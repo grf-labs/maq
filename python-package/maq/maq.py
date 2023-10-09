@@ -263,8 +263,8 @@ class MAQ:
 
         assert np.isscalar(spend), "spend should be a scalar."
         self._ensure_fit()
-        if not self._path["complete_path"]:
-            assert spend <= self.budget, "maq path is not fit beyond given spend level."
+        if not self._path["complete_path"] and spend > self.budget:
+            raise ValueError("maq path is not fit beyond given spend level.")
 
         spend_grid = self._path["spend"]
         path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
@@ -318,8 +318,8 @@ class MAQ:
 
         assert np.isscalar(spend), "spend should be a scalar."
         self._ensure_fit()
-        if not self._path["complete_path"]:
-            assert spend <= self.budget, "maq path is not fit beyond given spend level."
+        if not self._path["complete_path"] and spend > self.budget:
+            raise ValueError("maq path is not fit beyond given spend level.")
 
         spend_grid = self._path["spend"]
         path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
@@ -357,8 +357,8 @@ class MAQ:
         """
         assert np.isscalar(spend), "spend should be a scalar."
         self._ensure_fit()
-        if not self._path["complete_path"]:
-            assert spend <= self.budget, "maq path is not fit beyond given spend level."
+        if not self._path["complete_path"] and spend > self.budget:
+            raise ValueError("maq path is not fit beyond given spend level.")
 
         return 1
 
