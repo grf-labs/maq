@@ -262,7 +262,7 @@ class MAQ:
         """
 
         assert np.isscalar(spend), "spend should be a scalar."
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         if not self._path["complete_path"]:
             assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
@@ -308,16 +308,16 @@ class MAQ:
         Parameters
         ----------
         spend : scalar
-            The budget constraint level to predict at.
+            The spend level.
 
         Returns
         -------
         estimate, std_error : tuple
-            Estimate of gain along with standard error.
+            Estimate of gain along with standard errors.
         """
 
         assert np.isscalar(spend), "spend should be a scalar."
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         if not self._path["complete_path"]:
             assert spend <= self.budget, "maq path is not fit beyond given spend level."
 
@@ -339,30 +339,57 @@ class MAQ:
 
         return estimate, std_err
 
+    def difference_gain(self, other, spend):
+        """Get estimate of difference in gain given a spend level with paired standard errors.
+
+        Parameters
+        ----------
+        other : MAQ object.
+            The other Qini curve to subtract with.
+
+        spend : scalar
+            The spend level.
+
+        Returns
+        -------
+        estimate, std_error : tuple
+            Estimate of difference in gain along with standard errors.
+        """
+        assert np.isscalar(spend), "spend should be a scalar."
+        self._ensure_fit()
+        if not self._path["complete_path"]:
+            assert spend <= self.budget, "maq path is not fit beyond given spend level."
+
+        return 1
+
     @property
     def path_spend_(self):
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         return self._path["spend"]
 
     @property
     def path_gain_(self):
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         return self._path["gain"]
 
     @property
     def path_std_err_(self):
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         return self._path["std_err"]
 
     @property
     def path_allocated_unit_(self):
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         return self._path["ipath"]
 
     @property
     def path_allocated_arm_(self):
-        assert self._is_fit, "MAQ object is not fit."
+        self._ensure_fit()
         return self._path["kpath"]
+
+    def _ensure_fit(self):
+        if not self._is_fit:
+            raise ValueError("MAQ object is not fit.")
 
     def __repr__(self):
         if self._is_fit:
