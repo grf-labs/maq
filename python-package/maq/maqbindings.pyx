@@ -49,21 +49,30 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     spend = np.empty(path_len, dtype="double")
     gain = np.empty(path_len, dtype="double")
     std_err = np.empty(path_len, dtype="double")
-    ipath = np.empty(path_len, dtype="intp")
-    kpath = np.empty(path_len, dtype="intp")
-    gain_bs = np.empty(0, dtype="double")
-
-    for i in range(path_len):
-        spend[i] = path.first[0][i]
-        gain[i] = path.first[1][i]
-        std_err[i] = path.first[2][i]
-        ipath[i] = path.second[0][i]
-        kpath[i] = path.second[1][i]
+    ipath = np.empty(path_len, dtype="int")
+    kpath = np.empty(path_len, dtype="int")
     if paired_inference:
         gain_bs = np.empty((n_bootstrap, path_len), dtype="double")
+    else:
+        gain_bs = np.empty((0, 0), dtype="double")
+    # faster copy into nparrays with memoryviews
+    cdef double[::] view_spend = spend
+    cdef double[::] view_gain = gain
+    cdef double[::] view_std_err = std_err
+    cdef long[::] view_ipath = ipath
+    cdef long[::] view_kpath = kpath
+    cdef double[:, ::1] view_gain_bs = gain_bs
+
+    for i in range(path_len):
+        view_spend[i] = path.first[0][i]
+        view_gain[i] = path.first[1][i]
+        view_std_err[i] = path.first[2][i]
+        view_ipath[i] = path.second[0][i]
+        view_kpath[i] = path.second[1][i]
+    if paired_inference:
         for b in range(n_bootstrap):
             for i in range(path_len):
-                gain_bs[b, i] = ret.second[b][i]
+                view_gain_bs[b, i] = ret.second[b][i]
 
     res["spend"] = spend
     res["gain"] = gain
