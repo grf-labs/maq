@@ -194,3 +194,19 @@ def test_difference_gain():
         0.95,
         rtol=0.05
     )
+
+def test_basic_perf_timing():
+    import time
+    # If this takes more than 2 secs to run then something is wrong.
+    n = 1000000
+    K = 5
+    reward = np.random.rand(n, K)
+    cost = np.random.rand(n, K)
+    reward_eval = np.random.randn(n, K)
+
+    mq = MAQ()
+    start = time.time()
+    [mq.fit(reward, cost, reward_eval) for _ in range(4)]
+    end = time.time()
+    elapsed = end - start
+    nt.assert_array_less(elapsed / 4, 2)
