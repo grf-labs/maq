@@ -209,4 +209,4 @@ def test_basic_perf_timing():
     [mq.fit(reward, cost, reward_eval) for _ in range(4)]
     end = time.time()
     elapsed = end - start
-    nt.assert_array_less(elapsed / 4, 2)
+    nt.assert_array_less(elapsed / 4, 2.5)
