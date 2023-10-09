@@ -197,7 +197,7 @@ def test_difference_gain():
 
 def test_basic_perf_timing():
     import time
-    # If this takes more than 2 secs to run then something is wrong.
+    # If this takes more than ~2.5 secs to run then something is wrong.
     n = 1000000
     K = 5
     reward = np.random.rand(n, K)
