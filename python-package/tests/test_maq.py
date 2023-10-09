@@ -14,8 +14,8 @@ def test_bindings():
     reward = 1 + np.random.randn(n, K)
     cost = 0.05 + np.random.rand(n, K)
     n_bootstrap = 5
-    ret = solver_cpp(reward, reward, cost, budget, True, n_bootstrap, 0, 0)
-    ret2 = solver_cpp(reward, reward, cost, budget, True, n_bootstrap, 0, 0)
+    ret = solver_cpp(reward, reward, cost, budget, True, n_bootstrap, False, 0, 0)
+    ret2 = solver_cpp(reward, reward, cost, budget, True, n_bootstrap, False, 0, 0)
     nt.assert_equal(ret, ret2)
 
     mq = MAQ(budget, n_bootstrap=n_bootstrap, n_threads=0, seed=0)

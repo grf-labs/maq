@@ -93,6 +93,13 @@ class MAQ:
     n_bootstrap : int, default=0
         Number of bootstrap replicates for SEs. Default is 0.
 
+    paired_inference : bool, default=True
+        Whether to allow for paired tests with other Qini curves fit on the same evaluation data.
+        If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
+        paired comparisons that account for the correlation between curves evaluated on the same data.
+        This takes memory on the order of O(n_bootstrap*num_samples*K) and requires the comparison
+        objects to be fit with the same seed and R values as well as the same number of samples.
+
     n_threads : int, default=0
         Number of threads used in bootstrap replicates. Default is the maximum hardware concurrency.
 
@@ -163,8 +170,13 @@ class MAQ:
     >>> plt.plot(mq.path_spend_, lb, color="black", linestyle="dashed") # doctest: +SKIP
     >>> plt.show() # doctest: +SKIP
     """
-
-    def __init__(self, budget=None, target_with_covariates=True, n_bootstrap=0, n_threads=0, seed=42):
+    def __init__(self,
+                budget=None,
+                target_with_covariates=True,
+                n_bootstrap=0,
+                paired_inference=True,
+                n_threads=0,
+                seed=42):
         if budget is None:
             budget = np.finfo(np.float64).max
         assert np.isscalar(budget), "budget should be a scalar."
@@ -173,6 +185,7 @@ class MAQ:
         self.budget = budget
         self.target_with_covariates = target_with_covariates
         self.n_bootstrap = n_bootstrap
+        self.paired_inference = paired_inference
         self.n_threads = n_threads
         self.seed = seed
         self._is_fit = False
@@ -214,7 +227,8 @@ class MAQ:
 
         self._path = solver_cpp(
             np.ascontiguousarray(reward), np.ascontiguousarray(DR_scores), np.ascontiguousarray(cost),
-            self.budget, self.target_with_covariates, self.n_bootstrap, self.n_threads, self.seed
+            self.budget, self.target_with_covariates, self.n_bootstrap, self.paired_inference,
+            self.n_threads, self.seed
         )
 
         self._is_fit = True

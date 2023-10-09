@@ -3,7 +3,7 @@ import numpy as np
 cimport numpy as np
 from libcpp cimport bool
 
-from maq.maqdefs cimport solution_path, run
+from maq.maqdefs cimport pair, vector, solution_path, run
 
 cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  np.ndarray[double, ndim=2, mode="c"] reward_scores,
@@ -11,6 +11,7 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
                  double budget,
                  int target_with_covariates,
                  unsigned int n_bootstrap,
+                 int paired_inference,
                  unsigned int num_threads,
                  unsigned int seed):
     cdef size_t num_rows = np.PyArray_DIMS(reward)[0]
@@ -20,12 +21,11 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
         cost_matrix = False
 
     # Ignore these options for now (TODO)
-    cdef bool paired_inference = False
     cdef double* weights_ptr = NULL
     cdef int* tie_breaker_ptr = NULL
     cdef int* clusters_ptr = NULL
 
-    cdef solution_path ret = run(
+    cdef pair[solution_path, vector[vector[double]]] ret = run(
         &reward[0, 0],
         &reward_scores[0, 0],
         &cost[0, 0],
@@ -41,31 +41,39 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
         n_bootstrap,
         num_threads,
         seed
-    ).first
+    )
+    cdef solution_path path = ret.first
 
     res = dict()
-    path_len = ret.first[0].size()
+    path_len = path.first[0].size()
     spend = np.empty(path_len, dtype="double")
     gain = np.empty(path_len, dtype="double")
     std_err = np.empty(path_len, dtype="double")
     ipath = np.empty(path_len, dtype="intp")
     kpath = np.empty(path_len, dtype="intp")
+    gain_bs = np.empty(0, dtype="double")
 
-    for i in range(ret.first[0].size()):
-        spend[i] = ret.first[0][i]
-        gain[i] = ret.first[1][i]
-        std_err[i] = ret.first[2][i]
-        ipath[i] = ret.second[0][i]
-        kpath[i] = ret.second[1][i]
+    for i in range(path_len):
+        spend[i] = path.first[0][i]
+        gain[i] = path.first[1][i]
+        std_err[i] = path.first[2][i]
+        ipath[i] = path.second[0][i]
+        kpath[i] = path.second[1][i]
+    if paired_inference:
+        gain_bs = np.empty((n_bootstrap, path_len), dtype="double")
+        for b in range(n_bootstrap):
+            for i in range(path_len):
+                gain_bs[b, i] = ret.second[b][i]
 
     res["spend"] = spend
     res["gain"] = gain
     res["std_err"] = std_err
     res["ipath"] = ipath
     res["kpath"] = kpath
-    if ret.second[2][0] > 0:
+    if path.second[2][0] > 0:
         res["complete_path"] = True
     else:
         res["complete_path"] = False
+    res["gain_bs"] = gain_bs
 
     return res
