@@ -359,8 +359,40 @@ class MAQ:
         self._ensure_fit()
         if not self._path["complete_path"] and spend > self.budget:
             raise ValueError("maq path is not fit beyond given spend level.")
+        other._ensure_fit()
+        if not other._path["complete_path"] and spend > other.budget:
+            raise ValueError("comparison maq path is not fit beyond given spend level.")
+        if (self.seed != other.seed or
+            self.n_bootstrap != other.n_bootstrap or
+            self._dim[0] != other._dim[0] or
+            not self.paired_inference or
+            not other.paired_inference):
+            raise ValueError(
+                """Paired comparisons require maq objects to be fit with paired_inference=True
+                as well as with the same random seed, bootstrap replicates, and data.""")
+        point_estimate = self.average_gain(spend)[0] - other.average_gain(spend)[0]
 
-        return 1
+        # Compute paired std.errors
+        def _get_estimates(obj):
+            gain_bs = obj._path["gain_bs"]
+            spend_grid = obj._path["spend"]
+            path_idx = np.searchsorted(spend_grid, spend, side="right") - 1
+            if path_idx < 0:
+                estimates = 0
+            elif path_idx == spend_grid.shape[0] - 1:
+                estimates = gain_bs[:, path_idx]
+            else:
+                interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
+                estimates = gain_bs[:, path_idx] + (gain_bs[:, path_idx + 1] - gain_bs[:, path_idx]) * interp_ratio
+            return estimates
+
+        estimates_lhs = _get_estimates(self)
+        estimates_rhs = _get_estimates(other)
+        std_err = np.nanstd(estimates_lhs - estimates_rhs)
+        if np.isnan(std_err):
+            std_err = 0
+
+        return point_estimate, std_err
 
     @property
     def path_spend_(self):

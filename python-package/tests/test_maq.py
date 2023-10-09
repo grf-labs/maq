@@ -149,3 +149,48 @@ def test_prediction_type():
         sp,
         decimal=10
     )
+
+def test_difference_gain():
+    # these gains should be statistically indistinguishable with 95 % coverage
+    res = []
+    spend = 0.2
+    for _ in range(250):
+        n = 1000
+        K = 3
+        reward = np.random.rand(n, K)
+        cost = np.random.rand(n, K)
+        reward_eval = np.random.randn(n, K)
+        mq1 = MAQ(n_bootstrap=200).fit(reward, cost, reward_eval)
+        mq2 = MAQ(n_bootstrap=200).fit(reward + np.random.randn(n)[:,None], cost, reward_eval)
+        est, sd = mq1.difference_gain(mq2, spend)
+
+        coverage = int(abs(est / sd) <= 1.96)
+        res.append(coverage)
+
+    nt.assert_allclose(
+        np.mean(res),
+        0.95,
+        rtol=0.05
+    )
+
+    res_avg = []
+    for _ in range(250):
+        n = 1000
+        K = 3
+        reward = np.random.rand(n, K)
+        cost = np.random.rand(n, K)
+        reward_eval = np.random.randn(n, K)
+
+        # these gains should be statistically indistinguishable with 95 % coverage
+        mq1 = MAQ(n_bootstrap=200).fit(reward, cost, reward_eval)
+        mq2 = MAQ(n_bootstrap=200, target_with_covariates=False).fit(reward, cost, reward_eval)
+        est, sd = mq1.difference_gain(mq2, spend)
+
+        coverage = int(abs(est / sd) <= 1.96)
+        res_avg.append(coverage)
+
+    nt.assert_allclose(
+        np.mean(res_avg),
+        0.95,
+        rtol=0.05
+    )
