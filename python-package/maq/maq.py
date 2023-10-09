@@ -23,7 +23,7 @@ def get_ipw_scores(Y, W, W_hat=None):
     Returns
     -------
     ndarray
-        An array of scores.
+        An (num_samples * K) array of scores.
 
     Examples
     --------
