@@ -92,4 +92,4 @@ jobs:
       jupyter nbconvert --execute --to 'notebook' introduction.ipynb
     workingDirectory: 'python-package/notebooks'
     displayName: 'Ensure notebooks run'
-    condition: eq(variables['Agent.OS'], 'MacOS')
+    condition: eq(variables['Agent.OS'], 'Darwin')
