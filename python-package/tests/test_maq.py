@@ -181,7 +181,6 @@ def test_difference_gain():
         cost = np.random.rand(n, K)
         reward_eval = np.random.randn(n, K)
 
-        # these gains should be statistically indistinguishable with 95 % coverage
         mq1 = MAQ(n_bootstrap=200).fit(reward, cost, reward_eval)
         mq2 = MAQ(n_bootstrap=200, target_with_covariates=False).fit(reward, cost, reward_eval)
         est, sd = mq1.difference_gain(mq2, spend)
