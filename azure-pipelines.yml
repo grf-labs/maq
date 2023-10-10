@@ -77,7 +77,7 @@ jobs:
   steps:
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '3.10'
+      versionSpec: '3.x'
   - script: |
       pip install numpy cython pytest wheel
     workingDirectory: 'python-package'
