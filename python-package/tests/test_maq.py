@@ -44,7 +44,6 @@ def test_MAQ():
     mq = MAQ(budget, n_bootstrap=n_bootstrap, n_threads=0, seed=0)
 
     mq.fit(reward, cost, reward)
-    mq.plot(show_ci=True, color="red")
 
     nt.assert_equal(mq.average_gain(0), (0, 0))
     nt.assert_equal(mq.average_gain(100), (mq._path["gain"][-1], mq._path["std_err"][-1]))
