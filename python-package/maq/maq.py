@@ -395,7 +395,7 @@ class MAQ:
         return point_estimate, std_err
 
     def plot(self, show_ci=False, **kwargs):
-        """Plot the Qini curve.
+        """Plot the Qini curve (requires matplotlib).
 
         Parameters
         ----------
