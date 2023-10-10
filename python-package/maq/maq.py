@@ -394,6 +394,33 @@ class MAQ:
 
         return point_estimate, std_err
 
+    def plot(self, show_ci=False, **kwargs):
+        """Plot the Qini curve.
+
+        Parameters
+        ----------
+        show_ci : bool
+            Whether to show estimated 95% confidence bars.
+        **kwargs : additional arguments passed to matplotlib.pyplot
+        """
+        try:
+            import matplotlib.pyplot as plt
+        except:
+            raise ImportError("plot method requires matplotlib.")
+
+        if not "color" in kwargs:
+            kwargs["color"] = "black"
+        plt.plot(self.path_spend_, self.path_gain_, **kwargs)
+        if "label" in kwargs:
+            plt.legend(loc="upper left")
+        if show_ci:
+            ub = self.path_gain_ + 1.96 * self.path_std_err_
+            lb = self.path_gain_ - 1.96 * self.path_std_err_
+            plt.plot(self.path_spend_, ub, color=kwargs["color"], linestyle="dashed", linewidth=1)
+            plt.plot(self.path_spend_, lb, color=kwargs["color"], linestyle="dashed", linewidth=1)
+        plt.xlabel("spend")
+        plt.ylabel("gain")
+
     @property
     def path_spend_(self):
         self._ensure_fit()
