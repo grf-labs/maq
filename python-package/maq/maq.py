@@ -477,10 +477,13 @@ class MAQ:
                 interp_ratio = (spend - spend_grid[path_idx]) / (
                     spend_grid[path_idx + 1] - spend_grid[path_idx]
                 )
-                adj = (
-                    gain[:, path_idx]
-                    + (gain[:, path_idx + 1] - gain[:, path_idx]) * interp_ratio
-                )
+                if interp_ratio < 1e-10:
+                    adj = np.repeat(np.nan, gain.shape[0])
+                else:
+                    adj = (
+                        gain[:, path_idx]
+                        + (gain[:, path_idx + 1] - gain[:, path_idx]) * interp_ratio
+                    )
                 estimates = np.nanmean(
                     np.hstack((gain[:, : path_idx + 1], adj[:, None])), axis=1
                 )

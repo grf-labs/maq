@@ -225,6 +225,27 @@ def test_integrated_difference_gain():
     nt.assert_allclose(np.mean(res_avg), 0.95, rtol=0.05)
 
 
+def test_integrated_difference_grid_numerics():
+    n = 10
+    K = 1
+    reward1 = np.random.rand(n, K)
+    reward2 = np.random.rand(n, K)
+    cost = 1
+    reward_eval = np.random.randn(n, K)
+    q1 = MAQ().fit(reward1, cost, reward_eval)
+    q2 = MAQ().fit(reward2, cost, reward_eval)
+    sp = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    g1 = 0
+    g2 = 0
+    for i, spend in enumerate(sp):
+        g1 += q1.average_gain(spend)[0]
+        g2 += q2.average_gain(spend)[0]
+
+        estt = np.mean(q1.path_gain_[: i + 1]) - np.mean(q2.path_gain_[: i + 1])
+        est = q1.integrated_difference(q2, spend)[0]
+        nt.assert_allclose(est, estt, rtol=1e-07)
+
+
 def test_basic_perf_timing():
     import time
 
