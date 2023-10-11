@@ -473,6 +473,8 @@ class MAQ:
             Whether to show estimated 95% confidence bars.
         **kwargs : additional arguments passed to matplotlib.pyplot
         """
+        # TODO: add functionality for drawing a horizontal line where a Qini
+        # curve plateaus
         try:
             import matplotlib.pyplot as plt
         except:
