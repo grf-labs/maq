@@ -371,6 +371,8 @@ class MAQ:
                 """Paired comparisons require maq objects to be fit with paired_inference=True
                 as well as with the same random seed, bootstrap replicates, and data.""")
         point_estimate = self.average_gain(spend)[0] - other.average_gain(spend)[0]
+        if self.n_bootstrap < 2:
+            return point_estimate, 0
 
         # Compute paired std.errors
         def _get_estimates(obj):
@@ -388,6 +390,83 @@ class MAQ:
 
         estimates_lhs = _get_estimates(self)
         estimates_rhs = _get_estimates(other)
+        std_err = np.nanstd(estimates_lhs - estimates_rhs)
+        if np.isnan(std_err):
+            std_err = 0
+
+        return point_estimate, std_err
+
+    def integrated_difference(self, other, spend):
+        """Get estimate of the area between two Qini curves with paired standard errors.
+
+        Parameters
+        ----------
+        other : MAQ object.
+            The other Qini curve to subtract with.
+
+        spend : scalar
+            The spend level.
+
+        Returns
+        -------
+        estimate, std_error : tuple
+            An estimate of the area between the two curves along with standard errors.
+        """
+        assert np.isscalar(spend), "spend should be a scalar."
+        self._ensure_fit()
+        if not self._path["complete_path"] and spend > self.budget:
+            raise ValueError("maq path is not fit beyond given spend level.")
+        other._ensure_fit()
+        if not other._path["complete_path"] and spend > other.budget:
+            raise ValueError("comparison maq path is not fit beyond given spend level.")
+        if (self.seed != other.seed or
+            self.n_bootstrap != other.n_bootstrap or
+            self._dim[0] != other._dim[0] or
+            not self.paired_inference or
+            not other.paired_inference):
+            raise ValueError(
+                """Paired comparisons require maq objects to be fit with paired_inference=True
+                as well as with the same random seed, bootstrap replicates, and data.""")
+
+        # Estimate an AUC via estimating the difference \int_{0}^{\bar B} Q_a(B)dB - \int_{0}^{\bar B} Q_b(B)dB.
+        def _get_estimates(gain, spend_grid, path_idx):
+            if path_idx < 0:
+                estimates = np.asarray([0])
+            elif path_idx == spend_grid.shape[0] - 1:
+                area_offset = 0
+                # Are we summing beyond the point at which the curve plateaus?
+                if spend > spend_grid[path_idx]:
+                    spend_delta = spend - spend_grid[path_idx]
+                    area_offset = gain[:, path_idx] * spend_delta
+                estimates = np.nanmean(gain, axis=1) + area_offset
+            else:
+                interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
+                adj = gain[:, path_idx] + (gain[:, path_idx + 1] - gain[:, path_idx]) * interp_ratio
+                estimates = np.nanmean(
+                    np.hstack((gain[:, :path_idx + 1], adj[:, None])),
+                    axis=1
+                )
+
+            return estimates
+
+        path_idx_lhs = np.searchsorted(self._path["spend"], spend, side="right") - 1
+        path_idx_rhs = np.searchsorted(other._path["spend"], spend, side="right") - 1
+
+        point_estimate = _get_estimates(self._path["gain"][None, :],
+                                        self._path["spend"],
+                                        path_idx_lhs)[0] - \
+                            _get_estimates(other._path["gain"][None, :],
+                                            other._path["spend"],
+                                            path_idx_rhs)[0]
+        if self.n_bootstrap < 2:
+            return point_estimate, 0
+        # Compute paired std.errors
+        estimates_lhs = _get_estimates(self._path["gain_bs"],
+                                       self._path["spend"],
+                                       path_idx_lhs)
+        estimates_rhs = _get_estimates(other._path["gain_bs"],
+                                       other._path["spend"],
+                                       path_idx_rhs)
         std_err = np.nanstd(estimates_lhs - estimates_rhs)
         if np.isnan(std_err):
             std_err = 0
