@@ -511,9 +511,12 @@ integrated_difference <- function(object.lhs,
       estimate <- mean(gain.path, na.rm = TRUE) + area.offset
     } else {
       interp.ratio <- (spend - spend.grid[path.idx]) / (spend.grid[path.idx + 1] - spend.grid[path.idx])
-      estimate <- (sum(gain.path[1:path.idx], na.rm = TRUE) +
-          gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio) /
-            (path.idx + 1)
+      adj <- if (interp.ratio < 1e-10) {
+        NA
+      } else {
+        gain.path[path.idx] + (gain.path[path.idx + 1] - gain.path[path.idx]) * interp.ratio
+      }
+      estimate <- mean(c(gain.path[1:path.idx], adj), na.rm = TRUE)
     }
 
     estimate
