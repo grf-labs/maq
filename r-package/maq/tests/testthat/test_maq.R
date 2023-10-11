@@ -506,3 +506,23 @@ test_that("integrated_difference works as expected", {
     mean(unlist(lapply(s, function(x) average_gain(mq2, x)[[1]])))
   expect_equal(est[[1]], auc.naive, tolerance = 0.005)
 })
+
+test_that("integrated_difference grid lookup numerics works as expected", {
+  n <- 100
+  K <- 1
+  reward1 <- matrix(1 + runif(n*K), n, K)
+  reward2 <- matrix(1 + runif(n*K), n, K)
+  reward.scores <- matrix(1 + rnorm(n*K), n, K)
+  cost <- 1
+
+  q1 <- maq(reward1, cost, reward.scores)
+  q2 <- maq(reward2, cost, reward.scores)
+  sgrid <- seq(1/n, 1, length.out = n)
+
+  est <- unlist(lapply(sgrid, function(s) integrated_difference(q1, q2, s)[[1]]))
+  estt <- unlist(lapply(seq_along(sgrid), function(i) {
+    mean(q1[["_path"]]$gain[1:i]) - mean(q2[["_path"]]$gain[1:i])
+  }))
+
+  expect_equal(est, estt, tolerance = 1e-10)
+})
