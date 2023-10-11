@@ -87,3 +87,9 @@ jobs:
       pytest
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
+  - script: |
+      pip install -I causalml xgboost matplotlib jupyter
+      jupyter nbconvert --execute --to 'notebook' introduction.ipynb
+    workingDirectory: 'python-package/notebooks'
+    displayName: 'Ensure notebooks run'
+    condition: eq(variables['Agent.OS'], 'Darwin')
