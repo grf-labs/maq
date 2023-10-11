@@ -213,7 +213,7 @@ class MAQ:
         if len(np.atleast_1d(cost)) == reward.shape[1]:
             cost = np.atleast_2d(cost).astype(float)
         else:
-            cost = np.reshape(cost, (cost.shape[0], -1)).astype(float)
+            cost = np.reshape(cost, (np.atleast_1d(cost).shape[0], -1)).astype(float)
 
         if reward.shape != DR_scores.shape or cost.shape[1] != reward.shape[1]:
             raise ValueError("reward, costs, and evaluation scores should have conformable dimensions.")
