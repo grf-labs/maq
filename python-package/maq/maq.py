@@ -96,7 +96,8 @@ class MAQ:
 
     target_with_covariates : bool, default=True
         If TRUE, then the optimal policy takes covariates into account. If FALSE, then the optimal policy
-        only takes the average reward and cost into account when allocating treatment.
+        only takes the average reward and cost into account when allocating treatment. Can be used to
+        construct a baseline Qini curve to assess the value of targeting with covariates.
 
     n_bootstrap : int, default=0
         Number of bootstrap replicates for SEs. Default is 0.
@@ -106,7 +107,7 @@ class MAQ:
         If TRUE (Default) then the path of bootstrap replicates are stored in order to perform
         paired comparisons that account for the correlation between curves evaluated on the same data.
         This takes memory on the order of O(n_bootstrap*num_samples*K) and requires the comparison
-        objects to be fit with the same seed and R values as well as the same number of samples.
+        objects to be fit with the same seed and n_bootstrap values as well as the same number of samples.
 
     n_threads : int, default=0
         Number of threads used in bootstrap replicates. Default is the maximum hardware concurrency.
