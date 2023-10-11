@@ -55,15 +55,23 @@ def get_ipw_scores(Y, W, W_hat=None):
     if Y.ndim > 1 and Y.shape != W.shape:
         raise ValueError("Y and W should be equal length vectors.")
     K = max(W)
-    if not isinstance(K, np.integer) or K <= 0 or not np.array_equal(np.unique(W), np.array(range(K + 1))):
+    if (
+        not isinstance(K, np.integer)
+        or K <= 0
+        or not np.array_equal(np.unique(W), np.array(range(K + 1)))
+    ):
         raise ValueError("W should be a vector of integers (0, 1, ..., K).")
 
     if W_hat is None:
         W_hat = 1.0 / (K + 1)
     elif W_hat.shape != (len(W), K + 1):
-            raise ValueError("W_hat should be a matrix of propensities.")
-    elif np.any(W_hat <= 0) or np.any(W_hat >= 1) or np.any(abs(W_hat.sum(axis=1) - 1) > 1e-6):
-            raise ValueError("W_hat entries should be in (0, 1) and sum to 1.")
+        raise ValueError("W_hat should be a matrix of propensities.")
+    elif (
+        np.any(W_hat <= 0)
+        or np.any(W_hat >= 1)
+        or np.any(abs(W_hat.sum(axis=1) - 1) > 1e-6)
+    ):
+        raise ValueError("W_hat entries should be in (0, 1) and sum to 1.")
 
     Y_mat = np.zeros((len(W), K + 1))
     Y_mat[range(len(W)), W] = Y
@@ -161,13 +169,16 @@ class MAQ:
 
     >>> mq.plot(show_ci=True) # doctest: +SKIP
     """
-    def __init__(self,
-                budget=None,
-                target_with_covariates=True,
-                n_bootstrap=0,
-                paired_inference=True,
-                n_threads=0,
-                seed=42):
+
+    def __init__(
+        self,
+        budget=None,
+        target_with_covariates=True,
+        n_bootstrap=0,
+        paired_inference=True,
+        n_threads=0,
+        seed=42,
+    ):
         if budget is None:
             budget = np.finfo(np.float64).max
         assert np.isscalar(budget), "budget should be a scalar."
@@ -207,19 +218,31 @@ class MAQ:
             cost = np.reshape(cost, (np.atleast_1d(cost).shape[0], -1)).astype(float)
 
         if reward.shape != DR_scores.shape or cost.shape[1] != reward.shape[1]:
-            raise ValueError("reward, costs, and evaluation scores should have conformable dimensions.")
+            raise ValueError(
+                "reward, costs, and evaluation scores should have conformable dimensions."
+            )
         if cost.shape[0] > 1 and cost.shape[0] != reward.shape[0]:
-            raise ValueError("reward, costs, and evaluation scores should have conformable dimensions.")
+            raise ValueError(
+                "reward, costs, and evaluation scores should have conformable dimensions."
+            )
         if np.any(cost <= 0):
             raise ValueError("cost should be > 0.")
 
         if np.isnan(reward).any() or np.isnan(DR_scores).any() or np.isnan(cost).any():
-            raise ValueError("reward, costs, and evaluation scores should have no missing values.")
+            raise ValueError(
+                "reward, costs, and evaluation scores should have no missing values."
+            )
 
         self._path = solver_cpp(
-            np.ascontiguousarray(reward), np.ascontiguousarray(DR_scores), np.ascontiguousarray(cost),
-            self.budget, self.target_with_covariates, self.n_bootstrap, self.paired_inference,
-            self.n_threads, self.seed
+            np.ascontiguousarray(reward),
+            np.ascontiguousarray(DR_scores),
+            np.ascontiguousarray(cost),
+            self.budget,
+            self.target_with_covariates,
+            self.n_bootstrap,
+            self.paired_inference,
+            self.n_threads,
+            self.seed,
         )
 
         self._is_fit = True
@@ -265,8 +288,8 @@ class MAQ:
             else:
                 return np.zeros(self._dim[0], dtype="int")
 
-        ipath = self._path["ipath"][:path_idx + 1]
-        kpath = self._path["kpath"][:path_idx + 1]
+        ipath = self._path["ipath"][: path_idx + 1]
+        kpath = self._path["kpath"][: path_idx + 1]
         ix = np.unique(ipath[::-1], return_index=True)[1]
 
         if prediction_type == "vector":
@@ -284,7 +307,7 @@ class MAQ:
         spend_diff = spend - spend_grid[path_idx]
         next_unit = self._path["ipath"][path_idx + 1]
         next_arm = self._path["kpath"][path_idx + 1]
-        prev_arm = np.nonzero(pi_mat[next_unit, ])[0] # already assigned?
+        prev_arm = np.nonzero(pi_mat[next_unit,])[0]  # already assigned?
 
         fraction = spend_diff / (spend_grid[path_idx + 1] - spend_grid[path_idx])
         pi_mat[next_unit, next_arm] = fraction
@@ -324,9 +347,17 @@ class MAQ:
             estimate = gain_path[path_idx]
             std_err = se_path[path_idx]
         else:
-            interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
-            estimate = gain_path[path_idx] + (gain_path[path_idx + 1] - gain_path[path_idx]) * interp_ratio
-            std_err = se_path[path_idx] + (se_path[path_idx + 1] - se_path[path_idx]) * interp_ratio
+            interp_ratio = (spend - spend_grid[path_idx]) / (
+                spend_grid[path_idx + 1] - spend_grid[path_idx]
+            )
+            estimate = (
+                gain_path[path_idx]
+                + (gain_path[path_idx + 1] - gain_path[path_idx]) * interp_ratio
+            )
+            std_err = (
+                se_path[path_idx]
+                + (se_path[path_idx + 1] - se_path[path_idx]) * interp_ratio
+            )
 
         return estimate, std_err
 
@@ -353,14 +384,17 @@ class MAQ:
         other._ensure_fit()
         if not other._path["complete_path"] and spend > other.budget:
             raise ValueError("comparison maq path is not fit beyond given spend level.")
-        if (self.seed != other.seed or
-            self.n_bootstrap != other.n_bootstrap or
-            self._dim[0] != other._dim[0] or
-            not self.paired_inference or
-            not other.paired_inference):
+        if (
+            self.seed != other.seed
+            or self.n_bootstrap != other.n_bootstrap
+            or self._dim[0] != other._dim[0]
+            or not self.paired_inference
+            or not other.paired_inference
+        ):
             raise ValueError(
                 """Paired comparisons require maq objects to be fit with paired_inference=True
-                as well as with the same random seed, bootstrap replicates, and data.""")
+                as well as with the same random seed, bootstrap replicates, and data."""
+            )
         point_estimate = self.average_gain(spend)[0] - other.average_gain(spend)[0]
         if self.n_bootstrap < 2:
             return point_estimate, 0
@@ -375,8 +409,13 @@ class MAQ:
             elif path_idx == spend_grid.shape[0] - 1:
                 estimates = gain_bs[:, path_idx]
             else:
-                interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
-                estimates = gain_bs[:, path_idx] + (gain_bs[:, path_idx + 1] - gain_bs[:, path_idx]) * interp_ratio
+                interp_ratio = (spend - spend_grid[path_idx]) / (
+                    spend_grid[path_idx + 1] - spend_grid[path_idx]
+                )
+                estimates = (
+                    gain_bs[:, path_idx]
+                    + (gain_bs[:, path_idx + 1] - gain_bs[:, path_idx]) * interp_ratio
+                )
             return estimates
 
         estimates_lhs = _get_estimates(self)
@@ -410,14 +449,17 @@ class MAQ:
         other._ensure_fit()
         if not other._path["complete_path"] and spend > other.budget:
             raise ValueError("comparison maq path is not fit beyond given spend level.")
-        if (self.seed != other.seed or
-            self.n_bootstrap != other.n_bootstrap or
-            self._dim[0] != other._dim[0] or
-            not self.paired_inference or
-            not other.paired_inference):
+        if (
+            self.seed != other.seed
+            or self.n_bootstrap != other.n_bootstrap
+            or self._dim[0] != other._dim[0]
+            or not self.paired_inference
+            or not other.paired_inference
+        ):
             raise ValueError(
                 """Paired comparisons require maq objects to be fit with paired_inference=True
-                as well as with the same random seed, bootstrap replicates, and data.""")
+                as well as with the same random seed, bootstrap replicates, and data."""
+            )
 
         # Estimate an AUC via estimating the difference \int_{0}^{\bar B} Q_a(B)dB - \int_{0}^{\bar B} Q_b(B)dB.
         def _get_estimates(gain, spend_grid, path_idx):
@@ -431,11 +473,15 @@ class MAQ:
                     area_offset = gain[:, path_idx] * spend_delta
                 estimates = np.nanmean(gain, axis=1) + area_offset
             else:
-                interp_ratio = (spend - spend_grid[path_idx]) / (spend_grid[path_idx + 1] - spend_grid[path_idx])
-                adj = gain[:, path_idx] + (gain[:, path_idx + 1] - gain[:, path_idx]) * interp_ratio
+                interp_ratio = (spend - spend_grid[path_idx]) / (
+                    spend_grid[path_idx + 1] - spend_grid[path_idx]
+                )
+                adj = (
+                    gain[:, path_idx]
+                    + (gain[:, path_idx + 1] - gain[:, path_idx]) * interp_ratio
+                )
                 estimates = np.nanmean(
-                    np.hstack((gain[:, :path_idx + 1], adj[:, None])),
-                    axis=1
+                    np.hstack((gain[:, : path_idx + 1], adj[:, None])), axis=1
                 )
 
             return estimates
@@ -443,21 +489,23 @@ class MAQ:
         path_idx_lhs = np.searchsorted(self._path["spend"], spend, side="right") - 1
         path_idx_rhs = np.searchsorted(other._path["spend"], spend, side="right") - 1
 
-        point_estimate = _get_estimates(self._path["gain"][None, :],
-                                        self._path["spend"],
-                                        path_idx_lhs)[0] - \
-                            _get_estimates(other._path["gain"][None, :],
-                                            other._path["spend"],
-                                            path_idx_rhs)[0]
+        point_estimate = (
+            _get_estimates(
+                self._path["gain"][None, :], self._path["spend"], path_idx_lhs
+            )[0]
+            - _get_estimates(
+                other._path["gain"][None, :], other._path["spend"], path_idx_rhs
+            )[0]
+        )
         if self.n_bootstrap < 2:
             return point_estimate, 0
         # Compute paired std.errors
-        estimates_lhs = _get_estimates(self._path["gain_bs"],
-                                       self._path["spend"],
-                                       path_idx_lhs)
-        estimates_rhs = _get_estimates(other._path["gain_bs"],
-                                       other._path["spend"],
-                                       path_idx_rhs)
+        estimates_lhs = _get_estimates(
+            self._path["gain_bs"], self._path["spend"], path_idx_lhs
+        )
+        estimates_rhs = _get_estimates(
+            other._path["gain_bs"], other._path["spend"], path_idx_rhs
+        )
         std_err = np.nanstd(estimates_lhs - estimates_rhs)
         if np.isnan(std_err):
             std_err = 0
@@ -488,8 +536,20 @@ class MAQ:
         if show_ci:
             ub = self.path_gain_ + 1.96 * self.path_std_err_
             lb = self.path_gain_ - 1.96 * self.path_std_err_
-            plt.plot(self.path_spend_, ub, color=kwargs["color"], linestyle="dashed", linewidth=1)
-            plt.plot(self.path_spend_, lb, color=kwargs["color"], linestyle="dashed", linewidth=1)
+            plt.plot(
+                self.path_spend_,
+                ub,
+                color=kwargs["color"],
+                linestyle="dashed",
+                linewidth=1,
+            )
+            plt.plot(
+                self.path_spend_,
+                lb,
+                color=kwargs["color"],
+                linestyle="dashed",
+                linewidth=1,
+            )
         plt.xlabel("spend")
         plt.ylabel("gain")
 
@@ -525,6 +585,7 @@ class MAQ:
     def __repr__(self):
         if self._is_fit:
             return "MAQ object with {} units and {} arms.".format(
-                self._dim[0], self._dim[1])
+                self._dim[0], self._dim[1]
+            )
         else:
             return "MAQ object (not fit)."
