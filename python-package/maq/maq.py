@@ -77,14 +77,14 @@ class MAQ:
 
     Given n test set samples and K treatment arms, construct a Qini curve Q(B) that quantifies the
     value of assigning treatment in accordance with an estimated treatment effect function
-    while satisfying a budget constraint s.t. the given costs are at most equal to B on average.
+    while satisfying a budget constraint B.
 
     Parameters
     ----------
     budget : scalar, default=None
         The maximum spend per unit to fit the Qini curve on.
         Setting this to None (Default), will fit the path up to a maximum spend per unit
-        where each unit that is expected to benefit (that is hat tau_k(X_i) > 0) is treated.
+        where each unit that is expected to benefit is treated (that is, hat tau_k(X_i) > 0).
 
     target_with_covariates : bool, default=True
         If TRUE, then the optimal policy takes covariates into account. If FALSE, then the optimal policy
@@ -124,25 +124,25 @@ class MAQ:
     >>> import numpy as np
     >>> from maq import MAQ
 
-    Fit a MAQ up to the maximum spend per unit.
+    Fit a Qini curve on toy data.
 
     >>> np.random.seed(42)
     >>> n = 1000
     >>> K = 5
-    >>> reward = np.random.randn(n, K)
+    >>> tau_hat = np.random.randn(n, K)
     >>> cost = np.random.rand(n, K)
-    >>> reward_eval = np.random.randn(n, K)
+    >>> DR_scores = np.random.randn(n, K)
 
     >>> mq = MAQ(n_bootstrap=200)
-    >>> mq.fit(reward, cost, reward_eval)
+    >>> mq.fit(tau_hat, cost, DR_scores)
     MAQ object with 1000 units and 5 arms.
 
-    Get an estimate of optimal gain at a given spend along with standard errors.
+    Get an estimate of gain at a given spend along with standard errors.
 
     >>> mq.average_gain(spend=0.1)
     (0.005729002695991717, 0.019814651108894354)
 
-    Get the optimal treatment allocation matrix at a given spend, a n x K array.
+    Get the underlying treatment allocation matrix at a given spend, a n x K array.
 
     >>> mq.predict(spend=0.1)
     array([[0., 0., 0., 1., 0.],
@@ -153,22 +153,13 @@ class MAQ:
            [0., 0., 0., 1., 0.],
            [0., 0., 1., 0., 0.]])
 
-    Plot the gain curve.
+    Plot the Qini curve (requires matplotlib).
 
-    >>> import matplotlib.pyplot as plt # doctest: +SKIP
-
-    >>> plt.plot(mq.path_spend_, mq.path_gain_) # doctest: +SKIP
-    >>> plt.xlabel("Spend/unit") # doctest: +SKIP
-    >>> plt.title("Gain/unit") # doctest: +SKIP
-    >>> plt.show() # doctest: +SKIP
+    >>> mq.plot() # doctest: +SKIP
 
     Show 95% confidence bars.
 
-    >>> ub = mq.path_gain_ + 1.96 * mq.path_std_err_
-    >>> lb = mq.path_gain_ - 1.96 * mq.path_std_err_
-    >>> plt.plot(mq.path_spend_, ub, color="black", linestyle="dashed") # doctest: +SKIP
-    >>> plt.plot(mq.path_spend_, lb, color="black", linestyle="dashed") # doctest: +SKIP
-    >>> plt.show() # doctest: +SKIP
+    >>> mq.plot(show_ci=True) # doctest: +SKIP
     """
     def __init__(self,
                 budget=None,
