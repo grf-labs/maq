@@ -515,6 +515,9 @@ class MAQ:
     def plot(self, show_ci=False, **kwargs):
         """Plot the Qini curve (requires matplotlib).
 
+        If the underlying policy involves treating zero units (as would be the case if all
+        reward estimates are negative or the average is <0), then nothing is plot.
+
         Parameters
         ----------
         show_ci : bool
