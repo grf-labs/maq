@@ -547,14 +547,14 @@ class MAQ:
                 self.path_spend_,
                 ub,
                 color=kwargs["color"],
-                linestyle="dashed",
+                linestyle="dotted",
                 linewidth=1,
             )
             plt.plot(
                 self.path_spend_,
                 lb,
                 color=kwargs["color"],
-                linestyle="dashed",
+                linestyle="dotted",
                 linewidth=1,
             )
         plt.xlabel("spend")
