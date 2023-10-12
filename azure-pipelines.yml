@@ -79,9 +79,16 @@ jobs:
     inputs:
       versionSpec: '3.10'
   - script: |
-      pip install numpy cython pytest wheel
+      pip install numpy cython wheel
+      pip install pytest
+      pip install flake8
     workingDirectory: 'python-package'
     displayName: 'Setup Python'
+   - script: |
+      flake8 --ignore=E501,W503
+    workingDirectory: 'python-package'
+    displayName: 'Run lint'
+    condition: eq(variables['Agent.OS'], 'Darwin')
   - script: |
       pip install -v .
       pytest
