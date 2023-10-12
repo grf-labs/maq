@@ -1,4 +1,3 @@
-import pytest
 import doctest
 import numpy as np
 import numpy.testing as nt
