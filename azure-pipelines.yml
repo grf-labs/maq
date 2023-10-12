@@ -89,7 +89,7 @@ jobs:
     workingDirectory: 'python-package'
     displayName: 'Install Python bindings'
   - script: |
-      pip install pytest
+      pip install numpy pytest
       pytest
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
