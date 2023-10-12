@@ -532,7 +532,7 @@ class MAQ:
         # curve plateaus
         try:
             import matplotlib.pyplot as plt
-        except:
+        except ImportError:
             raise ImportError("plot method requires matplotlib.")
 
         if not "color" in kwargs:
