@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from maq.ext import solver_cpp
 
