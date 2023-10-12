@@ -1,4 +1,3 @@
-import pytest
 import doctest
 import numpy as np
 import numpy.testing as nt
@@ -240,10 +239,11 @@ def test_integrated_difference_grid_numerics():
     for i, spend in enumerate(sp):
         g1 += q1.average_gain(spend)[0]
         g2 += q2.average_gain(spend)[0]
-
-        estt = np.mean(q1.path_gain_[: i + 1]) - np.mean(q2.path_gain_[: i + 1])
+        est1 = (g1 - g2) / (i + 1)
+        est2 = np.mean(q1.path_gain_[: i + 1]) - np.mean(q2.path_gain_[: i + 1])
         est = q1.integrated_difference(q2, spend)[0]
-        nt.assert_allclose(est, estt, rtol=1e-07)
+        nt.assert_allclose(est1, est2, rtol=1e-10)
+        nt.assert_allclose(est, est2, rtol=1e-10)
 
 
 def test_basic_perf_timing():
