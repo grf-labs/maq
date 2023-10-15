@@ -434,6 +434,38 @@ test_that("avg maq works as expected", {
   expect_equal(mean(res[, "cov3"]), 0.95, tolerance = 0.04)
 })
 
+test_that("avg maq mimics an IPW estimated mean", {
+  n <- 3000
+  p <- 5
+  res <- t(replicate(75, {
+    X <- matrix(runif(n * p), n, p)
+    W <- sample(c(0, 1), n, replace = TRUE)
+    Y <- X[, 1] + X[, 2] * (W == 1) + rnorm(n)
+    train <- sample(1:n, n/2)
+    test <- -train
+
+    tau.forest <- grf::causal_forest(X[train, ], Y[train], W[train], Y.hat = X[train, 1], W.hat = 0.5, num.trees = 500)
+    tau.hat <- predict(tau.forest, X[test, ])$predictions
+    scores <- get_ipw_scores(Y[test], as.factor(W[test]))
+
+    qini <- maq(tau.hat, 1, scores, target.with.covariates = FALSE, R = 200)
+
+    est <- average_gain(qini, 1)
+    cov1 <- as.integer(abs(est[[1]] - 0.5) / est[[2]] <= 1.96)
+
+    est2 <- average_gain(qini, 0.5)
+    cov2 <- as.integer(abs(est2[[1]] - 0.25) / est2[[2]] <= 1.96)
+
+    c(
+      cov1 = cov1,
+      cov2 = cov2
+    )
+  }))
+
+  expect_equal(mean(res[, 1]), 0.95, tolerance = 0.05)
+  expect_equal(mean(res[, 2]), 0.95, tolerance = 0.05)
+})
+
 test_that("predict type works as expected", {
   n <- 500
   K <- 10
