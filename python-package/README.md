@@ -10,9 +10,6 @@ Installing from source requires Cython, Numpy, and a C++ compiler (11 or higher)
 The development version can be installed with:
 ```
 pip install "git+https://github.com/grf-labs/maq.git#egg=maq&subdirectory=python-package"
-# or:
-git clone https://github.com/grf-labs/maq.git && cd maq/python-package
-pip install .
 ```
 
 ### Usage Example
