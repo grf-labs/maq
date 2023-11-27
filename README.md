@@ -3,7 +3,7 @@
 [![CRANstatus](https://www.r-pkg.org/badges/version/maq)](https://cran.r-project.org/package=maq)
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A package for evaluating multi-armed treatment rules via the Multi-Armed Qini ("maq") - a generalization of the Qini curve to multiple costly treatment arms.
+A package for evaluating multi-armed treatment rules via the Multi-Armed Qini - a generalization of the Qini curve to multiple costly treatment arms.
 
 * Introduction: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 
@@ -74,9 +74,13 @@ mq.ipw <- maq(tau.hat, cost, IPW.scores)
 
 ### Details
 
-Consider a set of costly and mutually exclusive treatment arms $k = 0, \ldots, K$ where $k=0$ is a zero-cost control. Let $\hat \tau(X_i)$ be a vector of treatment effect estimates for unit $i$, i.e. the $k$-th element ($k > 0$) is $\hat \mu_{ik} - \hat \mu_{i0}$, where $\mu_{ik} = E[Y_i(k) | X_i = x]$. Let $C(X_i)$ be a vector of positive cost, i.e. the $k$-th element measures the cost of assigning unit $i$ arm $k$.
+Let $\hat \tau(\cdot)$ be an estimated CATE function where the $k$-th element measures the conditional average treatment effect $E[Y_i(k) - Y_i(0) | X_i]$ for a given unit $X_i$ for one of $k=1, \ldots, K$ treatment arms, where $k=0$ is a control arm. Let $C(\cdot)$ be some known cost function that quantifies the cost of assigning a given treatment arm to the $i$-th unit. `maq` delivers estimates of the Qini curve
 
-Given the functions $\hat \tau(\cdot)$ and $C(\cdot)$, `maq` delivers a Qini curve that quantifies the value of optimally assigning treatment subject to a budget constraint. The policies underlying this treatment allocation (which arm to assign to which unit at every budget constraint) are a solution to a series of linear programs, which maq solves efficiently.
+$$
+Q(B) = E[\langle \pi_B(X_i),~ \tau(X_i)\rangle],
+$$
+
+which is the expected gain, at any budget constraint $B$, when assigning treatment using the policy $\pi_B$ that optimally selects (using the given functions $\hat \tau(\cdot)$ and $C(\cdot))$ which arm to assign to which unit such that the average incurred cost is less than or equal to $B$. The policy $\pi_B$ is a solution to a linear program: `maq` computes a solution path for these treatment allocations over increasing budget levels $B$ via an algorithm that leverages the multiple-choice knapsack structure of this problem.
 
 ### References
 
