@@ -162,13 +162,9 @@ class MAQ:
            [0., 0., 0., 1., 0.],
            [0., 0., 1., 0., 0.]])
 
-    Plot the Qini curve (requires matplotlib).
+    Plot the Qini curve along with 95% confidence bars (requires matplotlib).
 
     >>> mq.plot() # doctest: +SKIP
-
-    Show 95% confidence bars.
-
-    >>> mq.plot(show_ci=True) # doctest: +SKIP
     """
 
     def __init__(
@@ -516,7 +512,7 @@ class MAQ:
 
         return point_estimate, std_err
 
-    def plot(self, horizontal_line=True, show_ci=False, **kwargs):
+    def plot(self, horizontal_line=True, show_ci=True, **kwargs):
         """Plot the Qini curve (requires matplotlib).
 
         If the underlying policy involves treating zero units (as would be the case if all
