@@ -516,7 +516,7 @@ class MAQ:
 
         return point_estimate, std_err
 
-    def plot(self, show_ci=False, **kwargs):
+    def plot(self, horizontal_line=True, show_ci=False, **kwargs):
         """Plot the Qini curve (requires matplotlib).
 
         If the underlying policy involves treating zero units (as would be the case if all
@@ -524,22 +524,39 @@ class MAQ:
 
         Parameters
         ----------
+        horizontal_line : bool
+            Whether to draw a horizontal line where the Qini curve plateaus.
+            Only applies if adding to an existing plot where the x-axis extends beyond this curve
+            and the maq object is fit with a maximum budget that is sufficient to treat all units
+            that are expected to benefit.
         show_ci : bool
             Whether to show estimated 95% confidence bars.
         **kwargs : additional arguments passed to matplotlib.pyplot
         """
-        # TODO: add functionality for drawing a horizontal line where a Qini curve plateaus
-        # TODO: also consider returning plot
         try:
             import matplotlib.pyplot as plt
+            from matplotlib import rcParams
         except ImportError:
             raise ImportError("plot method requires matplotlib.")
 
+        # matplotlib by default extends the axis xlim by 5% (rcParams["axes.xmargin"])
+        xscaling = 1 + rcParams["axes.xmargin"]
         if "color" not in kwargs:
             kwargs["color"] = "black"
+
         plt.plot(self.path_spend_, self.path_gain_, **kwargs)
         if "label" in kwargs:
             plt.legend(loc="upper left")
+            del kwargs["label"]
+
+        if horizontal_line and self._path["complete_path"]:
+            plt.hlines(
+                y=self.path_gain_[-1],
+                xmin=self.path_spend_[-1],
+                xmax=plt.xlim()[1] / xscaling,
+                **kwargs
+            )
+
         if show_ci:
             ub = self.path_gain_ + 1.96 * self.path_std_err_
             lb = self.path_gain_ - 1.96 * self.path_std_err_
@@ -557,6 +574,24 @@ class MAQ:
                 linestyle="dotted",
                 linewidth=1,
             )
+            if horizontal_line and self._path["complete_path"]:
+                plt.hlines(
+                    y=ub[-1],
+                    xmin=self.path_spend_[-1],
+                    xmax=plt.xlim()[1] / xscaling,
+                    color=kwargs["color"],
+                    linestyle="dotted",
+                    linewidth=1,
+                )
+                plt.hlines(
+                    y=lb[-1],
+                    xmin=self.path_spend_[-1],
+                    xmax=plt.xlim()[1] / xscaling,
+                    color=kwargs["color"],
+                    linestyle="dotted",
+                    linewidth=1,
+                )
+
         plt.xlabel("spend")
         plt.ylabel("gain")
 
