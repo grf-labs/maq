@@ -545,6 +545,10 @@ class MAQ:
             kwargs["color"] = "black"
 
         plt.plot(self.path_spend_, self.path_gain_, **kwargs)
+        if "label" in kwargs:
+            plt.legend(loc="upper left")
+            del kwargs["label"]
+
         if horizontal_line and self._path["complete_path"]:
             plt.hlines(
                 y=self.path_gain_[-1],
@@ -588,8 +592,6 @@ class MAQ:
                     linewidth=1,
                 )
 
-        if "label" in kwargs:
-            plt.legend(loc="upper left")
         plt.xlabel("spend")
         plt.ylabel("gain")
 
