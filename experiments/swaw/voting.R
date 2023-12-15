@@ -23,9 +23,6 @@ X = cbind(
   voted.primary2004 = as.integer(raw$p2004 == "Yes")
 )
 
-# The true propensities
-W.hat = c(10/18, 2/18, 2/18, 2/18, 2/18)
-# summary(W) / length(W)
 
 # Draw a random sample of households for train/evaluation (50/50)
 samples.by.hh = split(seq_along(cluster), cluster)
@@ -39,11 +36,8 @@ average_treatment_effect(cf.train)
 head(tau.hat.eval)
 
 # Evaluate via IPW
-observed.W = match(W, levels(W))
-Y.k.mat = matrix(0, length(W), nlevels(W))
-Y.k.mat[cbind(seq_along(observed.W), observed.W)] = Y
-Y.k.ipw = sweep(Y.k.mat, 2, W.hat, "/")
-Y.k.ipw.eval = Y.k.ipw[eval, -1] - Y.k.ipw[eval, 1]
+W.hat = c(10/18, 2/18, 2/18, 2/18, 2/18) # The trial's randomization probabilities
+Y.k.ipw.eval = get_ipw_scores(Y[eval], W[eval], W.hat)
 
 ## save/load R-session with fit forests
 # save.image("voting.RData", compress = TRUE)
