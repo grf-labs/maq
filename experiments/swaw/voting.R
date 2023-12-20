@@ -30,13 +30,13 @@ num.hh = length(samples.by.hh)
 train = unlist(samples.by.hh[sample(1:num.hh, num.hh / 2)], use.names = FALSE)
 eval = -train
 
+W.hat = c(10/18, 2/18, 2/18, 2/18, 2/18) # The trial's randomization probabilities
 cf.train = multi_arm_causal_forest(X[train, ], Y[train], W[train], W.hat = W.hat, clusters = cluster[train])
 tau.hat.eval = predict(cf.train, X[eval, ], drop = TRUE)$predictions
 average_treatment_effect(cf.train)
 head(tau.hat.eval)
 
-# Evaluate via IPW
-W.hat = c(10/18, 2/18, 2/18, 2/18, 2/18) # The trial's randomization probabilities
+# Evaluate Qini via IPW
 Y.k.ipw.eval = get_ipw_scores(Y[eval], W[eval], W.hat)
 
 ## save/load R-session with fit forests
