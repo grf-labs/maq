@@ -36,7 +36,7 @@ ext = Extension(
 
 setup(
     name="maq",
-    version="0.1.0",
+    version="0.2.1",
     packages=find_packages(include=["maq"]),
     ext_modules=cythonize(ext, compiler_directives={"language_level": 3}),
     url="https://github.com/grf-labs/maq",
