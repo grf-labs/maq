@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.2] - 2023-12-23
 
 ### Fixed
-- Fix some documentation clarifications. [#62](https://github.com/grf-labs/maq/pull/62)
+- Fix some documentation clarifications. [#63](https://github.com/grf-labs/maq/pull/63)
 
 ## [0.2.1] - 2023-12-19
 
