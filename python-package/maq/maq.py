@@ -81,11 +81,16 @@ def get_ipw_scores(Y, W, W_hat=None):
 
 
 class MAQ:
-    """Fit a Multi-Armed Qini.
+    """Fit a Qini curve for costly multi-armed policies.
 
-    Given n test set samples and K treatment arms, construct a Qini curve Q(B) that quantifies the
-    value of assigning treatment in accordance with an estimated treatment effect function
-    while satisfying a budget constraint B.
+    Given a test sample of treatment effect estimates tau for K treatment arms with known and varying costs,
+    fit a Qini curve Q(B) that quantifies the expected gain when assigning treatment in accordance with
+    these estimates while satisfying a budget constraint requiring the average incurred cost to be equal
+    to at most B.
+
+    The treatment allocation policies underlying the multi-armed Qini curve (which unit to assign which arm
+    at every budget constraint) is a solution to a series of linear programs.
+    For complete details see the reference at https://arxiv.org/abs/2306.11979.
 
     Parameters
     ----------
@@ -100,7 +105,7 @@ class MAQ:
         construct a baseline Qini curve to assess the value of targeting with covariates.
 
     n_bootstrap : int, default=0
-        Number of bootstrap replicates for SEs. Default is 0.
+        Number of bootstrap replicates for SEs. Default is 0 (only point estimates are computed).
 
     paired_inference : bool, default=True
         Whether to allow for paired tests with other Qini curves fit on the same evaluation data.
@@ -140,6 +145,9 @@ class MAQ:
     >>> K = 5
     >>> tau_hat = np.random.randn(n, K)
     >>> cost = np.random.rand(n, K)
+
+    Evaluation scores
+
     >>> DR_scores = np.random.randn(n, K)
 
     >>> mq = MAQ(n_bootstrap=200)
@@ -196,14 +204,15 @@ class MAQ:
         ----------
         reward : ndarray
             A matrix of reward estimates with rows corresponding to units and columns containing
-            the treatment effect estimates for the K different arms.
+            the treatment effect estimates tau for the K different arms.
 
         cost : ndarray
-            A matrix of costs. If the costs only vary by arm and not by unit, then this
+            A matrix of costs measuring the cost of assigning an arm k to unit i.
+            If the costs only vary by arm and not by unit, then this
             can also be a K-vector of costs for each arm.
 
         DR_scores : ndarray
-            A matrix of evaluation scores to estimate the Qini curve on.
+            A matrix of evaluation scores to estimate the Qini curve with.
         """
         # ensure dims are (n, K)
         reward = np.reshape(reward, (reward.shape[0], -1))
@@ -247,12 +256,12 @@ class MAQ:
         return self
 
     def predict(self, spend, prediction_type="matrix"):
-        """Predict treatment allocation.
+        """Predict the underlying treatment allocation pi_B.
 
         Parameters
         ----------
         spend : scalar
-            The budget constraint level to predict at.
+            The budget constraint level B to predict at.
 
         type : str
             If "matrix", then represent the underlying treatment allocation as a num_samples * K
@@ -268,7 +277,7 @@ class MAQ:
 
         Returns
         -------
-        pi_mat : ndarray
+        pi_B : ndarray
             The treatment allocation at a given spend per unit.
         """
 
@@ -314,7 +323,7 @@ class MAQ:
         return pi_mat
 
     def average_gain(self, spend):
-        """Get estimate of gain given a spend level.
+        """Get estimate of gain Q(B) at a spend level B.
 
         Parameters
         ----------
@@ -324,7 +333,7 @@ class MAQ:
         Returns
         -------
         estimate, std_error : tuple
-            Estimate of gain along with standard errors.
+            Estimate of gain Q(B) along with standard errors.
         """
 
         assert np.isscalar(spend), "spend should be a scalar."
@@ -367,7 +376,7 @@ class MAQ:
             The other Qini curve to subtract with.
 
         spend : scalar
-            The spend level.
+            The spend level B.
 
         Returns
         -------
@@ -432,7 +441,7 @@ class MAQ:
             The other Qini curve to subtract with.
 
         spend : scalar
-            The spend level.
+            The spend level B.
 
         Returns
         -------
@@ -516,7 +525,7 @@ class MAQ:
         """Plot the Qini curve (requires matplotlib).
 
         If the underlying policy involves treating zero units (as would be the case if all
-        reward estimates are negative or the average is <0), then nothing is plot.
+        reward estimates are negative), then nothing is plot.
 
         Parameters
         ----------
