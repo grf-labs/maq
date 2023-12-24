@@ -4,7 +4,7 @@ from maq.ext import solver_cpp
 
 
 def get_ipw_scores(Y, W, W_hat=None):
-    """Construct evaluation scores via inverse-propensity weighting.
+    """Construct evaluation scores for multi-armed Qini curves via inverse-propensity weighting.
 
     Parameters
     ----------
