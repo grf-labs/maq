@@ -81,7 +81,7 @@ def get_ipw_scores(Y, W, W_hat=None):
 
 
 class MAQ:
-    """Fit a Qini curve for costly multi-armed policies.
+    """Fit a Qini curve for costly multi-armed treatments.
 
     Given a test sample of treatment effect estimates tau for K treatment arms with known and varying costs,
     fit a Qini curve Q(B) that quantifies the expected gain when assigning treatment in accordance with
