@@ -13,7 +13,7 @@ Bump patch release version (1.0.0 → 1.0.1), or minor version if it’s a bigge
 
 **Python**
 
-Bump the version in setup.py and in Python's `README.md` install link. Update the Python CHANGELOG.
+Bump the version in `setup.py` and in Python's `README.md` install link. Update the Python CHANGELOG.
 If breaking Python changes, make sure to reflect these in the causalML notebook too. Reflect Python versions with a pyx.x.x tag.
 
 **2) Make sure there are no performance regressions**
