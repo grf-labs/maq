@@ -38,7 +38,7 @@ n <- 5000
 W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
 Y <- 42 * (W == "B") - 42 * (W == "C") + rnorm(n)
 IPW.scores <- get_ipw_scores(Y, W)
-# An estimate of E[Y(B) - Y(A)] and E[Y(C) - Y(A)]. Should be approx 42 and -42.
+# An IPW-based estimate of E[Y(B) - Y(A)] and E[Y(C) - Y(A)]. Should be approx 42 and -42.
 colMeans(IPW.scores)
 
 # Draw non-uniformly from the different arms.
