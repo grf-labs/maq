@@ -28,7 +28,7 @@
 #' W <- as.factor(sample(c("A", "B", "C"), n, replace = TRUE))
 #' Y <- 42 * (W == "B") - 42 * (W == "C") + rnorm(n)
 #' IPW.scores <- get_ipw_scores(Y, W)
-#' # An estimate of E[Y(B) - Y(A)] and E[Y(C) - Y(A)]. Should be approx 42 and -42.
+#' # An IPW-based estimate of E[Y(B) - Y(A)] and E[Y(C) - Y(A)]. Should be approx 42 and -42.
 #' colMeans(IPW.scores)
 #'
 #' # Draw non-uniformly from the different arms.
@@ -51,14 +51,17 @@ get_ipw_scores <- function(Y,
     stop("Y and W should be equal-length vectors with no missing entries.")
   }
   K.plus1 <- nlevels(W)
+  if (K.plus1 == 1) {
+    stop("There is only one treatment level.")
+  }
   if (is.null(W.hat)) {
     W.hat <- rep(1 / K.plus1, K.plus1)
   }
-  if (anyNA(W.hat) || any(W.hat <= 0) || any(W.hat >= 1)) {
+  if (anyNA(W.hat) || any(W.hat < 0) || any(W.hat > 1)) {
     stop("W.hat entries should be non-missing and between (0, 1).")
   }
   if (is.vector(W.hat) && length(W.hat) == K.plus1) {
-    W.hat <- matrix(W.hat, length(Y), length(W.hat), byrow = TRUE)
+    W.hat <- matrix(W.hat, length(W), length(W.hat), byrow = TRUE)
   }
   if (NROW(W.hat) != length(W) || NCOL(W.hat) != K.plus1) {
     stop("W.hat should either be a (K+1)-length vector or a n*(K+1) matrix of treatment propensities.")
@@ -66,11 +69,17 @@ get_ipw_scores <- function(Y,
   if (any(abs(rowSums(W.hat) - 1) > 1e-5)) {
     stop("W.hat propensities should sum to 1.")
   }
+  if (any(W.hat < 0.05) || any(W.hat > 0.95)) {
+    warning("Some treatment propensities are lower/higher than 0.05/0.95 - overlap may be an issue.")
+  }
 
   observed.W <- match(W, levels(W))
   Y.mat <- matrix(0, length(W), K.plus1)
   Y.mat[cbind(seq_along(observed.W), observed.W)] <- Y
   Y.ipw <- Y.mat / W.hat
 
-  Y.ipw[, -1] - Y.ipw[, 1]
+  out <- Y.ipw[, -1, drop = FALSE] - Y.ipw[, 1]
+  colnames(out) <- paste(levels(W)[-1], "-", levels(W)[1])
+
+  out
 }
