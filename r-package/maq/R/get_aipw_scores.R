@@ -54,7 +54,7 @@
 #' Y1.forest <- grf::regression_forest(X.test[W.test == 1, ], Y.test[W.test == 1])
 #' Y2.forest <- grf::regression_forest(X.test[W.test == 2, ], Y.test[W.test == 2])
 #' Y.hat = cbind(
-#'    mu0 = predict(Y0.forest, X.test)$predictions,
+#'    mu0 = predict(Y0.forest, X.test)$predictions + frog,
 #'    mu1 = predict(Y1.forest, X.test)$predictions,
 #'    mu2 = predict(Y2.forest, X.test)$predictions
 #' )
