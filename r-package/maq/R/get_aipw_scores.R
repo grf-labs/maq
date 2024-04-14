@@ -79,6 +79,9 @@ get_aipw_scores <- function(Y,
   if (!is.factor(W)) {
     stop("W should be a factor vector.")
   }
+  if (length(Y) != length(W) || anyNA(Y) || anyNA(W)) {
+    stop("Y and W should be equal-length vectors with no missing entries.")
+  }
   K.plus1 <- nlevels(W)
   if (K.plus1 == 1) {
     stop("There is only one treatment level.")
@@ -97,9 +100,6 @@ get_aipw_scores <- function(Y,
   }
   if (any(abs(rowSums(W.hat) - 1) > 1e-5)) {
     stop("W.hat propensities should sum to 1.")
-  }
-  if (length(Y) != length(W) || anyNA(Y) || anyNA(W)) {
-    stop("Y and W should be equal-length vectors with no missing entries.")
   }
   if (!identical(dim(Y.hat), dim(W.hat)) || anyNA(Y.hat)) {
     stop("Y.hat should be a matrix of conditional mean estimates for each arm.")
