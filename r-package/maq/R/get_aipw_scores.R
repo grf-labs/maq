@@ -6,7 +6,7 @@
 #' @param Y The observed outcome.
 #' @param W The observed treatment assignment (must be a factor vector,
 #'  where the first factor level is the control arm).
-#' @param Y.hat A matrix of conditional mean estimates for each arm, \eqn{E[Y_i | W_i = k, X_i]}.
+#' @param mu.hat A matrix of conditional mean estimates for each arm, \eqn{E[Y_i | W_i = k, X_i]}.
 #' @param W.hat Optional treatment propensities. If these vary by unit and arm, then
 #'  this should be a matrix with the treatment assignment
 #'  probability of units to arms, with columns corresponding to the levels of `W`.
@@ -28,6 +28,7 @@
 #' @examples
 #' \donttest{
 #' if (require("grf", quietly = TRUE)) {
+#' # Simulate data with two treatment arms (k = 1, 2) and a control arm (k = 0).
 #' n <- 3000
 #' p <- 5
 #' X <- matrix(runif(n * p), n, p)
@@ -53,7 +54,7 @@
 #' Y0.forest <- grf::regression_forest(X.test[W.test == 0, ], Y.test[W.test == 0])
 #' Y1.forest <- grf::regression_forest(X.test[W.test == 1, ], Y.test[W.test == 1])
 #' Y2.forest <- grf::regression_forest(X.test[W.test == 2, ], Y.test[W.test == 2])
-#' Y.hat = cbind(
+#' mu.hat = cbind(
 #'    mu0 = predict(Y0.forest, X.test)$predictions,
 #'    mu1 = predict(Y1.forest, X.test)$predictions,
 #'    mu2 = predict(Y2.forest, X.test)$predictions
@@ -63,7 +64,7 @@
 #' W.hat <- predict(grf::probability_forest(X.test, W.test))$predictions
 #'
 #' # Form doubly robust scores.
-#' DR.scores <- get_aipw_scores(Y.test, W.test, Y.hat, W.hat)
+#' DR.scores <- get_aipw_scores(Y.test, W.test, mu.hat, W.hat)
 #'
 #' # Fit a Qini curve estimated with forest-based AIPW.
 #' qini <- maq(tau.hat, cost, DR.scores, R = 200)
@@ -74,7 +75,7 @@
 #' @export
 get_aipw_scores <- function(Y,
                             W,
-                            Y.hat,
+                            mu.hat,
                             W.hat = NULL) {
   if (!is.factor(W)) {
     stop("W should be a factor vector.")
@@ -101,8 +102,8 @@ get_aipw_scores <- function(Y,
   if (any(abs(rowSums(W.hat) - 1) > 1e-5)) {
     stop("W.hat propensities should sum to 1.")
   }
-  if (!identical(dim(Y.hat), dim(W.hat)) || anyNA(Y.hat)) {
-    stop("Y.hat should be a matrix of conditional mean estimates for each arm.")
+  if (!identical(dim(mu.hat), dim(W.hat)) || anyNA(mu.hat)) {
+    stop("mu.hat should be a matrix of conditional mean estimates for each arm.")
   }
   if (any(W.hat < 0.05) || any(W.hat > 0.95)) {
     warning("Some treatment propensities are lower/higher than 0.05/0.95 - overlap may be an issue.")
@@ -117,7 +118,7 @@ get_aipw_scores <- function(Y,
   IPW[control, -1] <- -1 * IPW[control, 1]
   IPW <- IPW[, -1, drop = FALSE]
 
-  out <- Y.hat[, -1, drop = FALSE] - Y.hat[, 1] + (Y - Y.hat[observed.W.idx]) * IPW
+  out <- mu.hat[, -1, drop = FALSE] - mu.hat[, 1] + (Y - mu.hat[observed.W.idx]) * IPW
   colnames(out) <- paste(levels(W)[-1], "-", levels(W)[1])
 
   out

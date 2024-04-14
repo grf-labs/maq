@@ -4,7 +4,7 @@
 \alias{get_aipw_scores}
 \title{Construct evaluation scores via augmented inverse-propensity weighting.}
 \usage{
-get_aipw_scores(Y, W, Y.hat, W.hat = NULL)
+get_aipw_scores(Y, W, mu.hat, W.hat = NULL)
 }
 \arguments{
 \item{Y}{The observed outcome.}
@@ -12,7 +12,7 @@ get_aipw_scores(Y, W, Y.hat, W.hat = NULL)
 \item{W}{The observed treatment assignment (must be a factor vector,
 where the first factor level is the control arm).}
 
-\item{Y.hat}{A matrix of conditional mean estimates for each arm, \eqn{E[Y_i | W_i = k, X_i]}.}
+\item{mu.hat}{A matrix of conditional mean estimates for each arm, \eqn{E[Y_i | W_i = k, X_i]}.}
 
 \item{W.hat}{Optional treatment propensities. If these vary by unit and arm, then
 this should be a matrix with the treatment assignment
@@ -32,6 +32,7 @@ of conditional means and treatment propensities.
 \examples{
 \donttest{
 if (require("grf", quietly = TRUE)) {
+# Simulate data with two treatment arms (k = 1, 2) and a control arm (k = 0).
 n <- 3000
 p <- 5
 X <- matrix(runif(n * p), n, p)
@@ -57,7 +58,7 @@ W.test <- W[test]
 Y0.forest <- grf::regression_forest(X.test[W.test == 0, ], Y.test[W.test == 0])
 Y1.forest <- grf::regression_forest(X.test[W.test == 1, ], Y.test[W.test == 1])
 Y2.forest <- grf::regression_forest(X.test[W.test == 2, ], Y.test[W.test == 2])
-Y.hat = cbind(
+mu.hat = cbind(
    mu0 = predict(Y0.forest, X.test)$predictions,
    mu1 = predict(Y1.forest, X.test)$predictions,
    mu2 = predict(Y2.forest, X.test)$predictions
@@ -67,7 +68,7 @@ Y.hat = cbind(
 W.hat <- predict(grf::probability_forest(X.test, W.test))$predictions
 
 # Form doubly robust scores.
-DR.scores <- get_aipw_scores(Y.test, W.test, Y.hat, W.hat)
+DR.scores <- get_aipw_scores(Y.test, W.test, mu.hat, W.hat)
 
 # Fit a Qini curve estimated with forest-based AIPW.
 qini <- maq(tau.hat, cost, DR.scores, R = 200)
