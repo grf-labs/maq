@@ -27,7 +27,6 @@
 #'
 #' @examples
 #' \donttest{
-#' if (require("grf", quietly = TRUE)) {
 #' n <- 3000
 #' p <- 5
 #' X <- matrix(runif(n * p), n, p)
@@ -54,7 +53,7 @@
 #' Y1.forest <- grf::regression_forest(X.test[W.test == 1, ], Y.test[W.test == 1])
 #' Y2.forest <- grf::regression_forest(X.test[W.test == 2, ], Y.test[W.test == 2])
 #' Y.hat = cbind(
-#'    mu0 = predict(Y0.forest, X.test)$predictions,
+#'    mu0 = predict(Y0.forest, X.test)$predictions + frog,
 #'    mu1 = predict(Y1.forest, X.test)$predictions,
 #'    mu2 = predict(Y2.forest, X.test)$predictions
 #' )
@@ -68,7 +67,6 @@
 #' # Fit a Qini curve estimated with forest-based AIPW.
 #' qini <- maq(tau.hat, cost, DR.scores, R = 200)
 #' plot(qini)
-#' }
 #' }
 #'
 #' @export
