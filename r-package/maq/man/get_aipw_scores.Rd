@@ -12,7 +12,7 @@ get_aipw_scores(Y, W, Y.hat, W.hat = NULL)
 \item{W}{The observed treatment assignment (must be a factor vector,
 where the first factor level is the control arm).}
 
-\item{Y.hat}{A matrix of conditional mean estimates for each arm.}
+\item{Y.hat}{A matrix of conditional mean estimates for each arm, \eqn{E[Y_i | W_i = k, X_i]}.}
 
 \item{W.hat}{Optional treatment propensities. If these vary by unit and arm, then
 this should be a matrix with the treatment assignment
@@ -23,11 +23,11 @@ and the same for each arm.}
 }
 \value{
 An \eqn{n \cdot K} matrix of evaluation scores
-(eqn (13) in the multi-armed Qini  paper).
+(eqn (13) in the multi-armed Qini paper).
 }
 \description{
-A simple convenience function to construct an AIPW-based evaluation score given estimated
-nuisance components.
+A simple convenience function to construct an AIPW-based evaluation score given estimates
+of conditional means and treatment propensities.
 }
 \examples{
 \donttest{
@@ -53,7 +53,7 @@ X.test <- X[test, ]
 Y.test <- Y[test]
 W.test <- W[test]
 
-# Fit models for E[Y(k) | X], k = 0, 1, 2, using for example separate random forests.
+# Fit models for E[Y | W = k, X], k = 0, 1, 2, using for example separate random forests.
 Y0.forest <- grf::regression_forest(X.test[W.test == 0, ], Y.test[W.test == 0])
 Y1.forest <- grf::regression_forest(X.test[W.test == 1, ], Y.test[W.test == 1])
 Y2.forest <- grf::regression_forest(X.test[W.test == 2, ], Y.test[W.test == 2])
