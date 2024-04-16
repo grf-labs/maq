@@ -65,6 +65,7 @@ plot.maq <- function(x,
 
   lb <- gain - 1.96 * std.err
   ub <- gain + 1.96 * std.err
+
   plot.args <- list(type = "l", ylim = c(min(lb), max(ub)), xlab = "spend", ylab = "gain", col = 1)
   plot.args[names(new.args)] <- new.args
 
