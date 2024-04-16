@@ -7,7 +7,7 @@
 #' @param ... Additional arguments passed to plot.
 #' @param add Whether to add to an already existing plot. Default is FALSE.
 #' @param horizontal.line Whether to draw a horizontal line where the Qini curve plateaus.
-#'  Only applies if add = TRUE and the maq object is fit with a maximum `budget` that is sufficient
+#'  Only applies if the maq object is fit with a maximum `budget` that is sufficient
 #'  to treat all units that are expected to benefit.
 #'  Default is TRUE.
 #' @param ci.args A list of optional arguments to `lines()` for drawing 95 % confidence bars.
@@ -25,6 +25,7 @@ plot.maq <- function(x,
                      ci.args = list(),
                      grid.step = NULL
                      ) {
+  new.args <- list(...)
   spend.grid <- x[["_path"]]$spend
   gain.grid <- x[["_path"]]$gain
   std.err.grid <- x[["_path"]]$std.err
@@ -39,9 +40,19 @@ plot.maq <- function(x,
   spend <- spend.grid[plot.grid]
   gain <- gain.grid[plot.grid]
   std.err <- std.err.grid[plot.grid]
-  if (add && horizontal.line) {
-    if (x[["_path"]]$complete.path) {
-      len <- length(spend)
+  if (horizontal.line && x[["_path"]]$complete.path) {
+    len <- length(spend)
+    # Are we creating a new plot with a user-supplied xlim that extends beyond the fit curve?
+    if (!add && "xlim" %in% names(new.args)) {
+      xmax <- new.args$xlim[2]
+      if (xmax > spend[len]) {
+        spend <- c(spend, seq(spend[len], xmax, length.out = 100))
+        gain <- c(gain, rep(gain[len], 100))
+        std.err <- c(std.err, rep(std.err[len], 100))
+        }
+    }
+    # Else, we're adding to an existing plot
+    if (add) {
       # Retrieve the main plot's end point (R by default extends the xrange by 4 percent)
       xmax <- graphics::par("usr")[2] / 1.04
       if (xmax > spend[len]) {
@@ -51,11 +62,11 @@ plot.maq <- function(x,
       }
     }
   }
+
   lb <- gain - 1.96 * std.err
   ub <- gain + 1.96 * std.err
 
   plot.args <- list(type = "l", ylim = c(min(lb), max(ub)), xlab = "spend", ylab = "gain", col = 1)
-  new.args <- list(...)
   plot.args[names(new.args)] <- new.args
 
   lines.args <- list(lty = 3, col = plot.args$col)
