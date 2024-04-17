@@ -34,5 +34,6 @@ grid underlying the estimated Qini curve.}
 }
 \description{
 Plot the estimated curve \eqn{Q(B), B \in (0, B_{max}]}. If the underlying estimated policy
-\eqn{\pi_B} entails treating zero units, then this function returns an empty value.
+\eqn{\pi_B} entails treating zero units (that is, all the estimated treatment effects are
+negative) then this function returns an empty value.
 }
