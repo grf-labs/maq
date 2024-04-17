@@ -25,8 +25,8 @@ See below for example scripts to run.
 Add
 ```
 ^tests/testthat/test_((?!cran).).*
-to .Rbuildignore (do not commit the change)
 ```
+to `.Rbuildignore` (do not commit the change)
 
 Run
 
@@ -86,6 +86,10 @@ mq <- maq(reward, cost, budget, reward, R = 150)
 For a big release, can also run `R CMD check --as-cran --run-donttest --use-valgrind <development tarball>` on a Linux machine with Valgrind for a thorough stress test (will take very long).
 
 ## Previous performance test results
+
+**0.4.0**
+
+Only a minor release with no perf/C++ touches.
 
 **0.3.1**
 
