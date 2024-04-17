@@ -1,7 +1,8 @@
 #' Plot the estimated Qini curve.
 #'
 #' Plot the estimated curve \eqn{Q(B), B \in (0, B_{max}]}. If the underlying estimated policy
-#' \eqn{\pi_B} entails treating zero units, then this function returns an empty value.
+#' \eqn{\pi_B} entails treating zero units (that is, all the estimated treatment effects are
+#'  negative) then this function returns an empty value.
 #'
 #' @param x A maq object.
 #' @param ... Additional arguments passed to plot.
