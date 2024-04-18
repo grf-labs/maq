@@ -4,7 +4,7 @@ All notable changes to `maq` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] - 2023-04-??
+## [0.4.0] - 2024-04-18
 
 ### Added
 - Add `get_aipw_scores` for calculating AIPW scores given user-supplied estimates, and add some minor polish to `get_ipw_scores`. [#72](https://github.com/grf-labs/maq/pull/72), [#71](https://github.com/grf-labs/maq/pull/71)
