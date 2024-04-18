@@ -1,13 +1,13 @@
 Package: maq
 Title: Multi-Armed Qini
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
-    person("Erik", "Sverdrup", email = "erikcs@stanford.edu", role = c("aut", "cre")),
+    person("Erik", "Sverdrup", email = "erik.sverdrup@monash.edu", role = c("aut", "cre")),
     person("Han", "Wu", role = "aut"),
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment rules for costly and mutually exclusive treatment arms with Qini curves as proposed in Sverdrup, Wu, Athey, and Wager (2023) <arXiv:2306.11979>.
+Description: Evaluate treatment rules for costly and mutually exclusive treatment arms with Qini curves as proposed in Sverdrup, Wu, Athey, and Wager (2023) <doi:10.48550/arXiv.2306.11979>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
