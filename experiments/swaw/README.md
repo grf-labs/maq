@@ -4,8 +4,9 @@ _This folder has replication files for the paper "Qini Curves for Multi-Armed Tr
 
 * Figure 4: `figure_targeting.R`
 
-* Figure 5: `voting.R`
+* Voting application (Figure 5): `voting.R`
 
+Coverage simulations:
 * Table 1: `table_sim.R`
 
 * Table 3: `table_sim_paired.R`
