@@ -79,7 +79,7 @@ plot.maq <- function(x,
     do.call(graphics::lines, c(list(x = spend, y = gain), plot.args))
   }
 
-  if (!is.null(ci.args)) {
+  if (!is.null(ci.args) && x[["R"]] > 1) {
     do.call(graphics::lines, c(list(x = spend, y = lb), lines.args))
     do.call(graphics::lines, c(list(x = spend, y = ub), lines.args))
   }
