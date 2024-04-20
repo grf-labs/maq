@@ -1,19 +1,20 @@
 rm(list = ls())
 set.seed(123)
-source("generate_data.R")
+
 library(maq)
 library(grf)
 library(xtable)
+source("generate_data.R")
 
-p = 10
+# Number of Monte Carlo repetitions
+num.mc = 1000 # This takes a few days to complete
 
-# Generate "truth" test data
-dgp = "map"
+# Generate "ground truth" data
 spends = c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5)
-data.truth = generate_data(100000, p, dgp = dgp)
+data.truth = generate_data(n = 100000, p = 10, dgp = "map")
 
 # Fix a tau function
-data.train = generate_data(10000, p, dgp = dgp)
+data.train = generate_data(n = 10000, p = 10, dgp = "map")
 cf.train = multi_arm_causal_forest(
   data.train$X,
   data.train$Y,
@@ -36,8 +37,8 @@ name = rep(c("all_vs_r", "all_vs_1", "all_vs_2", "1_vs_r", "2_vs_r"), each = 10)
 
 res = list()
 for (n in c(1000, 2000, 5000, 10000)) {
-  for (i in 1:1000) {
-    data.eval = generate_data(n, p, dgp = dgp)
+  for (i in 1:num.mc) {
+    data.eval = generate_data(n, p = 10, dgp = "map")
     tau.hat.eval = predict(cf.train, data.eval$X, drop = TRUE)$predictions
 
     cf.eval = multi_arm_causal_forest(
@@ -82,6 +83,7 @@ for (n in c(1000, 2000, 5000, 10000)) {
 Res = do.call(rbind, res)
 res.df2 = aggregate(Res[, c(-1,-2, -3)], by = list(n = Res$n, spend = Res$spend, name = Res$name), FUN = mean)
 
+# The mean coverage numbers, Table 3
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "all_vs_r"))
 
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "all_vs_1"))
