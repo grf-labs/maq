@@ -84,12 +84,18 @@ Res = do.call(rbind, res)
 res.df2 = aggregate(Res[, c(-1,-2, -3)], by = list(n = Res$n, spend = Res$spend, name = Res$name), FUN = mean)
 
 # The mean coverage numbers, Table 3
+
+# Panel A
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "all_vs_r"))
 
+# Panel B
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "all_vs_1"))
 
+# Panel C
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "all_vs_2"))
 
+# Panel D
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "1_vs_r"))
 
+# Panel E
 xtable(xtabs(coverage ~ n + spend, res.df2, subset = res.df2$name == "2_vs_r"))
