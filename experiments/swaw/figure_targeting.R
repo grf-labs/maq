@@ -7,7 +7,7 @@ noise_sd = 1.5
 base_mu = 1
 cost_covariate = function(x, k) {
   if (k == 1) {
-    return (2.5*(x < 0.3) + 2*(x >= 0.3)*(x <= 0.7) + 3.5*(x > 0.7))
+    return (1.5*(x < 0.3) + 1*(x >= 0.3)*(x <= 0.7) + 2*(x > 0.7))
   } else if (k == 2) {
     return (3*(x < 0.3) + 2.5*(x >= 0.3)*(x <= 0.7) + 3.0*(x > 0.7))
   } else {
@@ -19,7 +19,7 @@ outcome_covariate = function(x, k) {
   if (k == 0) {
     return (base_mu)
   }else if (k == 1) {
-    return (3.35*(x < 0.3) + 3.42*(x >= 0.3)*(x <= 0.7) + 4.5*(x > 0.7))
+    return (3*(x < 0.3) + 3*(x >= 0.3)*(x <= 0.7) + 4*(x > 0.7))
   } else if (k ==2) {
     return (8.2*(x < 0.2) + 1.6*(x >= 0.2)*(x <= 0.7) + 2.1*(x > 0.7))
   } else {
@@ -83,28 +83,28 @@ mq.random2 = maq(data.eval$tau[, 2], data.eval$cost.oracle[, 2], dr.eval[,2], ta
 mq.random3 = maq(data.eval$tau[, 3], data.eval$cost.oracle[, 3], dr.eval[,3], target.with.covariates = FALSE)
 
 
-# Panel A
-pdf("figure_targeting_a.pdf")
-plot(mq, col = "red", ci.args = NULL, lwd = 2,cex.sub=1.6, cex.axis=1.4, cex.lab=1.4)
-plot(mq.random, add = TRUE, col = "coral", lwd = 2)
-plot(mq.random1, add = TRUE, col = "blue", lwd = 2)
-plot(mq.random2, add = TRUE, col = "purple", lwd = 2)
-plot(mq.random3, add = TRUE, col = "green", lwd = 2)
+# Panel B
+pdf("figure_targeting_b.pdf", pointsize = 16)
+plot(mq, col = "red", lwd = 2,cex.sub=1.6, cex.axis=1.4, cex.lab=1.4, xlim = c(0, 3) , ylim = c(0, 4.5), ci.args = NULL)
+plot(mq.random, add = TRUE, col = "coral", lwd = 2, lty = 2, ci.args = NULL)
+plot(mq.random1, add = TRUE, col = "blue", lwd = 2, lty = 3, ci.args = NULL)
+plot(mq.random2, add = TRUE, col = "purple", lwd = 2, lty = 4, ci.args = NULL)
+plot(mq.random3, add = TRUE, col = "green", lwd = 2, lty = 5, ci.args = NULL)
 legend("topleft",
-       c("All arms (targeting)", "All arms (no targeting)", "Arm 1 (no targeting)", "Arm 2 (no targeting)", "Arm 3 (no targeting"),
-       col = c("red", "coral", "blue", "purple", "green"), lty = 1, lwd = 2)
+       c("All (targeting)", "All (no targeting)", "1 (no targeting)", "2 (no targeting)", "3 (no targeting"),
+       col = c("red", "coral", "blue", "purple", "green"), lty = 1:5, lwd = 2, bty = "n")
 dev.off()
 
-# Panel B
-pdf("figure_targeting_b.pdf")
-plot(mq, col = "red", lwd = 2,cex.sub=1.6, cex.axis=1.4, cex.lab=1.4)
-plot(mq.1, add = TRUE, col = "blue", lwd = 2)
-plot(mq.2, add = TRUE, col = "purple", lwd = 2)
-plot(mq.3, add = TRUE, col = "green", lwd = 2)
-plot(mq.12, add = TRUE, col = "brown", lwd = 2)
-plot(mq.13, add = TRUE, col = "black", lwd = 2)
-plot(mq.23, add = TRUE, col = "dark gray", lwd = 2)
+# Panel A
+pdf("figure_targeting_a.pdf", pointsize = 16)
+plot(mq, col = "red", lwd = 2,cex.sub=1.6, cex.axis=1.4, cex.lab=1.4, xlim = c(0, 3), ylim = c(0, 4.5), ci.args = NULL)
+plot(mq.1, add = TRUE, col = "blue", lwd = 2, lty = 2, ci.args = NULL)
+plot(mq.2, add = TRUE, col = "purple", lwd = 2, lty = 3, ci.args = NULL)
+plot(mq.3, add = TRUE, col = "green", lwd = 2, lty = 4, ci.args = NULL)
+plot(mq.12, add = TRUE, col = "brown", lwd = 2, lty = 5, ci.args = NULL)
+plot(mq.13, add = TRUE, col = "black", lwd = 2, lty = 6, ci.args = NULL)
+plot(mq.23, add = TRUE, col = "dark gray", lwd = 2, lty = 8, ci.args = NULL)
 legend("topleft",
-       c("All arms", "Arm 1", "Arm 2", "Arm 3", "Arm 1,2", "Arm 1,3", "Arm 2,3"),
-       col = c("red", "blue", "purple", "green", "brown", "black", " dark gray"), lty = 1, lwd = 2)
+       c("All", "1", "2", "3", "1 and 2", "1 and 3", "2 and 3"),
+       col = c("red", "blue", "purple", "green", "brown", "black", " dark gray"), lty = c(1:6, 8), lwd = 2, bty = "n")
 dev.off()
