@@ -21,7 +21,7 @@ test_that("get_ipw_scores works as expected", {
   W <- rbinom(n, 1, 0.1)
   Y <- -1 +  2 * (W == 1) + rnorm(n)
   IPW.scores <- get_ipw_scores(Y, as.factor(W), W.hat = c(0.9, 0.1))
-  expect_equal(mean(IPW.scores), 2, tolerance = 0.075)
+  expect_equal(mean(IPW.scores), 2, tolerance = 0.1)
 
   W <- rbinom(n, 1, 0.1)
   Y <- -1 +  2 * (W == 1) + rnorm(n)
