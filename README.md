@@ -80,7 +80,7 @@ $$
 Q(B) = E[\langle \pi_B(X_i),~ \tau(X_i)\rangle],
 $$
 
-which is the expected gain, at any budget constraint $B$, when assigning treatment using the policy $\pi_B$ that optimally selects (using the given functions $\hat \tau(\cdot)$ and $C(\cdot))$ which arm to assign to which unit such that the average incurred cost is less than or equal to $B$. The policy $\pi_B$ is a solution to a linear program: `maq` computes a solution path for these treatment allocations over increasing budget levels $B$ via an algorithm that leverages the multiple-choice knapsack structure of this problem. See [the algorithm reference](https://github.com/grf-labs/maq/tree/master/REFERENCE.md) for details.
+which is the expected gain, at any budget constraint $B$, when assigning treatment using the policy $\pi_B$ that optimally selects (using the given functions $\hat \tau(\cdot)$ and $C(\cdot))$ which arm to assign to which unit such that the average incurred cost is less than or equal to $B$. The policy $\pi_B$ is a solution to a linear program: `maq` computes a solution path for these treatment allocations over increasing budget levels $B$ via an algorithm that leverages the multiple-choice knapsack structure of this problem. See [the algorithm reference](https://github.com/grf-labs/maq/tree/master/REFERENCE.md) for an overview.
 
 ### References
 
