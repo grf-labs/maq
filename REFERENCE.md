@@ -28,7 +28,7 @@ The animated figure below highlights how our treatment effects estimates for the
 
 ![](images/lambdas.gif)
 
-This is the multi-armed treatment rule the MAQ package is computing (and estimating the value of via for example inverse-propensity weighting or augmented inverse-propensity weighting). As an example, at an average spend equal to 5, the estimated multi-armed treatment rule is to assign Alice arm A, Bob arm B, and Eve arm B, for a total average cost of (3 + 6 + 6) / 3 = 5.
+This is the multi-armed policy the MAQ package is computing (and estimating the value of via for example inverse-propensity weighting or augmented inverse-propensity weighting). As an example, at an average spend equal to 5, the estimated multi-armed treatment rule is to assign Alice arm A, Bob arm B, and Eve arm B, for a total average cost of (3 + 6 + 6) / 3 = 5.
 
 ## References
 Hans Kellerer, Ulrich Pferschy, and David Pisinger. *Knapsack problems*. Springer, 2004.
