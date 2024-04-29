@@ -16,11 +16,11 @@ In many practical applications, different treatment arms carry different costs. 
 
 How can we analyze a treatment rule that **optimally** uses both our treatment arms as we vary the average amount we are willing to spend? Constructing a Qini curve is not as straightforward anymore, since at every budget level we must choose between assigning some unit an initial intervention or upgrading another unit to a costlier but more effective intervention. This constrained choice problem is a (linear) multiple-choice knapsack problem. At every budget level (knapsack capacity) we have to optimally decide which unit and which treatment arm to assign such that the average cost is less than or equal to the budget level.
 
-To make progress on this, it is helpful to represent the table above differently. In the figure below, we plot estimated treatment effects on the y-axis and the cost of assigning that arm on the x-axis, for all the units.
+It is helpful to represent the table above differently. In the figure below, we plot estimated treatment effects on the y-axis and the cost of assigning that arm on the x-axis, for all the units.
 
 ![](images/hulls.png)
 
-For a given knapsack capacity, the only set of arms we will choose from lies on the upper-left convex hull of the figures above (Kellerer et al., 2004, Chapter 11). For Alice, treatment arm **B** does not lie on the hull since it has a higher cost, but lower estimated reward than arm **A**. For Bob, both treatment arms lie on the convex hull. It turns out that for a given knapsack capacity, the arms and units we will put in the knapsack are those whose convex hull slopes are above a certain threshold.
+For a given knapsack capacity, the only set of arms we will choose from lies on the upper-left convex hull of the figures above (Kellerer et al. (2004) have a nice overview in chapter 11). For Alice, treatment arm **B** does not lie on the hull since it has a higher cost, but lower estimated reward than arm **A**. For Bob, both treatment arms lie on the convex hull. It turns out that for a given knapsack capacity, the arms and units we will put in the knapsack are those whose convex hull slopes are above a certain threshold.
 
 We can use this property to construct an algorithm that delivers our optimal choices (which unit to assign which arm) as we increase the knapsack capacity. Just like in creating Qini curves for single-armed treatments, it is going to involve sorting, except that now we are going to sort by decreasing *incremental convex hull slopes*.
 
