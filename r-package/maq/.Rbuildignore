@@ -3,3 +3,5 @@
 ^docs$
 ^tests/benchmarks
 ^tests/valgrind
+^_pkgdown\.yml$
+^pkgdown$
