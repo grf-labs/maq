@@ -157,7 +157,7 @@ class MAQ:
     Get an estimate of gain at a given spend along with standard errors.
 
     >>> mq.average_gain(spend=0.1)
-    (np.float64(0.005729002695991717, np.float64(0.019814651108894354))
+    (np.float64(0.005729002695991717), np.float64(0.019814651108894354))
 
     Get the underlying treatment allocation matrix at a given spend, a n x K array.
 
