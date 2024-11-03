@@ -18,7 +18,7 @@ How can we analyze a treatment rule that **optimally** uses both our treatment a
 
 It is helpful to represent the table above differently. In the figure below, we plot estimated treatment effects on the y-axis and the cost of assigning that arm on the x-axis, for all the units.
 
-![](images/hulls.png)
+![Convex hulls](https://raw.githubusercontent.com/grf-labs/maq/master/images/hulls.png)
 
 For a given knapsack capacity, the only set of arms we will choose from lies on the upper-left convex hull of the figures above (Kellerer et al. (2004) have a nice overview in chapter 11). For Alice, treatment arm **B** does not lie on the hull since it has a higher cost, but lower estimated reward than arm **A**. For Bob, both treatment arms lie on the convex hull. It turns out that for a given knapsack capacity, the arms and units we will put in the knapsack are those whose convex hull slopes are above a certain threshold.
 
@@ -26,7 +26,7 @@ We can use this property to construct an algorithm that delivers our optimal cho
 
 The animated figure below highlights how our treatment effects estimates for the two costly interventions **A** and **B** give rise to a multi-armed treatment rule over varying budget constraints. The y-axis is the slope between arms on a unit's convex hull (from the figure above), and the x-axis is the unit. The unit and arm that is active in the solution over increasing budget levels can be found by lowering the horizontal threshold (dotted line) and keeping track of whether we are assigning a new unit an arm, or upgrading an existing unit to a costlier arm.
 
-![](images/lambdas.gif)
+![Lambdas](https://raw.githubusercontent.com/grf-labs/maq/master/images/lambdas.gif)
 
 This is the multi-armed policy the MAQ package is computing (and estimating the value of via for example inverse-propensity weighting or augmented inverse-propensity weighting). As an example, at an average spend equal to 5, the estimated multi-armed policy is to assign Alice arm A, Bob arm B, and Eve arm B, for a total average cost of (3 + 6 + 6) / 3 = 5.
 
