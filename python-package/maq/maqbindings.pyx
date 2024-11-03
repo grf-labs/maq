@@ -49,8 +49,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     spend = np.empty(path_len, dtype="double")
     gain = np.empty(path_len, dtype="double")
     std_err = np.empty(path_len, dtype="double")
-    ipath = np.empty(path_len, dtype="int")
-    kpath = np.empty(path_len, dtype="int")
+    ipath = np.empty(path_len, dtype="long")
+    kpath = np.empty(path_len, dtype="long")
     if paired_inference:
         gain_bs = np.empty((n_bootstrap, path_len), dtype="double")
     else:
@@ -59,8 +59,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef double[::] view_spend = spend
     cdef double[::] view_gain = gain
     cdef double[::] view_std_err = std_err
-    cdef int[::] view_ipath = ipath
-    cdef int[::] view_kpath = kpath
+    cdef long[::] view_ipath = ipath
+    cdef long[::] view_kpath = kpath
     cdef double[:, ::1] view_gain_bs = gain_bs
 
     for i in range(path_len):
