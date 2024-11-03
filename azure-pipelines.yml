@@ -94,6 +94,8 @@ jobs:
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
   - script: |
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      brew install libomp
       pip install -I causalml xgboost matplotlib jupyter
       jupyter nbconvert --execute --to 'notebook' introduction.ipynb
     workingDirectory: 'python-package/notebooks'
