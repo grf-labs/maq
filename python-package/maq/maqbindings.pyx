@@ -59,8 +59,8 @@ cpdef solver_cpp(np.ndarray[double, ndim=2, mode="c"] reward,
     cdef double[::] view_spend = spend
     cdef double[::] view_gain = gain
     cdef double[::] view_std_err = std_err
-    cdef long[::] view_ipath = ipath
-    cdef long[::] view_kpath = kpath
+    cdef int[::] view_ipath = ipath
+    cdef int[::] view_kpath = kpath
     cdef double[:, ::1] view_gain_bs = gain_bs
 
     for i in range(path_len):
