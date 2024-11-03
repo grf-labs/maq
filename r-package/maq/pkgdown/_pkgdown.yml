@@ -1,0 +1,30 @@
+url: https://github.com/grf-labs/maq
+navbar:
+  type: default
+  left:
+  - text: "Reference"
+    href: reference/index.html
+  - text: "Algorithm reference"
+    href: REFERENCE.html
+  - text: "Changelog"
+    href: CHANGELOG.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/grf-labs/maq
+
+reference:
+  - title: Multi-Armed Qini
+    contents:
+      - maq
+      - predict.maq
+      - average_gain
+      - difference_gain
+      - integrated_difference
+      - get_ipw_scores
+      - get_aipw_scores
+
+  - title: Plotting and printing
+    contents:
+      - plot.maq
+      - print.maq
+      - summary.maq
