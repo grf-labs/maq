@@ -7,8 +7,6 @@ A package for evaluating multi-armed treatment rules via the Multi-Armed Qini - 
 
 * Introduction: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 
-* [Changelog (R package)](https://github.com/grf-labs/maq/tree/master/CHANGELOG.md).
-
 ### Installation
 
 The latest release of the package can be installed through CRAN:
