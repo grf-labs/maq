@@ -1,9 +1,9 @@
 #' Fit a Multi-armed Qini.
 #'
-#' Fit a curve that shows estimates of a policy value \eqn{Q(B)} across various decision thresholds
-#' \eqn{B}, which may include constraints on the treatment allocation, such as the fraction treated or
+#' Fit a curve that shows estimates of a policy value \eqn{Q(B)} over increasing decision thresholds
+#' \eqn{B}. These may include constraints on the treatment allocation, such as the fraction treated or
 #' spending per unit. The policy uses estimated treatment effects, for example from one or more CATE
-#' functions, to optimize treatment allocation while adhering to the decision constraint \eqn{B}.
+#' functions, to optimize treatment allocation under the decision constraint \eqn{B}.
 #'
 #'
 #' Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
