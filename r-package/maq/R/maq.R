@@ -1,4 +1,10 @@
-#' Fit a Multi-Armed Qini.
+#' Fit a Multi-armed Qini.
+#'
+#' Fit a curve that shows estimates of a policy value \eqn{Q(B)} across various decision thresholds
+#' \eqn{B}, which may include constraints on the treatment allocation, such as the fraction treated or
+#' spending per unit. The policy uses estimated treatment effects, for example from one or more CATE
+#' functions, to optimize treatment allocation while adhering to the decision constraint \eqn{B}.
+#'
 #'
 #' Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
 #'  where k = 0 is a zero-cost control arm. Let \eqn{\hat \tau(\cdot)} be an _estimated_
@@ -7,23 +13,18 @@
 #'  \eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
 #'  to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
 #'  and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
-#' \itemize{
-#'    \item \eqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
-#' }
+#'    \deqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
 #' which is the expected gain, at any budget constraint B, when assigning treatment in accordance
 #'  to \eqn{\pi_B}, the treatment policy that optimally selects
 #'  which arm to assign to which unit while incurring a cost less than or equal to B in expectation
 #'  when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
-#' \itemize{
-#'  \item \eqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
-#' }
+#'  \deqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
 #' At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if assigning the k-th arm
 #' to the i-th unit is optimal, and 0 otherwise.
 #' The Qini curve can be used to quantify the value, as measured by the expected gain over
 #'  assigning each unit the control arm when using the estimated function
 #'  \eqn{\hat \tau(\cdot)} with cost structure \eqn{C(\cdot)} to allocate treatment,
 #'  as we vary the available budget \eqn{B}.
-#'
 #'
 #' @param reward A \eqn{n \cdot K} matrix of test set treatment effect estimates \eqn{\hat \tau(X_i)}.
 #' (Note: the estimated function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)

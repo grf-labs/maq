@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{maq}
 \alias{maq}
-\title{Fit a Multi-Armed Qini.}
+\title{Fit a Multi-armed Qini.}
 \usage{
 maq(
   reward,
@@ -77,6 +77,12 @@ is set to the maximum hardware concurrency.}
 A fit maq object.
 }
 \description{
+Fit a curve that shows estimates of a policy value \eqn{Q(B)} across various decision thresholds
+\eqn{B}, which may include constraints on the treatment allocation, such as the fraction treated or
+spending per unit. The policy uses estimated treatment effects, for example from one or more CATE
+functions, to optimize treatment allocation while adhering to the decision constraint \eqn{B}.
+}
+\details{
 Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
 where k = 0 is a zero-cost control arm. Let \eqn{\hat \tau(\cdot)} be an \emph{estimated}
 multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
@@ -84,16 +90,12 @@ multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
 \eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
 to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
 and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
-\itemize{
-\item \eqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
-}
+\deqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
 which is the expected gain, at any budget constraint B, when assigning treatment in accordance
 to \eqn{\pi_B}, the treatment policy that optimally selects
 which arm to assign to which unit while incurring a cost less than or equal to B in expectation
 when using the given functions \eqn{\hat \tau(\cdot)} and \eqn{C(\cdot)}:
-\itemize{
-\item \eqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
-}
+\deqn{\pi_B = argmax_{\pi} \left\{E[\langle \pi(X_i), \hat \tau(X_i) \rangle]: E[\langle \pi(X_i), C(X_i) \rangle] \leq B \right\}.}
 At a budget B, the k-th element of \eqn{\pi_B(X_i)} is 1 if assigning the k-th arm
 to the i-th unit is optimal, and 0 otherwise.
 The Qini curve can be used to quantify the value, as measured by the expected gain over
