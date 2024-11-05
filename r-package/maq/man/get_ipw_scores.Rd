@@ -25,9 +25,7 @@ An \eqn{n \cdot K} matrix of evaluation scores.
 \description{
 A simple convenience function to
 construct an evaluation score matrix via IPW, where entry (i, k) equals
-\itemize{
-\item \eqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]}},
-}
+\deqn{\frac{\mathbf{1}(W_i=k)Y_i}{P[W_i=k | X_i]} - \frac{\mathbf{1}(W_i=0)Y_i}{P[W_i=0 | X_i]},}
 where \eqn{W_i} is the treatment assignment of unit i and \eqn{Y_i} the observed outcome.
 \eqn{k = 1 \ldots K} are one of K treatment arms and k = 0 is the control arm.
 }
