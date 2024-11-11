@@ -1,4 +1,4 @@
-#' Fit a Multi-armed Qini.
+#' Fit a Multi-armed Qini curve.
 #'
 #' Fit a curve that shows estimates of a policy value \eqn{Q(B)} over increasing decision thresholds
 #' \eqn{B}. These may include constraints on the treatment allocation, such as the fraction treated or
