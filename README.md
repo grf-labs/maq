@@ -3,7 +3,7 @@
 [![CRANstatus](https://www.r-pkg.org/badges/version/maq)](https://cran.r-project.org/package=maq)
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A package for evaluating multi-armed treatment rules via the Multi-Armed Qini - a generalization of the Qini curve to multiple costly treatment arms.
+A package for policy evaluation using generalized Qini curves. Evaluate data-driven treatment targeting rules for one or more treatment arms over different budget constraints. The policy values can be estimated in both experimental or observational settings under unconfoundedness using either inverse-propensity weighting or doubly robust methods.
 
 * Introduction: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 

@@ -7,7 +7,11 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Evaluate treatment rules for costly and mutually exclusive treatment arms with Qini curves as proposed in Sverdrup, Wu, Athey, and Wager (2023) <doi:10.48550/arXiv.2306.11979>.
+Description: Policy evaluation using generalized Qini curves. Evaluate data-driven treatment
+            targeting rules for one or more treatment arms over different budget
+            constraints. The policy values can be estimated in both experimental or
+            observational settings under unconfoundedness using either inverse-propensity
+            weighting or doubly robust methods.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
