@@ -3,7 +3,7 @@
 [![CRANstatus](https://www.r-pkg.org/badges/version/maq)](https://cran.r-project.org/package=maq)
 [![Build Status](https://dev.azure.com/grf-labs/grf/_apis/build/status/grf-labs.maq?branchName=master)](https://dev.azure.com/grf-labs/grf/_build/latest?definitionId=5&branchName=master)
 
-A package for policy evaluation using generalized Qini curves: Evaluate data-driven treatment targeting rules for one or more treatment arms over different budget constraints in either experimental or observational settings under unconfoundedness.
+A package for policy evaluation using generalized Qini curves: Evaluate data-driven treatment targeting rules for one or more treatment arms over different budget constraints in experimental or observational settings under unconfoundedness.
 
 * Introduction: [Qini curves: Automatic cost-benefit analysis.](https://grf-labs.github.io/grf/articles/maq.html)
 

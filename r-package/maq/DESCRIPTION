@@ -9,8 +9,7 @@ Authors@R: c(
     )
 Description: Policy evaluation using generalized Qini curves: Evaluate data-driven treatment
             targeting rules for one or more treatment arms over different budget
-            constraints in either experimental or observational settings under
-            unconfoundedness.
+            constraints in experimental or observational settings under unconfoundedness.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
