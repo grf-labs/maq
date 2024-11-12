@@ -7,11 +7,9 @@ Authors@R: c(
     person("Susan", "Athey", role = "aut"),
     person("Stefan", "Wager", role = "aut")
     )
-Description: Policy evaluation using generalized Qini curves. Evaluate data-driven treatment
+Description: Policy evaluation using generalized Qini curves: Evaluate data-driven treatment
             targeting rules for one or more treatment arms over different budget
-            constraints. The policy values can be estimated in both experimental or
-            observational settings under unconfoundedness using either inverse-propensity
-            weighting or doubly robust methods.
+            constraints in experimental or observational settings under unconfoundedness.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
