@@ -4,6 +4,14 @@ All notable changes to `maq` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2024-11-??
+
+### Added
+- Invisibly return data when calling plot to allow for optional customization with other plotting libraries. [#94](https://github.com/grf-labs/maq/pull/94)
+
+### Fixed
+- Omit empty CI plots lines when R = 0. [#76](https://github.com/grf-labs/maq/pull/76)
+
 ## [0.4.0] - 2024-04-18
 
 ### Added
