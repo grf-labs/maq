@@ -87,6 +87,10 @@ For a big release, can also run `R CMD check --as-cran --run-donttest --use-valg
 
 ## Previous performance test results
 
+**0.5.0**
+
+Only a minor release with no perf/C++ touches.
+
 **0.4.0**
 
 Only a minor release with no perf/C++ touches.
