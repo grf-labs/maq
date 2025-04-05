@@ -17,3 +17,5 @@ The development version can be installed with:
 ```
 pip install "git+https://github.com/grf-labs/maq.git#egg=maq&subdirectory=python-package"
 ```
+
+*Note*: This Python package isn't the main focus of ongoing development, as efforts are mainly devoted to the R package. However, it's released under the MIT license with a working scaffold—feel free to use, modify, or build on it as you like.
