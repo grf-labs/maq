@@ -168,7 +168,7 @@ class MAQ:
            ...,
            [0., 0., 0., 0., 1.],
            [0., 0., 0., 1., 0.],
-           [0., 0., 1., 0., 0.]])
+           [0., 0., 1., 0., 0.]], shape=(1000, 5))
 
     Plot the Qini curve along with 95% confidence bars (requires matplotlib).
 
