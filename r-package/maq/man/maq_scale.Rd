@@ -30,6 +30,7 @@ cost <- 1
 # Fit a Qini curve.
 qini <- maq(reward, cost, scores, R = 200)
 
+if (getRversion() >= "4.1.0") { # For the pipe `|>` convenience.
 # Plot the policy values as we vary the fraction treated.
 qini |>
   plot(xlab = "Treated fraction")
@@ -37,5 +38,6 @@ qini |>
 # Plot the policy values for a maximum allocation of, for example, 500 units.
 maq_scale(qini, 500) |>
   plot(xlab = "Units treated")
+}
 }
 }
