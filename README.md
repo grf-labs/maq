@@ -43,7 +43,7 @@ tau.forest <- grf::multi_arm_causal_forest(X[train, ], Y[train], W[train])
 test <- -train
 tau.hat <- predict(tau.forest, X[test, ], drop = TRUE)$predictions
 
-# Assume costs equal a unit's pre-treatment covariate - the following are a toy example.
+# Assume costs equal a unit's pre-treatment covariate - the following is a toy example.
 cost <- cbind(X[test, 4] / 4, X[test, 5])
 
 # Fit an evaluation forest to compute doubly robust scores on the test set.
