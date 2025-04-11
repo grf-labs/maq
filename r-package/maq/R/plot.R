@@ -23,11 +23,11 @@
 #' \donttest{
 #' if (require("ggplot2", quietly = TRUE)) {
 #' # Generate toy data and customize plots.
-#' n = 500
-#' K = 1
-#' reward = matrix(1 + rnorm(n * K), n, K)
-#' scores = reward + matrix(rnorm(n * K), n, K)
-#' cost = 1
+#' n <- 500
+#' K <- 1
+#' reward <- matrix(1 + rnorm(n * K), n, K)
+#' scores <- reward + matrix(rnorm(n * K), n, K)
+#' cost <- 1
 #'
 #' # Fit Qini curves.
 #' qini.avg <- maq(reward, cost, scores, R = 200, target.with.covariates = FALSE)
