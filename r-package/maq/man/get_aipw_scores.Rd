@@ -84,5 +84,5 @@ Journal of the American statistical Association, 89(427), 1994.
 
 Sverdrup, Erik, Han Wu, Susan Athey, and Stefan Wager.
 "Qini Curves for Multi-Armed Treatment Rules".
-arXiv preprint arXiv:2306.11979, 2023.
+Journal of Computational and Graphical Statistics, forthcoming.
 }

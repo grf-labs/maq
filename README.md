@@ -83,5 +83,7 @@ which is the expected gain, at any budget constraint $B$, when assigning treatme
 ### References
 
 Erik Sverdrup, Han Wu, Susan Athey, and Stefan Wager.
-<b>Qini Curves for Multi-Armed Treatment Rules.</b> 2023.
-[<a href="https://arxiv.org/abs/2306.11979">arxiv</a>]
+<b>Qini Curves for Multi-Armed Treatment Rules.</b>
+<i>Journal of Computational and Graphical Statistics</i>, forthcoming.
+[<a href="https://doi.org/10.1080/10618600.2024.2418820">paper</a>,
+<a href="https://arxiv.org/abs/2306.11979">arxiv</a>]
