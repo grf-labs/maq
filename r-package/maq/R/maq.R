@@ -575,9 +575,9 @@ integrated_difference <- function(object.lhs,
 #' qini |>
 #'   plot(xlab = "Treated fraction")
 #'
-#' # Plot the policy values for a maximum deployment of, for example, 500 units.
+#' # Plot the policy values for a maximum allocation of, for example, 500 units.
 #' maq_scale(qini, 500) |>
-#'   plot(xlab = "Units deployed")
+#'   plot(xlab = "Units treated")
 #'}
 #' @export
 maq_scale <- function(object,
