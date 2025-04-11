@@ -560,13 +560,13 @@ test_that("integrated_difference grid lookup numerics works as expected", {
 })
 
 test_that("maq_scale works as expected", {
-  n = 500
-  K = 2
-  reward = matrix(1 + rnorm(n * K), n, K)
-  scores = reward + matrix(rnorm(n * K), n, K)
-  cost = matrix(1 + runif(n * K), n, K)
+  n <- 500
+  K <- 2
+  reward <- matrix(1 + rnorm(n * K), n, K)
+  scores <- reward + matrix(rnorm(n * K), n, K)
+  cost <- matrix(1 + runif(n * K), n, K)
 
-  scale = 100
+  scale <- 100
   qini <- maq(reward, cost, scores, R = 200)
   qini.s <- maq(reward, cost * scale, scores * scale, R = 200)
 
