@@ -1,6 +1,6 @@
 Package: maq
 Title: Multi-Armed Qini
-Version: 0.5.0
+Version: 0.6.0
 Authors@R: c(
     person("Erik", "Sverdrup", email = "erik.sverdrup@monash.edu", role = c("aut", "cre")),
     person("Han", "Wu", role = "aut"),
