@@ -561,7 +561,7 @@ integrated_difference <- function(object.lhs,
 #'
 #' @examples
 #' \donttest{
-#' # Generate some toy data.
+#' # Generate some single-arm toy data.
 #' n <- 1500
 #' K <- 1
 #' reward <- matrix(1 + runif(n * K), n, K)
@@ -571,11 +571,11 @@ integrated_difference <- function(object.lhs,
 #' # Fit a Qini curve.
 #' qini <- maq(reward, cost, scores, R = 200)
 #'
-#' # Plot the policy values as we vary the fraction treated
+#' # Plot the policy values as we vary the fraction treated.
 #' qini |>
 #'   plot(xlab = "Treated fraction")
 #'
-#' # Plot the policy values for a deployment of, for example, 500 units.
+#' # Plot the policy values for a maximum deployment of, for example, 500 units.
 #' maq_scale(qini, 500) |>
 #'   plot(xlab = "Units deployed")
 #'}
