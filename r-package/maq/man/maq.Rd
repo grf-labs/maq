@@ -2,7 +2,7 @@
 % Please edit documentation in R/maq.R
 \name{maq}
 \alias{maq}
-\title{Fit a Multi-armed Qini curve.}
+\title{Fit a multi-armed Qini curve.}
 \usage{
 maq(
   reward,
