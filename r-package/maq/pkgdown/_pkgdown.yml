@@ -16,6 +16,7 @@ reference:
   - title: Multi-Armed Qini
     contents:
       - maq
+      - maq_scale
       - predict.maq
       - average_gain
       - difference_gain

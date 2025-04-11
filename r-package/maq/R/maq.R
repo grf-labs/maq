@@ -548,3 +548,46 @@ integrated_difference <- function(object.lhs,
 
   c(estimate = point.estimate, std.err = std.err)
 }
+
+#' Scale a Qini curve.
+#'
+#' Remap the policy value and budget to some problem-specific application.
+#' This is a convenience function that is usually useful for plotting.
+#'
+#' @param object A maq object.
+#' @param scale A numeric value to scale by.
+#'
+#' @return A rescaled maq object.
+#'
+#' @examples
+#' \donttest{
+#' # Generate some toy data.
+#' n <- 1500
+#' K <- 1
+#' reward <- matrix(1 + runif(n * K), n, K)
+#' scores <- reward + 5 * matrix(rnorm(n * K), n, K)
+#' cost <- 1
+#'
+#' # Fit a Qini curve.
+#' qini <- maq(reward, cost, scores, R = 200)
+#'
+#' # Plot the policy values as we vary the fraction treated
+#' qini |>
+#'   plot(xlab = "Treated fraction")
+#'
+#' # Plot the policy values for a deployment of, for example, 500 units.
+#' maq_scale(qini, 500) |>
+#'   plot(xlab = "Units deployed")
+#'}
+#' @export
+maq_scale <- function(object,
+                      scale = 1) {
+  object[["_path"]]$spend <- scale * object[["_path"]]$spend
+  object[["_path"]]$gain <- scale * object[["_path"]]$gain
+  object[["_path"]]$std.err <- scale * object[["_path"]]$std.err
+  object[["_path"]]$gain.bs <- lapply(object[["_path"]]$gain.bs,
+                                      function(x) scale * x)
+  object$budget <- object$budget * scale
+
+  object
+}
