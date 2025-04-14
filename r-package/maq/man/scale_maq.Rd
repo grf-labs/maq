@@ -12,11 +12,11 @@ scale_maq(object, scale = 1)
 \item{scale}{A numeric value to scale by.}
 }
 \value{
-A rescaled maq object.
+A maq object with policy values and budget rescaled by the given factor.
 }
 \description{
-Remap the policy value and budget to some problem-specific application.
-This is a convenience function that is usually useful for plotting.
+Remaps the policy value and budget to application-specific units.
+This convenience function is typically useful for plots.
 }
 \examples{
 \donttest{

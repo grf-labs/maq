@@ -551,13 +551,13 @@ integrated_difference <- function(object.lhs,
 
 #' Scale a Qini curve.
 #'
-#' Remap the policy value and budget to some problem-specific application.
-#' This is a convenience function that is usually useful for plotting.
+#' Remaps the policy value and budget to application-specific units.
+#' This convenience function is typically useful for plots.
 #'
 #' @param object A maq object.
 #' @param scale A numeric value to scale by.
 #'
-#' @return A rescaled maq object.
+#' @return A maq object with policy values and budget rescaled by the given factor.
 #'
 #' @examples
 #' \donttest{
