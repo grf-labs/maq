@@ -551,13 +551,13 @@ integrated_difference <- function(object.lhs,
 
 #' Scale a Qini curve.
 #'
-#' Remap the policy value and budget to some problem-specific application.
-#' This is a convenience function that is usually useful for plotting.
+#' Remaps the policy value and budget to application-specific units.
+#' This convenience function is typically useful for plots.
 #'
 #' @param object A maq object.
 #' @param scale A numeric value to scale by.
 #'
-#' @return A rescaled maq object.
+#' @return A maq object with policy values and budget rescaled by the given factor.
 #'
 #' @examples
 #' \donttest{
@@ -572,15 +572,17 @@ integrated_difference <- function(object.lhs,
 #' qini <- maq(reward, cost, scores, R = 200)
 #'
 #' # Plot the policy values as we vary the fraction treated.
-#' qini |>
-#'   plot(xlab = "Treated fraction")
+#' plot(qini, xlab = "Fraction treated")
 #'
 #' # Plot the policy values for a maximum allocation of, for example, 500 units.
-#' maq_scale(qini, 500) |>
-#'   plot(xlab = "Units treated")
+#' plot(scale_maq(qini, 500), xlab = "Units treated")
+#'
+#' # With R 4.1.0 or later, the native pipe can be used to chain scaling and plotting.
+#' # scale_maq(qini, 500) |>
+#' #   plot(xlab = "Units treated")
 #'}
 #' @export
-maq_scale <- function(object,
+scale_maq <- function(object,
                       scale = 1) {
   object[["_path"]]$spend <- scale * object[["_path"]]$spend
   object[["_path"]]$gain <- scale * object[["_path"]]$gain

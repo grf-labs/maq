@@ -16,11 +16,11 @@ reference:
   - title: Multi-Armed Qini
     contents:
       - maq
-      - maq_scale
       - predict.maq
       - average_gain
       - difference_gain
       - integrated_difference
+      - scale_maq
       - get_ipw_scores
       - get_aipw_scores
 
