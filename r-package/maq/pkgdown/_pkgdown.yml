@@ -16,7 +16,6 @@ reference:
   - title: Multi-Armed Qini
     contents:
       - maq
-      - maq_scale
       - predict.maq
       - average_gain
       - difference_gain
@@ -27,5 +26,6 @@ reference:
   - title: Plotting and printing
     contents:
       - plot.maq
+      - maq_scale
       - print.maq
       - summary.maq
