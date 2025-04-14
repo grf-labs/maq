@@ -4,7 +4,7 @@ All notable changes to `maq` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 2025-04- TODO
+## [0.6.0] - 2025-04-14
 
 ## Added
 - Add convenience function `scale_maq` for mapping policy values and budgets to a specific application. [#104](https://github.com/grf-labs/maq/pull/104)
