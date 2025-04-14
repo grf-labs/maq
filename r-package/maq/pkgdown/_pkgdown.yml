@@ -22,10 +22,10 @@ reference:
       - integrated_difference
       - get_ipw_scores
       - get_aipw_scores
+      - scale_maq
 
   - title: Plotting and printing
     contents:
       - plot.maq
-      - maq_scale
       - print.maq
       - summary.maq

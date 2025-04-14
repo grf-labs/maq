@@ -559,7 +559,7 @@ test_that("integrated_difference grid lookup numerics works as expected", {
   expect_equal(est, estt, tolerance = 1e-10)
 })
 
-test_that("maq_scale works as expected", {
+test_that("scale_maq works as expected", {
   n <- 500
   K <- 2
   reward <- matrix(1 + rnorm(n * K), n, K)
@@ -570,7 +570,7 @@ test_that("maq_scale works as expected", {
   qini <- maq(reward, cost, scores, R = 200)
   qini.s <- maq(reward, cost * scale, scores * scale, R = 200)
 
-  expect_equal(qini.s, maq_scale(qini, scale))
+  expect_equal(qini.s, scale_maq(qini, scale))
   expect_equal(average_gain(qini.s, 42),
-               average_gain(maq_scale(qini, scale), 42))
+               average_gain(scale_maq(qini, scale), 42))
 })

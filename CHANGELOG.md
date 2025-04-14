@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2025-04- TODO
 
 ## Added
-- Add convenience function `maq_scale` for mapping policy values and budgets to a specific application. [#104](https://github.com/grf-labs/maq/pull/104)
+- Add convenience function `scale_maq` for mapping policy values and budgets to a specific application. [#104](https://github.com/grf-labs/maq/pull/104)
 
 ## [0.5.0] - 2024-11-14
 
