@@ -21,7 +21,6 @@
 #'
 #' @examples
 #' \donttest{
-#' if (require("ggplot2", quietly = TRUE)) {
 #' # Generate toy data and customize plots.
 #' n <- 500
 #' K <- 1
@@ -30,15 +29,16 @@
 #' cost <- 1
 #'
 #' # Fit Qini curves.
-#' qini.avg <- maq(reward, cost, scores, R = 200, target.with.covariates = FALSE)
 #' qini <- maq(reward, cost, scores, R = 200)
+#' qini.avg <- maq(reward, cost, scores, R = 200, target.with.covariates = FALSE)
 #'
-#' # In some settings we may want to plot using one of R's many plot libraries.
-#' # The plot method invisibly returns the plot data we can use for this purpose.
+#' # The plot method invisibly returns the plot data as a data.frame,
+#' # which allows for custom plotting with external libraries.
 #' df.qini.baseline <- plot(qini.avg)
-#' df.qini <- plot(qini, add = TRUE, col = 2)
+#' df.qini <- plot(qini, add = TRUE, col = "red")
 #'
 #' # Make an alternate plot style, using, for example, ggplot.
+#' if (require("ggplot2", quietly = TRUE)) {
 #' ggplot(df.qini, aes(x = spend, y = gain)) +
 #'   geom_ribbon(aes(ymin = gain - 1.96 * std.err,
 #'                   ymax = gain + 1.96 * std.err),
@@ -48,8 +48,11 @@
 #'   xlab("Fraction treated") +
 #'   geom_line(data = df.qini.baseline, aes(x = spend, y = gain), lty = 2)
 #' }
-#' }
 #'
+#' # `scale_maq()` rescales policy gain curves for specific application units.
+#' # Plot policy values for a maximum allocation of, for example, 500 units.
+#' plot(scale_maq(qini, 500), xlab = "Units treated")
+#' }
 #' @method plot maq
 #' @export
 plot.maq <- function(x,
