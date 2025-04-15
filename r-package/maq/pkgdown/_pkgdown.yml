@@ -20,12 +20,12 @@ reference:
       - average_gain
       - difference_gain
       - integrated_difference
-      - scale_maq
       - get_ipw_scores
       - get_aipw_scores
 
   - title: Plotting and printing
     contents:
       - plot.maq
+      - scale_maq
       - print.maq
       - summary.maq
