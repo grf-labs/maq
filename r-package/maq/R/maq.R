@@ -72,7 +72,7 @@
 #'
 #' @references Sverdrup, Erik, Han Wu, Susan Athey, and Stefan Wager.
 #'  "Qini Curves for Multi-Armed Treatment Rules".
-#'  Journal of Computational and Graphical Statistics, forthcoming.
+#'  Journal of Computational and Graphical Statistics. 34(3), 2025.
 #'
 #' @examples
 #' \donttest{
