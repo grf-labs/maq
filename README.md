@@ -20,7 +20,7 @@ The development version can be installed with:
 ```R
 devtools::install_github("grf-labs/maq", subdir = "r-package/maq")
 ```
-(Installing from source requires a compiler that implements C++11 or later)
+(Installing from source requires a C++ compiler)
 
 **Python** bindings are [here](https://github.com/grf-labs/maq/tree/master/python-package).
 
