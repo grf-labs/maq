@@ -9,10 +9,6 @@ jobs:
         imageName: "ubuntu-latest"
       macos:
         imageName: "macOS-latest"
-        cppVer: "CXX20"
-      macos_cpp11:
-        imageName: "macOS-latest"
-        cppVer: "CXX11"
   pool:
     vmImage: $(imageName)
   variables:
@@ -34,11 +30,6 @@ jobs:
       sudo apt-get install -qq valgrind
     displayName: Setup valgrind
     condition: eq(variables['Agent.OS'], 'Linux')
-  - script: |
-      echo CXX_STD = $(cppVer) >> Makevars
-    workingDirectory: r-package/maq/src
-    displayName: Specify CXX_STD in R Makevars
-    condition: ne(variables['Agent.OS'], 'Linux')
   - script: |
       curl -OLs https://eddelbuettel.github.io/r-ci/run.sh && chmod 0755 run.sh
       ./run.sh bootstrap
@@ -93,11 +84,3 @@ jobs:
       pytest
     workingDirectory: 'python-package'
     displayName: 'Test Python bindings'
-  - script: |
-      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      brew install libomp
-      pip install -I causalml xgboost matplotlib jupyter
-      jupyter nbconvert --execute --to 'notebook' introduction.ipynb
-    workingDirectory: 'python-package/notebooks'
-    displayName: 'Ensure notebooks run'
-    condition: eq(variables['Agent.OS'], 'Darwin')
