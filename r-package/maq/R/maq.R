@@ -1,9 +1,11 @@
 #' Fit a multi-armed Qini curve.
 #'
-#' Fit a curve that shows estimates of a policy value \eqn{Q(B)} over increasing decision thresholds
-#' \eqn{B}. These may include constraints on the treatment allocation, such as the fraction treated or
-#' spending per unit. The policy uses estimated treatment effects, for example from one or more CATE
-#' functions, to optimize treatment allocation under the decision constraint \eqn{B}.
+#' Evaluates treatment allocation policies over a range of budget constraints
+#' using generalized Qini curves. Given estimated conditional treatment effects,
+#' treatment costs, and evaluation scores, `maq` computes the optimal treatment
+#' allocation at each budget level and estimates the corresponding policy value.
+#' The optimization exploits the linear multiple-choice knapsack structure of
+#' the allocation problem to compute the full solution path efficiently.
 #'
 #'
 #' Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
@@ -12,7 +14,7 @@
 #'  (where the k-th element of these vectors measures \eqn{E[Y_i(k) - Y_i(0) | X_i]} and
 #'  \eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
 #'  to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
-#'  and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
+#'  and \eqn{X_i} a set of covariates). This function provide estimates of the Qini curve:
 #'    \deqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
 #' which is the expected gain, at any budget constraint B, when assigning treatment in accordance
 #'  to \eqn{\pi_B}, the treatment policy that optimally selects
@@ -30,7 +32,7 @@
 #' (Note: the estimated function \eqn{\hat \tau(\cdot)} should be constructed on a held-out training set)
 #' @param cost A \eqn{n \cdot K} matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k)
 #'  measures the cost of assigning the i-th unit the k-th treatment arm.
-#'  If the costs does not vary by unit, only by arm, this can also be a K-length vector.
+#'  If the costs do not vary by unit, only by arm, this can also be a K-length vector.
 #'  (Note: these costs need not be denominated on the same scale as the treatment effect estimates).
 #' @param DR.scores An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
 #'  Q(B). With known treatment propensities \eqn{P[W_i|X_i]},
@@ -40,8 +42,9 @@
 #'  construct these scores via augmented inverse-propensity weighting (AIPW) - yielding a doubly
 #'  robust estimate of the Qini curve (for details, see the paper).
 #' @param budget The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
-#'  Setting this to NULL (Default), will fit the path up to a maximum spend per unit
-#'  where each unit that is expected to benefit (that is, \eqn{\hat \tau_k(X_i)>0}) is treated.
+#'  Setting this to NULL (default) computes the solution path up to the
+#'  maximum spend per unit at which every unit with positive estimated
+#'  treatment effect (that is, \eqn{\hat \tau_k(X_i) > 0}) is treated.
 #' @param target.with.covariates If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
 #'  \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
 #'  \eqn{\bar \tau = E[\hat \tau(X_i)]} and average costs \eqn{\bar C = E[C(X_i)]} into account when
@@ -124,10 +127,10 @@
 #' # a) A policy that ignores covariates and only takes the average reward/cost into account.
 #' qini.avg <- maq(tau.hat, cost, DR.scores, target.with.covariates = FALSE, R = 200)
 #'
-#' # b) A policy that only use arm 1.
+#' # b) A policy that only uses arm 1.
 #' qini.arm1 <- maq(tau.hat[, 1], cost[, 1], DR.scores[, 1], R = 200)
 #'
-#' # c) A policy that only use arm 2.
+#' # c) A policy that only uses arm 2.
 #' qini.arm2 <- maq(tau.hat[, 2], cost[, 2], DR.scores[, 2], R = 200)
 #'
 #' plot(ma.qini, ci.args = NULL)
