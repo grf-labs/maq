@@ -7,8 +7,6 @@ jobs:
     matrix:
       ubuntu:
         imageName: "ubuntu-latest"
-      macos:
-        imageName: "macOS-latest"
   pool:
     vmImage: $(imageName)
   variables:
@@ -59,10 +57,6 @@ jobs:
     matrix:
       ubuntu:
         imageName: "ubuntu-latest"
-      macos:
-        imageName: "macOS-latest"
-      win:
-        imageName: "windows-latest"
   pool:
     vmImage: $(imageName)
   steps:
