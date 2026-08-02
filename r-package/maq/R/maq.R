@@ -1,9 +1,11 @@
 #' Fit a multi-armed Qini curve.
 #'
-#' Fit a curve that shows estimates of a policy value \eqn{Q(B)} over increasing decision thresholds
-#' \eqn{B}. These may include constraints on the treatment allocation, such as the fraction treated or
-#' spending per unit. The policy uses estimated treatment effects, for example from one or more CATE
-#' functions, to optimize treatment allocation under the decision constraint \eqn{B}.
+#' Evaluates treatment allocation policies over a range of budget constraints
+#' using generalized Qini curves. Given estimated conditional treatment effects,
+#' treatment costs, and evaluation scores, `maq` computes the optimal treatment
+#' allocation at each budget level and estimates the corresponding policy value.
+#' The optimization exploits the linear multiple-choice knapsack structure of
+#' the allocation problem to compute the full solution path efficiently.
 #'
 #'
 #' Consider \eqn{k = 1, \ldots, K} mutually exclusive and costly treatment arms,
