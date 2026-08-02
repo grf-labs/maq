@@ -37,8 +37,9 @@ construct these scores via augmented inverse-propensity weighting (AIPW) - yield
 robust estimate of the Qini curve (for details, see the paper).}
 
 \item{budget}{The maximum spend per unit, \eqn{B_{max}}, to fit the Qini curve on.
-Setting this to NULL (Default), will fit the path up to a maximum spend per unit
-where each unit that is expected to benefit (that is, \eqn{\hat \tau_k(X_i)>0}) is treated.}
+Setting this to NULL (default) computes the solution path up to the
+maximum spend per unit at which every unit with positive estimated
+treatment effect (that is, \eqn{\hat \tau_k(X_i) > 0}) is treated.}
 
 \item{target.with.covariates}{If TRUE (Default), then the policy \eqn{\pi_B} takes covariates
 \eqn{X_i} into account. If FALSE, then the policy only takes the average reward
@@ -91,7 +92,7 @@ multi-armed treatment effect function and \eqn{C(\cdot)} a known cost function
 (where the k-th element of these vectors measures \eqn{E[Y_i(k) - Y_i(0) | X_i]} and
 \eqn{E[C_i(k) - C_i(0) | X_i]} where \eqn{Y_i(k)} are potential outcomes corresponding
 to the k-th treatment state, \eqn{C_i(k)} the cost of assigning unit i the k-th arm,
-and \eqn{X_i} a set of covariates). We provide estimates of the Qini curve:
+and \eqn{X_i} a set of covariates). This function provide estimates of the Qini curve:
 \deqn{Q(B) = E[\langle \pi_B(X_i), \tau(X_i)\rangle], B \in (0, B_{max}],}
 which is the expected gain, at any budget constraint B, when assigning treatment in accordance
 to \eqn{\pi_B}, the treatment policy that optimally selects
