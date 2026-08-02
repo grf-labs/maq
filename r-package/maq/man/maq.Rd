@@ -25,7 +25,7 @@ maq(
 
 \item{cost}{A \eqn{n \cdot K} matrix of test set costs \eqn{C(X_i) > 0}, where entry (i, k)
 measures the cost of assigning the i-th unit the k-th treatment arm.
-If the costs does not vary by unit, only by arm, this can also be a K-length vector.
+If the costs do not vary by unit, only by arm, this can also be a K-length vector.
 (Note: these costs need not be denominated on the same scale as the treatment effect estimates).}
 
 \item{DR.scores}{An \eqn{n \cdot K} matrix of test set evaluation scores used to form an estimate of
@@ -155,10 +155,10 @@ legend("topleft", c("All arms", "95\% CI", "All arms (IPW)"), col = c(1, 1, 2), 
 # a) A policy that ignores covariates and only takes the average reward/cost into account.
 qini.avg <- maq(tau.hat, cost, DR.scores, target.with.covariates = FALSE, R = 200)
 
-# b) A policy that only use arm 1.
+# b) A policy that only uses arm 1.
 qini.arm1 <- maq(tau.hat[, 1], cost[, 1], DR.scores[, 1], R = 200)
 
-# c) A policy that only use arm 2.
+# c) A policy that only uses arm 2.
 qini.arm2 <- maq(tau.hat[, 2], cost[, 2], DR.scores[, 2], R = 200)
 
 plot(ma.qini, ci.args = NULL)
