@@ -6,12 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.1] - 2026-08-??
 
-## Fixed
+### Fixed
 - Minor documentation improvements and wording cleanups throughout the package. [#111](https://github.com/grf-labs/maq/pull/111)
 
 ## [0.6.0] - 2025-04-14
 
-## Added
+### Added
 - Add convenience function `scale_maq` for mapping policy values and budgets to a specific application. [#104](https://github.com/grf-labs/maq/pull/104)
 
 ## [0.5.0] - 2024-11-14
